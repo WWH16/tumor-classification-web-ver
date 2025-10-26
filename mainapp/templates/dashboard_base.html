@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %}</title>
+  <!-- Tailwind + DaisyUI CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-base-100">
+
+  <!-- Drawer Layout -->
+    <div class="drawer lg:drawer-open">
+      <input id="sidebar-toggle" type="checkbox" class="drawer-toggle" />
+
+    <!-- Page Content -->
+    <div class="drawer-content p-6">
+      {% block content %}
+      <!-- Your main page content -->
+      {% endblock %}
+    </div>
+
+  <!-- Sidebar -->
+  <div class="drawer-side">
+    <label for="sidebar-toggle" aria-label="close sidebar" class="drawer-overlay"></label>
+    <div class="bg-base-200 min-h-full flex flex-col justify-between transition-all duration-300"
+         style="width: var(--sidebar-width, 16rem);">
+
+      <!-- Sidebar Menu -->
+      <ul id="sidebar-menu" class="menu p-4 grow">
+        <li>
+          <a href="#" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 class="w-5 h-5">
+              <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+              <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
+        </li>
+
+          <!-- Settings -->
+          <li>
+          <a href="#" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 class="w-5 h-5">
+              <path d="M20 7h-9"></path>
+              <path d="M14 17H5"></path>
+              <circle cx="17" cy="17" r="3"></circle>
+              <circle cx="7" cy="7" r="3"></circle>
+            </svg>
+            <span class="sidebar-text">Settings</span>
+          </a>
+        </li>
+      </ul>
+
+        <!-- Drawer Toggle Button -->
+          <div class="p-4">
+            <button id="toggle-btn" class="btn btn-ghost btn-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                   stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M4 4m0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/>
+                <path d="M9 4v16"/>
+                <path d="M14 10l2 2l-2 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% block extra_scripts %}{% endblock %}
+<script>
+const toggleBtn = document.getElementById('toggle-btn');
+const sidebar = document.querySelector('.drawer-side > div');
+const sidebarText = document.querySelectorAll('.sidebar-text');
+
+let collapsed = false;
+
+toggleBtn.addEventListener('click', () => {
+  collapsed = !collapsed;
+  if (collapsed) {
+    sidebar.style.setProperty('--sidebar-width', '4rem');
+    sidebarText.forEach(span => span.style.display = 'none');
+  } else {
+    sidebar.style.setProperty('--sidebar-width', '16rem');
+    sidebarText.forEach(span => span.style.display = 'inline');
+  }
+});
+</script>
+
+</body>
+</html>

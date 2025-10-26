@@ -53,13 +53,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'tumorclassification.urls'
 
+# Templates: use Django's template backend only (keep it simple and balanced)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -114,16 +116,15 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = '/static/'
-# Additional locations the staticfiles app will search for files during development
-# Use AppDirectoriesFinder (default) to automatically find each app's `static/` directory.
-# Only include a project-level static directory here for global assets.
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'    # add this line
+_project_static = BASE_DIR / 'static'
+STATICFILES_DIRS = [_project_static] if _project_static.exists() else []
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
