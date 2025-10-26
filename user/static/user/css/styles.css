@@ -1,0 +1,18 @@
+/*
+https://unpkg.com/daisyui@latest/dist/full.css
+*/
+
+:root{
+  --golden: #e1ca96ff;
+  --darken-mode: hsl(220deg, 16%, 16%);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--darken-mode);
+  color: var(--golden);
+}

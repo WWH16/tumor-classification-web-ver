@@ -1,0 +1,43 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyCharm
+.idea/
+
+# Virtual environments
+venv/
+env/
+.venv/
+brain_env/
+
+# Django / SQLite
+*.sqlite3
+db.sqlite3
+*.log
+
+# Migrations caches (keep migration source files)
+*/migrations/__pycache__/
+*/migrations/*.py[cod]
+
+# Static/media (optional - track if you collect or commit these)
+# static/
+# media/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Editor / OS files
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
