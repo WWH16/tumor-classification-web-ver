@@ -1,11 +1,264 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
 
-{% block title %}Homepage{% endblock %}
+{% block title %}MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<div class="p-6">
-  <h1 class="text-3xl font-bold mb-4">Welcome to the Dashboard!</h1>
-  <p class="text-gray-600">This is your homepage content.</p>
+<div class="bg-base-200 min-h-screen p-6">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2">MRI Tumor Classification</h1>
+    <p class="text-base-content/70 mb-8">Upload patient information and MRI scan for tumor classification</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Form Section -->
+      <div class="lg:col-span-2">
+        <div class="card bg-white shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title text-xl mb-4">Patient Information</h2>
+            <form id="patientForm" class="space-y-4">
+              <!-- Patient ID & Name -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="input w-full">
+                  <span class="label">Patient ID</span>
+                  <input type="text" placeholder="e.g., P-2024-001" class="input input-bordered bg-white" required />
+                </label>
+
+                <label class="input w-full">
+                  <span class="label">Full Name</span>
+                  <input type="text" placeholder="John Doe" class="input input-bordered bg-white" required />
+                </label>
+              </div>
+
+              <!-- Age & Gender -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="input w-full">
+                  <span class="label">Age</span>
+                  <input type="number" placeholder="e.g., 45" min="1" max="120" class="input input-bordered bg-white" required />
+                </label>
+
+                <label>
+                  <span class="label">Gender</span>
+                  <select class="select w-full bg-white" required>
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Medical History -->
+              <label class="input w-full">
+                <span class="label">Medical History</span>
+                <textarea class="textarea w-full bg-white" placeholder="Any relevant medical history..." rows="3"></textarea>
+              </label>
+
+              <!-- MRI Upload Section -->
+              <div class="divider">MRI Scan Upload</div>
+
+              <label class="w-full">
+                <span class="label">Upload MRI Image</span>
+                <input type="file" class="file-input file-input-primary w-full" accept="image/*" required />
+                <p class="label text-sm">Supported formats: JPG, PNG, DICOM</p>
+              </label>
+
+              <!-- Scan Details -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="input w-full">
+                  <span class="label">Scan Date</span>
+                  <input type="date" class="input input-bordered bg-white" required />
+                </label>
+
+                <label>
+                  <span class="label">Scan Type</span>
+                  <select class="select w-full bg-white" required>
+                    <option value="" disabled selected>Select scan type</option>
+                    <option value="t1">T1-weighted</option>
+                    <option value="t2">T2-weighted</option>
+                    <option value="flair">FLAIR</option>
+                    <option value="contrast">Contrast-enhanced</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Additional Notes -->
+              <label class="input w-full">
+                <span class="label">Additional Notes (Optional)</span>
+                <textarea class="textarea w-full bg-white" placeholder="Any additional information..." rows="2"></textarea>
+              </label>
+
+              <!-- Submit Button -->
+              <div class="card-actions justify-end pt-4">
+                <button type="reset" class="btn btn-ghost">Clear Form</button>
+                <button type="submit" class="btn btn-primary flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  Classify Tumor
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview & Info Section -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Image Preview Card -->
+        <div class="card bg-white shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-lg">MRI Preview</h3>
+            <div id="imagePreview" class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+              <div class="text-center text-base-content/50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <p class="text-sm">No image uploaded</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Classification Info -->
+        <div class="card bg-primary text-primary-content shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-lg flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Information
+            </h3>
+            <p class="text-sm">
+              Our AI model will analyze the MRI scan and classify the tumor type. Results are for reference only and should be verified by a medical professional.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats stats-vertical bg-white shadow-xl w-full">
+          <div class="stat">
+            <div class="stat-title">Total Scans</div>
+            <div class="stat-value text-primary">1,234</div>
+            <div class="stat-desc">This month</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Accuracy</div>
+            <div class="stat-value text-secondary">98.5%</div>
+            <div class="stat-desc">Model performance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Result Modal -->
+<dialog id="resultModal" class="modal">
+  <div class="modal-box max-w-2xl">
+    <h3 class="text-2xl font-bold mb-4">Classification Results</h3>
+    <div class="space-y-4">
+      <!-- Success -->
+      <div class="alert alert-success flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Analysis completed successfully</span>
+      </div>
+
+      <!-- Classification Details -->
+      <div class="card bg-white shadow-lg">
+        <div class="card-body">
+          <h4 class="font-bold text-lg mb-3">Detected Tumor Type</h4>
+          <div class="badge badge-lg badge-primary mb-4">Glioblastoma</div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="font-semibold">Confidence Level:</span>
+              <span>94.7%</span>
+            </div>
+            <progress class="progress progress-primary w-full" value="94.7" max="100"></progress>
+          </div>
+
+          <div class="divider"></div>
+
+          <h5 class="font-bold mb-2">Other Possibilities</h5>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span>Astrocytoma</span>
+              <span>3.2%</span>
+            </div>
+            <progress class="progress progress-accent w-full" value="3.2" max="100"></progress>
+
+            <div class="flex justify-between text-sm">
+              <span>Meningioma</span>
+              <span>1.8%</span>
+            </div>
+            <progress class="progress progress-accent w-full" value="1.8" max="100"></progress>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="alert alert-warning flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span class="text-sm">Please consult with a specialist for proper diagnosis and treatment plan.</span>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn btn-ghost">Close</button>
+        <button class="btn btn-primary">Download Report</button>
+      </form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<script>
+  // Image preview functionality
+  const fileInput = document.querySelector('input[type="file"]');
+  const imagePreview = document.getElementById('imagePreview');
+
+  fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="MRI Preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Form submission
+  const form = document.getElementById('patientForm');
+  const resultModal = document.getElementById('resultModal');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="loading loading-spinner"></span> Processing...';
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+      resultModal.showModal();
+    }, 2000);
+  });
+</script>
 {% endblock %}
