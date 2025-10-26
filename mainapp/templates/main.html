@@ -12,9 +12,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Form Section -->
       <div class="lg:col-span-2">
-        <div class="card bg-white shadow-xl">
-          <div class="card-body">
-            <h2 class="card-title text-xl mb-4">Patient Information</h2>
+        <div class="card bg-base-100 shadow-sm rounded-xl w-full">
+          <div class="card-body px-6 pt-6 pb-4">
+            <h2 class="card-title mb-4 text-xl">Patient Information</h2>
             <form id="patientForm" class="space-y-4">
               <!-- Patient ID & Name -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,7 +88,7 @@
               </label>
 
               <!-- Submit Button -->
-              <div class="card-actions justify-end pt-4">
+              <div class="card-actions justify-end mt-4">
                 <button type="reset" class="btn btn-ghost">Clear Form</button>
                 <button type="submit" class="btn btn-primary flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -107,9 +107,9 @@
       <!-- Preview & Info Section -->
       <div class="lg:col-span-1 space-y-6">
         <!-- Image Preview Card -->
-        <div class="card bg-white shadow-xl">
-          <div class="card-body">
-            <h3 class="card-title text-lg">MRI Preview</h3>
+        <div class="card bg-base-100 shadow-sm rounded-xl w-full">
+          <div class="card-body items-center text-center px-6 pt-6 pb-4">
+            <h3 class="card-title mb-2 text-lg">MRI Preview</h3>
             <div id="imagePreview" class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
               <div class="text-center text-base-content/50">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,9 +124,9 @@
         </div>
 
         <!-- Classification Info -->
-        <div class="card bg-primary text-primary-content shadow-xl">
-          <div class="card-body">
-            <h3 class="card-title text-lg flex items-center gap-2">
+        <div class="card bg-primary text-primary-content shadow-sm rounded-xl w-full">
+          <div class="card-body px-6 pt-6 pb-4">
+            <h3 class="card-title text-lg flex items-center gap-2 mb-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -134,23 +134,27 @@
               </svg>
               Information
             </h3>
-            <p class="text-sm">
+            <p class="text-sm text-center">
               Our AI model will analyze the MRI scan and classify the tumor type. Results are for reference only and should be verified by a medical professional.
             </p>
           </div>
         </div>
 
         <!-- Quick Stats -->
-        <div class="stats stats-vertical bg-white shadow-xl w-full">
-          <div class="stat">
-            <div class="stat-title">Total Scans</div>
-            <div class="stat-value text-primary">1,234</div>
-            <div class="stat-desc">This month</div>
-          </div>
-          <div class="stat">
-            <div class="stat-title">Accuracy</div>
-            <div class="stat-value text-secondary">98.5%</div>
-            <div class="stat-desc">Model performance</div>
+        <div class="card bg-base-100 shadow-sm rounded-xl w-full">
+          <div class="card-body px-6 pt-6 pb-4">
+            <div class="stats stats-vertical w-full">
+              <div class="stat">
+                <div class="stat-title">Total Scans</div>
+                <div class="stat-value text-primary">1,234</div>
+                <div class="stat-desc">This month</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Accuracy</div>
+                <div class="stat-value text-secondary">98.5%</div>
+                <div class="stat-desc">Model performance</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -173,8 +177,8 @@
       </div>
 
       <!-- Classification Details -->
-      <div class="card bg-white shadow-lg">
-        <div class="card-body">
+      <div class="card bg-base-100 shadow-sm rounded-xl w-full">
+        <div class="card-body px-6 pt-6 pb-4">
           <h4 class="font-bold text-lg mb-3">Detected Tumor Type</h4>
           <div class="badge badge-lg badge-primary mb-4">Glioblastoma</div>
 
