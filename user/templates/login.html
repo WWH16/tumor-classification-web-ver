@@ -70,8 +70,9 @@
     </form>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
 function togglePassword(inputId, buttonElement) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -109,6 +110,45 @@ document.addEventListener('DOMContentLoaded', function() {
       if (input) input.focus();
     }
   }
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'success' %}
+        // Top-right toast for success
+        Swal.fire({
+          icon: 'success',
+          title: "{{ message|escapejs }}",
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: 'top-end',
+          timerProgressBar: true
+        });
+      {% elif message.tags == 'error' %}
+        // Centered modal for errors
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: "{{ message|escapejs }}",
+          confirmButtonColor: '#006600',
+        });
+      {% else %}
+        // Info or warning can be a toast
+        Swal.fire({
+          icon: 'info',
+          title: "{{ message|escapejs }}",
+          showConfirmButton: false,
+          timer: 2500,
+          toast: true,
+          position: 'top-end',
+          timerProgressBar: true
+        });
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 });
 </script>
 {% endblock %}
