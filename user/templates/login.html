@@ -1,70 +1,56 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="max-w-[480px] w-full">
+<div class="max-w-[480px] w-full mx-auto mt-16">
   <!-- <a href="#"><img
     src="https://readymadeui.com/readymadeui.svg"
     alt="logo"
     class="w-40 mb-8 mx-auto block"
   /></a> -->
-
   <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
     <h1 class="text-slate-900 text-center text-3xl font-semibold">Sign in</h1>
 
-    <form method="POST" action="" class="mt-12 space-y-6">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mt-4 p-3 rounded text-white {{ message.tags|default:'bg-red-500' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="" class="mt-12 space-y-6" id="loginForm">
       {% csrf_token %}
+
+      <!-- Employee ID -->
       <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">User name</label>
+        <label class="text-slate-900 text-sm font-medium mb-2 block">Employee ID</label>
         <div class="relative flex items-center">
-          <input name="username" type="text" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-            placeholder="Enter user name" />
-          <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-            class="w-4 h-4 absolute right-4" viewBox="0 0 24 24">
-            <circle cx="10" cy="7" r="6" />
-            <path d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3
-                     5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2
-                     2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0
-                     0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"></path>
+          <input name="employee_id" id="id_employee_id" type="text" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            placeholder="Enter your employee ID" value="{{ request.POST.employee_id|default:'' }}" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
           </svg>
         </div>
       </div>
 
+      <!-- Password -->
       <div>
         <label class="text-slate-900 text-sm font-medium mb-2 block">Password</label>
         <div class="relative flex items-center">
-          <input name="password" type="password" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-            placeholder="Enter password" />
-          <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-            class="w-4 h-4 absolute right-4 cursor-pointer" viewBox="0 0 128 128">
-            <path d="M64 104C22.127 104 1.367 67.496.504
-                     65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127
-                     24 64 24s62.633 36.504 63.496
-                     38.057a4 4 0 0 1 0 3.887C126.633 67.496
-                     105.873 104 64 104zM8.707 63.994C13.465
-                     71.205 32.146 96 64 96c31.955 0
-                     50.553-24.775 55.293-31.994C114.535
-                     56.795 95.854 32 64 32 32.045 32
-                     13.447 56.775 8.707 63.994zM64 88c-13.234
-                     0-24-10.766-24-24s10.766-24 24-24
-                     24 10.766 24 24-10.766 24-24
-                     24zm0-40c-8.822 0-16 7.178-16
-                     16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z">
-            </path>
-          </svg>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center">
-          <input id="remember-me" name="remember-me" type="checkbox"
-            class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" />
-          <label for="remember-me" class="ml-3 block text-sm text-slate-900">Remember me</label>
-        </div>
-        <div class="text-sm">
-          <a href="#" class="text-blue-600 hover:underline font-semibold">Forgot your password?</a>
+          <input name="password" id="id_password" type="password" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
+            placeholder="Enter password"
+            minlength="8" />
+          <button type="button" onclick="togglePassword('id_password', this)"
+            class="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            aria-label="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -84,4 +70,45 @@
     </form>
   </div>
 </div>
+
+<script>
+function togglePassword(inputId, buttonElement) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+
+  const svg = buttonElement.querySelector('svg');
+  if (svg) {
+    if (isPassword) {
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      `;
+    } else {
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+      `;
+    }
+  }
+  input.focus();
+}
+
+// Focus first field with an error
+document.addEventListener('DOMContentLoaded', function() {
+  const firstErr = document.querySelector('.field-error');
+  if (firstErr) {
+    const id = firstErr.getAttribute('id');
+    if (id && id.endsWith('-error')) {
+      const inputId = id.replace('-error','');
+      const input = document.getElementById(inputId);
+      if (input) input.focus();
+    } else {
+      const input = document.querySelector('input[aria-invalid="true"]');
+      if (input) input.focus();
+    }
+  }
+});
+</script>
 {% endblock %}

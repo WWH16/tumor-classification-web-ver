@@ -1,45 +1,146 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="max-w-[480px] w-full">
+<div class="max-w-[480px] w-full mx-auto mt-16">
   <!-- <a href="#"><img
     src="https://readymadeui.com/readymadeui.svg"
     alt="logo"
     class="w-40 mb-8 mx-auto block"
-  /></a>-->
-
+  /></a> -->
   <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
     <h1 class="text-slate-900 text-center text-3xl font-semibold">Create an account</h1>
 
-    <form method="POST" action="" class="mt-12 space-y-6">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mt-4 p-3 rounded text-white {{ message.tags|default:'bg-red-500' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="" class="mt-12 space-y-6" id="signupForm">
       {% csrf_token %}
+
+      <!-- Employee ID -->
       <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">Full name</label>
-        <input name="fullname" type="text" required
-          class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-          placeholder="Enter your full name" />
+        <label class="text-slate-900 text-sm font-medium mb-2 block">Employee ID</label>
+        <div class="relative flex items-center">
+          <input name="employee_id" id="id_employee_id" type="text" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            placeholder="Enter your employee ID" value="{{ request.POST.employee_id|default:'' }}" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+        </div>
       </div>
 
+      <!-- First Name & Last Name side by side -->
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="text-slate-900 text-sm font-medium mb-2 block">First Name</label>
+          <div class="relative flex items-center">
+            <input name="first_name" id="id_first_name" type="text" required
+              class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+              placeholder="First Name" value="{{ request.POST.first_name|default:'' }}" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="flex-1">
+          <label class="text-slate-900 text-sm font-medium mb-2 block">Last Name</label>
+          <div class="relative flex items-center">
+            <input name="last_name" id="id_last_name" type="text" required
+              class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+              placeholder="Last Name" value="{{ request.POST.last_name|default:'' }}" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
       <div>
         <label class="text-slate-900 text-sm font-medium mb-2 block">Email</label>
-        <input name="email" type="email" required
-          class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-          placeholder="Enter your email" />
+        <div class="relative flex items-center">
+          <input name="email" id="id_email" type="email" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            placeholder="mail@example.com" value="{{ request.POST.email|default:'' }}" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
       </div>
 
+      <!-- Password -->
       <div>
         <label class="text-slate-900 text-sm font-medium mb-2 block">Password</label>
-        <input name="password" type="password" required
-          class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-          placeholder="Enter password" />
+        <div class="relative flex items-center">
+          <input name="password1" id="id_password1" type="password" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
+            placeholder="Enter password"
+            minlength="8"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+          <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password1', this)" aria-label="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </button>
+        </div>
+        <div class="mt-2 text-xs text-gray-600 space-y-1" id="password-requirements">
+          <p class="flex items-center gap-2">
+            <span class="requirement" id="req-length">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              </svg>
+            </span>
+            At least 8 characters
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="requirement" id="req-number">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              </svg>
+            </span>
+            At least one number
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="requirement" id="req-lowercase">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              </svg>
+            </span>
+            At least one lowercase letter
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="requirement" id="req-uppercase">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              </svg>
+            </span>
+            At least one uppercase letter
+          </p>
+        </div>
       </div>
 
+      <!-- Confirm Password -->
       <div>
         <label class="text-slate-900 text-sm font-medium mb-2 block">Confirm password</label>
-        <input name="confirm_password" type="password" required
-          class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-          placeholder="Confirm password" />
+        <div class="relative flex items-center">
+          <input name="password2" id="id_password2" type="password" required
+            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
+            placeholder="Confirm password" />
+          <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password2', this)" aria-label="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </button>
+        </div>
+        <p class="mt-2 text-xs text-red-600 hidden" id="password-match-error">Passwords do not match</p>
       </div>
 
       <div class="!mt-12">
@@ -58,4 +159,97 @@
     </form>
   </div>
 </div>
+
+<script>
+function togglePassword(inputId, buttonElement) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+
+  const svg = buttonElement.querySelector('svg');
+  if (svg) {
+    if (isPassword) {
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      `;
+    } else {
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+      `;
+    }
+  }
+  input.focus();
+}
+
+// Password validation
+const password1 = document.getElementById('id_password1');
+const password2 = document.getElementById('id_password2');
+const matchError = document.getElementById('password-match-error');
+
+function updateRequirement(id, isValid) {
+  const req = document.getElementById(id);
+  const svg = req.querySelector('svg');
+
+  if (isValid) {
+    svg.classList.remove('text-gray-400');
+    svg.classList.add('text-green-500');
+    svg.innerHTML = `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    `;
+  } else {
+    svg.classList.remove('text-green-500');
+    svg.classList.add('text-gray-400');
+    svg.innerHTML = `
+      <circle cx="12" cy="12" r="10" stroke-width="2"/>
+    `;
+  }
+}
+
+password1.addEventListener('input', function() {
+  const value = this.value;
+
+  updateRequirement('req-length', value.length >= 8);
+  updateRequirement('req-number', /\d/.test(value));
+  updateRequirement('req-lowercase', /[a-z]/.test(value));
+  updateRequirement('req-uppercase', /[A-Z]/.test(value));
+
+  // Check password match
+  if (password2.value) {
+    if (value === password2.value) {
+      password2.classList.remove('border-red-500');
+      password2.classList.add('border-green-500');
+      matchError.classList.add('hidden');
+    } else {
+      password2.classList.remove('border-green-500');
+      password2.classList.add('border-red-500');
+      matchError.classList.remove('hidden');
+    }
+  }
+});
+
+password2.addEventListener('input', function() {
+  if (password1.value === this.value) {
+    this.classList.remove('border-red-500');
+    this.classList.add('border-green-500');
+    matchError.classList.add('hidden');
+  } else {
+    this.classList.remove('border-green-500');
+    this.classList.add('border-red-500');
+    matchError.classList.remove('hidden');
+  }
+});
+
+// Form submission validation
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+  if (password1.value !== password2.value) {
+    e.preventDefault();
+    password2.classList.add('border-red-500');
+    matchError.classList.remove('hidden');
+    password2.focus();
+  }
+});
+</script>
 {% endblock %}
