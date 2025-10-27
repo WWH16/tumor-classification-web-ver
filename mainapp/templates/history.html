@@ -1,0 +1,345 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Classification History{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Page Header with Stats -->
+  <div class="flex flex-wrap justify-between items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold">Classification History</h1>
+      <p class="text-base-content/60 mt-1">View and manage your MRI classification records</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'history_export' %}" class="btn btn-outline btn-primary">
+        <i class="material-icons">download</i>
+        Export CSV
+      </a>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+    <div class="stat">
+      <div class="stat-figure text-primary">
+        <i class="material-icons text-4xl">folder</i>
+      </div>
+      <div class="stat-title">Total Records</div>
+      <div class="stat-value text-primary">{{ total_count }}</div>
+      <div class="stat-desc">All time classifications</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure text-secondary">
+        <i class="material-icons text-4xl">today</i>
+      </div>
+      <div class="stat-title">This Month</div>
+      <div class="stat-value text-secondary">{{ page_obj.paginator.count }}</div>
+      <div class="stat-desc">Currently viewing</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure text-accent">
+        <i class="material-icons text-4xl">science</i>
+      </div>
+      <div class="stat-title">Avg Confidence</div>
+      <div class="stat-value text-accent">
+        {% widthratio page_obj.object_list|length 1 1 as count %}
+        {% if count > 0 %}
+          {{ page_obj.object_list.0.confidence|floatformat:0 }}%
+        {% else %}
+          0%
+        {% endif %}
+      </div>
+      <div class="stat-desc">Classification accuracy</div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="card bg-base-100 shadow-md">
+    <div class="card-body">
+      <form method="GET" action="{% url 'history' %}" class="space-y-4">
+        <!-- Search Bar -->
+        <div class="flex gap-2">
+          <input
+            type="text"
+            name="search"
+            placeholder="Search by patient name, diagnosis, notes, or medical history..."
+            class="input input-bordered flex-1"
+            value="{{ search_query }}"
+          />
+          <button type="submit" class="btn btn-primary">
+            <i class="material-icons">search</i>
+            Search
+          </button>
+        </div>
+
+        <!-- Filters Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <!-- Diagnosis Filter -->
+          <select name="diagnosis" class="select select-bordered">
+            <option value="">All Diagnoses</option>
+            {% for diagnosis in all_diagnoses %}
+              <option value="{{ diagnosis }}" {% if diagnosis_filter == diagnosis %}selected{% endif %}>
+                {{ diagnosis }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <!-- Gender Filter -->
+          <select name="gender" class="select select-bordered">
+            <option value="">All Genders</option>
+            {% for gender in all_genders %}
+              <option value="{{ gender }}" {% if gender_filter == gender %}selected{% endif %}>
+                {{ gender }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <!-- Date Range Filter -->
+          <select name="date_range" class="select select-bordered">
+            <option value="">All Time</option>
+            <option value="today" {% if date_range == 'today' %}selected{% endif %}>Today</option>
+            <option value="week" {% if date_range == 'week' %}selected{% endif %}>Last 7 Days</option>
+            <option value="month" {% if date_range == 'month' %}selected{% endif %}>Last 30 Days</option>
+            <option value="year" {% if date_range == 'year' %}selected{% endif %}>Last Year</option>
+          </select>
+
+          <!-- Sort By -->
+          <select name="sort" class="select select-bordered">
+            <option value="-date_uploaded" {% if sort_by == '-date_uploaded' %}selected{% endif %}>Newest First</option>
+            <option value="date_uploaded" {% if sort_by == 'date_uploaded' %}selected{% endif %}>Oldest First</option>
+            <option value="full_name" {% if sort_by == 'full_name' %}selected{% endif %}>Name (A-Z)</option>
+            <option value="-full_name" {% if sort_by == '-full_name' %}selected{% endif %}>Name (Z-A)</option>
+            <option value="-confidence" {% if sort_by == '-confidence' %}selected{% endif %}>Confidence (High-Low)</option>
+            <option value="confidence" {% if sort_by == 'confidence' %}selected{% endif %}>Confidence (Low-High)</option>
+          </select>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="flex gap-2 justify-end">
+          <a href="{% url 'history' %}" class="btn btn-ghost btn-sm">
+            <i class="material-icons text-sm">clear</i>
+            Clear Filters
+          </a>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="material-icons text-sm">filter_list</i>
+            Apply Filters
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Active Filters Display -->
+  {% if search_query or diagnosis_filter or gender_filter or date_range %}
+  <div class="flex flex-wrap gap-2 items-center">
+    <span class="text-sm font-medium">Active Filters:</span>
+    {% if search_query %}
+      <div class="badge badge-primary gap-2">
+        Search: {{ search_query }}
+        <a href="?{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
+      </div>
+    {% endif %}
+    {% if diagnosis_filter %}
+      <div class="badge badge-secondary gap-2">
+        Diagnosis: {{ diagnosis_filter }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
+      </div>
+    {% endif %}
+    {% if gender_filter %}
+      <div class="badge badge-accent gap-2">
+        Gender: {{ gender_filter }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
+      </div>
+    {% endif %}
+    {% if date_range %}
+      <div class="badge badge-info gap-2">
+        Date: {{ date_range|title }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}{% endif %}" class="text-white">✕</a>
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Results Table -->
+  <div class="card bg-base-100 shadow-md">
+    <div class="card-body p-0">
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient Name</th>
+              <th>Age/Gender</th>
+              <th>Diagnosis</th>
+              <th>Confidence</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if page_obj %}
+              {% for classification in page_obj %}
+              <tr class="hover">
+                <th>{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</th>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar placeholder">
+                      <div class="bg-primary text-primary-content rounded-full w-10">
+                        <span class="text-xs">{{ classification.full_name.0|upper }}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-medium">{{ classification.full_name }}</div>
+                      {% if classification.history %}
+                        <div class="text-xs text-base-content/60 flex items-center gap-1">
+                          <i class="material-icons" style="font-size: 14px;">info</i>
+                          Has medical history
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm">
+                    <div>{{ classification.age }} years</div>
+                    <div class="badge badge-ghost badge-sm">{{ classification.gender }}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="badge badge-primary badge-lg">
+                    {{ classification.predicted_class }}
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="radial-progress text-primary"
+                         style="--value:{{ classification.confidence|floatformat:0 }}; --size:3rem; --thickness:4px;"
+                         role="progressbar">
+                      {{ classification.confidence|floatformat:0 }}%
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm">
+                    {{ classification.date_uploaded|date:"M d, Y" }}
+                    <div class="text-xs text-base-content/60">
+                      {{ classification.date_uploaded|date:"h:i A" }}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-sm">
+                      <i class="material-icons">more_vert</i>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li>
+                        <a href="{% url 'history_detail' classification.pk %}">
+                          <i class="material-icons text-sm">visibility</i>
+                          View Details
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{% url 'history_edit' classification.pk %}">
+                          <i class="material-icons text-sm">edit</i>
+                          Edit Record
+                        </a>
+                      </li>
+                      <li>
+                        <a onclick="confirmDelete({{ classification.pk }})" class="text-error">
+                          <i class="material-icons text-sm">delete</i>
+                          Delete Record
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center py-12">
+                  <div class="flex flex-col items-center gap-4">
+                    <i class="material-icons text-6xl text-base-content/20">folder_open</i>
+                    <div>
+                      <p class="text-lg font-medium">No records found</p>
+                      <p class="text-sm text-base-content/60">
+                        {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                          Try adjusting your search criteria or filters
+                        {% else %}
+                          Start by classifying an MRI scan
+                        {% endif %}
+                      </p>
+                    </div>
+                    {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                      <a href="{% url 'history' %}" class="btn btn-primary">
+                        Clear All Filters
+                      </a>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <div class="flex justify-center">
+    <div class="join">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if diagnosis_filter %}&diagnosis={{ diagnosis_filter }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if date_range %}&date_range={{ date_range }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+           class="join-item btn btn-sm">«</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if diagnosis_filter %}&diagnosis={{ diagnosis_filter }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if date_range %}&date_range={{ date_range }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+           class="join-item btn btn-sm">‹</a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <button class="join-item btn btn-sm btn-active">{{ num }}</button>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if diagnosis_filter %}&diagnosis={{ diagnosis_filter }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if date_range %}&date_range={{ date_range }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+             class="join-item btn btn-sm">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if diagnosis_filter %}&diagnosis={{ diagnosis_filter }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if date_range %}&date_range={{ date_range }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+           class="join-item btn btn-sm">›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if diagnosis_filter %}&diagnosis={{ diagnosis_filter }}{% endif %}{% if gender_filter %}&gender={{ gender_filter }}{% endif %}{% if date_range %}&date_range={{ date_range }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+           class="join-item btn btn-sm">»</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="text-center text-sm text-base-content/60">
+    Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} records
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function confirmDelete(pk) {
+  Swal.fire({
+    title: 'Delete Record?',
+    text: "This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `/history/${pk}/delete/`;
+    }
+  });
+}
+</script>
+{% endblock %}

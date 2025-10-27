@@ -1,0 +1,191 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Record Details - {{ classification.full_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Back Button -->
+  <div class="flex items-center gap-4">
+    <a href="{% url 'history' %}" class="btn btn-ghost">
+      <i class="material-icons">arrow_back</i>
+      Back to History
+    </a>
+  </div>
+
+  <!-- Patient Information Card -->
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-start">
+        <h2 class="card-title text-2xl">
+          <i class="material-icons text-primary">person</i>
+          Patient Information
+        </h2>
+        <div class="flex gap-2">
+          <a href="{% url 'history_print' classification.pk %}" target="_blank" class="btn btn-ghost btn-sm">
+            <i class="material-icons text-sm">print</i>
+            Print
+          </a>
+          <a href="{% url 'history_edit' classification.pk %}" class="btn btn-primary btn-sm">
+            <i class="material-icons text-sm">edit</i>
+            Edit
+          </a>
+          <button onclick="confirmDelete({{ classification.pk }})" class="btn btn-error btn-sm">
+            <i class="material-icons text-sm">delete</i>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-base-content/60">Full Name</label>
+            <p class="text-lg font-medium">{{ classification.full_name }}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-base-content/60">Age</label>
+              <p class="text-lg font-medium">{{ classification.age }} years</p>
+            </div>
+            <div>
+              <label class="text-sm text-base-content/60">Gender</label>
+              <p class="text-lg font-medium">{{ classification.gender }}</p>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm text-base-content/60">Date Uploaded</label>
+            <p class="text-lg font-medium">{{ classification.date_uploaded|date:"F d, Y - h:i A" }}</p>
+          </div>
+          <div>
+            <label class="text-sm text-base-content/60">Processed By</label>
+            <p class="text-lg font-medium">{{ classification.process_by.get_full_name }}</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-base-content/60">Medical History</label>
+            <div class="p-4 bg-base-200 rounded-lg mt-2">
+              <p class="whitespace-pre-line">{{ classification.history|default:"No medical history recorded" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Classification Results Card -->
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl">
+        <i class="material-icons text-primary">science</i>
+        Classification Results
+      </h2>
+
+      <div class="divider"></div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-base-content/60">Predicted Diagnosis</label>
+            <div class="mt-2">
+              <span class="badge badge-primary badge-lg text-lg p-4">
+                {{ classification.predicted_class }}
+              </span>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm text-base-content/60">Confidence Level</label>
+            <div class="flex items-center gap-4 mt-2">
+              <div class="radial-progress text-primary"
+                   style="--value:{{ classification.confidence|floatformat:0 }}; --size:5rem; --thickness:6px;"
+                   role="progressbar">
+                {{ classification.confidence|floatformat:1 }}%
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ classification.confidence|floatformat:1 }}%</p>
+                <p class="text-sm text-base-content/60">Confidence Score</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm text-base-content/60">MRI Scan Image</label>
+          <div class="mt-2">
+            <img src="{{ classification.image.url }}"
+                 alt="MRI Scan"
+                 class="rounded-lg border-2 border-base-300 w-full max-w-md mx-auto"
+                 onclick="viewImage.showModal()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Card -->
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl">
+        <i class="material-icons text-primary">note</i>
+        Clinical Notes
+      </h2>
+
+      <div class="divider"></div>
+
+      <div class="p-4 bg-base-200 rounded-lg">
+        <p class="whitespace-pre-line">{{ classification.notes|default:"No additional notes" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<dialog id="viewImage" class="modal">
+  <div class="modal-box max-w-4xl">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg mb-4">MRI Scan - {{ classification.full_name }}</h3>
+    <img src="{{ classification.image.url }}"
+         alt="MRI Scan"
+         class="w-full rounded-lg" />
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<script>
+function confirmDelete(pk) {
+  Swal.fire({
+    title: 'Delete Record?',
+    text: "This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Create a form and submit it
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/history/${pk}/delete/`;
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+      if (csrfToken) {
+        form.appendChild(csrfToken.cloneNode());
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+}
+</script>
+{% endblock %}

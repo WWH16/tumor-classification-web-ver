@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MRI Classification Report - {{ classification.full_name }}</title>
+  <style>
+    @media print {
+      .no-print { display: none; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #2563eb;
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: #666;
+      margin: 5px 0;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      page-break-inside: avoid;
+    }
+
+    .section-title {
+      background: #2563eb;
+      color: white;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .info-item {
+      border-left: 3px solid #2563eb;
+      padding-left: 15px;
+    }
+
+    .info-label {
+      color: #666;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .diagnosis-box {
+      background: #dbeafe;
+      border: 2px solid #2563eb;
+      padding: 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .diagnosis-box .diagnosis {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    .diagnosis-box .confidence {
+      font-size: 36px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .mri-image {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .mri-image img {
+      max-width: 100%;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .notes-box {
+      background: #f9fafb;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-line;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px solid #ddd;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #2563eb;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .print-button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <button class="print-button no-print" onclick="window.print()">
+    🖨️ Print Report
+  </button>
+
+  <div class="header">
+    <h1>MRI Classification Report</h1>
+    <p>Medical Imaging Analysis System</p>
+    <p>Generated on {{ now|date:"F d, Y - h:i A" }}</p>
+  </div>
+
+  <!-- Patient Information -->
+  <div class="section">
+    <div class="section-title">Patient Information</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Full Name</div>
+        <div class="info-value">{{ classification.full_name }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Date of Scan</div>
+        <div class="info-value">{{ classification.date_uploaded|date:"F d, Y" }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Age</div>
+        <div class="info-value">{{ classification.age }} years</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Gender</div>
+        <div class="info-value">{{ classification.gender }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Processed By</div>
+        <div class="info-value">{{ classification.process_by.get_full_name }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Report ID</div>
+        <div class="info-value">#{{ classification.id|stringformat:"05d" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medical History -->
+  {% if classification.history %}
+  <div class="section">
+    <div class="section-title">Medical History</div>
+    <div class="notes-box">{{ classification.history }}</div>
+  </div>
+  {% endif %}
+
+  <!-- Classification Results -->
+  <div class="section">
+    <div class="section-title">Classification Results</div>
+    <div class="diagnosis-box">
+      <div class="diagnosis">{{ classification.predicted_class }}</div>
+      <div class="info-label">Confidence Score</div>
+      <div class="confidence">{{ classification.confidence|floatformat:1 }}%</div>
+    </div>
+  </div>
+
+  <!-- MRI Image -->
+  <div class="section">
+    <div class="section-title">MRI Scan Image</div>
+    <div class="mri-image">
+      <img src="{{ classification.image.url }}" alt="MRI Scan">
+    </div>
+  </div>
+
+  <!-- Clinical Notes -->
+  {% if classification.notes %}
+  <div class="section">
+    <div class="section-title">Clinical Notes</div>
+    <div class="notes-box">{{ classification.notes }}</div>
+  </div>
+  {% endif %}
+
+  <!-- Disclaimer -->
+  <div class="section">
+    <div class="section-title">Important Notice</div>
+    <div class="notes-box">
+      <strong>Disclaimer:</strong> This report is generated by an automated AI-based MRI classification system.
+      The results should be reviewed and validated by a qualified medical professional. This report is not intended
+      to be used as the sole basis for medical diagnosis or treatment decisions.
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>MRI Classifier System</strong></p>
+    <p>Confidential Medical Report - For Professional Use Only</p>
+    <p>© {{ now|date:"Y" }} MRI Classification System. All rights reserved.</p>
+  </div>
+
+  <script>
+    // Auto print when page loads (optional)
+    // window.onload = function() { window.print(); }
+  </script>
+</body>
+</html>

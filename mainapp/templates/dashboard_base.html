@@ -73,17 +73,25 @@
               <span class="text-xs">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
             </div>
           </label>
-          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li class="menu-title">
-              <span>{{ user.get_full_name }}</span>
-            </li>
-            <li><a href=""><i class="material-icons text-sm">dashboard</i> Dashboard</a></li>
-            <li><a href="#"><i class="material-icons text-sm">settings</i> Settings</a></li>
-            <li><a href="{% url 'logout_view' %}"class="text-error" onclick="confirmLogout(event)">
-                <i class="material-icons text-sm">logout</i>
-                Logout</a>
-            </li>
-          </ul>
+            <!-- In the top navbar dropdown menu -->
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li class="menu-title">
+                <span>{{ user.get_full_name }}</span>
+              </li>
+              <li>
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                  <i class="material-icons text-sm">dashboard</i>
+                  Dashboard
+                </a>
+              </li>
+              <li><a href="#"><i class="material-icons text-sm">settings</i> Settings</a></li>
+              <li>
+                <a href="{% url 'logout_view' %}" class="text-error" onclick="confirmLogout(event)">
+                  <i class="material-icons text-sm">logout</i>
+                  Logout
+                </a>
+              </li>
+            </ul>
         </div>
       </div>
     </div>
@@ -115,34 +123,35 @@
         </div>
       </li>
 
-      <li class="menu-title">
-        <span>Navigation</span>
-      </li>
-      <li>
-        <a href="">
-          <i class="material-icons">dashboard</i>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'app' %}" class="{% if request.resolver_match.url_name == 'app' %}active{% endif %}">
-          <img src="{% if request.resolver_match.url_name == 'app' %}{% static 'user/images/mri(1).png' %}{% else %}{% static 'user/images/mri.png' %}{% endif %}"
-               alt="MRI Logo" class="w-6 h-6">
-          MRI Classification
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <i class="material-icons">history</i>
-          History
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <i class="material-icons">assessment</i>
-          Reports
-        </a>
-      </li>
+        <!-- In the drawer sidebar - Navigation section -->
+        <li class="menu-title">
+          <span>Navigation</span>
+        </li>
+        <li>
+          <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="material-icons">dashboard</i>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'app' %}" class="{% if request.resolver_match.url_name == 'app' %}active{% endif %}">
+            <img src="{% if request.resolver_match.url_name == 'app' %}{% static 'user/images/mri(1).png' %}{% else %}{% static 'user/images/mri.png' %}{% endif %}"
+                 alt="MRI Logo" class="w-6 h-6">
+            MRI Classification
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'history' %}" class="{% if 'history' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="material-icons">history</i>
+            History
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="material-icons">assessment</i>
+            Reports
+          </a>
+        </li>
 
       <div class="divider"></div>
 
