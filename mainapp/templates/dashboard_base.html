@@ -5,7 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Dashboard{% endblock %}</title>
-
+    <link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'user/images/logo.png' %}">
   <!-- Tailwind + DaisyUI -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -60,7 +62,7 @@
       </div>
       <div class="flex-1">
         <a class="btn btn-ghost normal-case text-xl font-semibold">
-          <i class="material-icons mr-2">medical_services</i>
+          <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-6 h-6">
           MRI Classifier
         </a>
       </div>
@@ -124,7 +126,7 @@
       </li>
       <li>
         <a href="{% url 'mri_classification_view' %}" class="{% if request.resolver_match.url_name == 'mri_classification_view' %}active{% endif %}">
-          <i class="material-icons">medical_services</i>
+          <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-6 h-6">
           MRI Classification
         </a>
       </li>
