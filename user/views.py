@@ -26,6 +26,11 @@ def signup_view(request):
                 messages.error(request, "Employee ID already exists.")
                 return render(request, "signup.html", {"form": form})
 
+            # ✅ Check for duplicate email
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email is already registered.")
+                return render(request, "signup.html", {"form": form})
+
             # ✅ Create new user
             user = User.objects.create_user(
                 username=employee_id,  # Use employee_id as internal username

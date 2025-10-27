@@ -4,21 +4,8 @@
 
 {% block content %}
 <div class="max-w-[480px] w-full mx-auto mt-16">
-  <!-- <a href="#"><img
-    src="https://readymadeui.com/readymadeui.svg"
-    alt="logo"
-    class="w-40 mb-8 mx-auto block"
-  /></a> -->
   <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
     <h1 class="text-slate-900 text-center text-3xl font-semibold">Create an account</h1>
-
-    {% if messages %}
-      {% for message in messages %}
-        <div class="mt-4 p-3 rounded text-white {{ message.tags|default:'bg-red-500' }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
 
     <form method="POST" action="" class="mt-12 space-y-6" id="signupForm">
       {% csrf_token %}
@@ -36,7 +23,7 @@
         </div>
       </div>
 
-      <!-- First Name & Last Name side by side -->
+      <!-- First Name & Last Name -->
       <div class="flex gap-4">
         <div class="flex-1">
           <label class="text-slate-900 text-sm font-medium mb-2 block">First Name</label>
@@ -49,7 +36,6 @@
             </svg>
           </div>
         </div>
-
         <div class="flex-1">
           <label class="text-slate-900 text-sm font-medium mb-2 block">Last Name</label>
           <div class="relative flex items-center">
@@ -144,9 +130,10 @@
       </div>
 
       <div class="!mt-12">
-        <button type="submit"
+        <button type="submit" id="signupBtn"
           class="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-          Sign up
+          <span id="btnText">Sign up</span>
+            <span id="btnSpinner" class="hidden ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
         </button>
       </div>
 
@@ -160,25 +147,32 @@
   </div>
 </div>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Show SweetAlert2 for Django messages
+{% if messages %}
+  {% for message in messages %}
+    {% if 'error' in message.tags %}
+      Swal.fire({ icon: 'error', title: 'Oops...', text: '{{ message|escapejs }}' });
+    {% elif 'success' in message.tags %}
+      Swal.fire({ icon: 'success', title: 'Success', text: '{{ message|escapejs }}' });
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+// Password toggle
 function togglePassword(inputId, buttonElement) {
   const input = document.getElementById(inputId);
   if (!input) return;
-
   const isPassword = input.type === 'password';
   input.type = isPassword ? 'text' : 'password';
-
   const svg = buttonElement.querySelector('svg');
   if (svg) {
     if (isPassword) {
-      svg.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      `;
+      svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
     } else {
-      svg.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-      `;
+      svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />`;
     }
   }
   input.focus();
@@ -192,31 +186,23 @@ const matchError = document.getElementById('password-match-error');
 function updateRequirement(id, isValid) {
   const req = document.getElementById(id);
   const svg = req.querySelector('svg');
-
   if (isValid) {
     svg.classList.remove('text-gray-400');
     svg.classList.add('text-green-500');
-    svg.innerHTML = `
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    `;
+    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />`;
   } else {
     svg.classList.remove('text-green-500');
     svg.classList.add('text-gray-400');
-    svg.innerHTML = `
-      <circle cx="12" cy="12" r="10" stroke-width="2"/>
-    `;
+    svg.innerHTML = `<circle cx="12" cy="12" r="10" stroke-width="2"/>`;
   }
 }
 
 password1.addEventListener('input', function() {
   const value = this.value;
-
   updateRequirement('req-length', value.length >= 8);
   updateRequirement('req-number', /\d/.test(value));
   updateRequirement('req-lowercase', /[a-z]/.test(value));
   updateRequirement('req-uppercase', /[A-Z]/.test(value));
-
-  // Check password match
   if (password2.value) {
     if (value === password2.value) {
       password2.classList.remove('border-red-500');
@@ -242,14 +228,26 @@ password2.addEventListener('input', function() {
   }
 });
 
-// Form submission validation
-document.getElementById('signupForm').addEventListener('submit', function(e) {
+// Form submission + loading spinner
+const signupForm = document.getElementById('signupForm');
+const signupBtn = document.getElementById('signupBtn');
+
+signupForm.addEventListener('submit', function(e) {
   if (password1.value !== password2.value) {
     e.preventDefault();
     password2.classList.add('border-red-500');
     matchError.classList.remove('hidden');
     password2.focus();
+    return;
   }
+
+  // Disable button and show spinner
+  signupBtn.disabled = true;
+  signupBtn.innerHTML = `
+    <span id="btnText" class="hidden">Sign up</span>
+    <span id="btnSpinner" class="ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+  `;
 });
 </script>
+
 {% endblock %}
