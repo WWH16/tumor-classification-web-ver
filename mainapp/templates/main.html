@@ -4,37 +4,37 @@
 {% block title %}MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<!-- Material Design Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <div class="max-w-6xl mx-auto p-6">
-  <!-- Page Header -->
+  <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-medium text-gray-900 mb-2">MRI Tumor Classification</h1>
     <p class="text-base text-gray-500">Upload patient information and MRI scan for tumor detection</p>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Form Section -->
+    <!-- Form -->
     <div class="lg:col-span-2">
       <div class="card p-6 shadow-lg rounded-lg">
         <h2 class="text-xl font-medium text-gray-900 mb-6">Patient Information</h2>
 
-        <form id="patientForm" class="space-y-6">
+        <form id="patientForm" class="space-y-6" enctype="multipart/form-data">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Full Name <span class="text-red-500">*</span></label>
-            <input type="text" required placeholder="Enter patient's full name" class="input input-bordered w-full"/>
+            <input type="text" name="full_name" required placeholder="Enter patient's full name" class="input input-bordered w-full"/>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Age <span class="text-red-500">*</span></label>
-              <input type="number" required placeholder="Age" min="1" max="120" class="input input-bordered w-full"/>
+              <input type="number" name="age" required placeholder="Age" min="1" max="120" class="input input-bordered w-full"/>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Gender <span class="text-red-500">*</span></label>
-              <select required class="select select-bordered w-full">
+              <select name="gender" required class="select select-bordered w-full">
                 <option value="" disabled selected>Select gender</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -45,19 +45,19 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Medical History <span class="text-gray-400">(Optional)</span></label>
-            <textarea placeholder="Enter relevant medical history..." rows="3" class="textarea textarea-bordered w-full"></textarea>
+            <textarea name="history" placeholder="Enter relevant medical history..." rows="3" class="textarea textarea-bordered w-full"></textarea>
           </div>
 
           <div class="divider">MRI Scan Upload</div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Upload MRI Image <span class="text-red-500">*</span></label>
-            <input type="file" class="file-input file-input-bordered w-full" id="mriUpload" accept="image/*" required/>
+            <input type="file" name="mri_image" class="file-input file-input-bordered w-full" id="mriUpload" accept="image/*" required/>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes <span class="text-gray-400">(Optional)</span></label>
-            <textarea placeholder="Any additional information..." rows="2" class="textarea textarea-bordered w-full"></textarea>
+            <textarea name="notes" placeholder="Any additional information..." rows="2" class="textarea textarea-bordered w-full"></textarea>
           </div>
 
           <div class="flex gap-4 pt-4">
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <!-- Right Sidebar -->
+    <!-- Sidebar -->
     <div class="lg:col-span-1 space-y-6">
       <div class="card p-5 shadow-lg rounded-lg">
         <h3 class="text-lg font-medium text-gray-900 mb-4">MRI Preview</h3>
@@ -89,28 +89,11 @@
           <p class="text-sm text-gray-700 leading-relaxed">Our AI model will detect if a tumor is present in the MRI scan. Results are for reference only and should be verified by a medical professional.</p>
         </div>
       </div>
-
-      <div class="card p-5 shadow-lg rounded-lg">
-        <div class="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p class="text-2xl font-bold text-gray-900">1,234</p>
-            <p class="text-sm text-gray-500 mt-1">Total Scans</p>
-          </div>
-          <div>
-            <p class="text-2xl font-bold text-blue-600">98.5%</p>
-            <p class="text-sm text-gray-500 mt-1">Accuracy</p>
-          </div>
-          <div>
-            <p class="text-2xl font-bold text-gray-900">2.3s</p>
-            <p class="text-sm text-gray-500 mt-1">Avg Time</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
 
-<!-- Modal for Result -->
+<!-- Modal -->
 <div id="resultModal" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
     <button onclick="closeModal()" class="btn btn-sm btn-ghost btn-circle absolute right-2 top-2">
@@ -136,14 +119,16 @@
       <p><strong>Gender:</strong> <span id="modalPatientGender">Male</span></p>
     </div>
 
-    <!-- MRI Image Preview -->
-    <div id="modalImagePreview" class="w-full bg-gray-100 rounded-lg flex items-center justify-center overflow-auto mb-4" style="max-height:400px;">
+    <div id="modalImagePreview" class="w-full bg-gray-100 rounded-lg flex items-center justify-center
+    overflow-auto mb-4" style="max-height:400px;">
       <span class="text-gray-400 text-sm">MRI Image Preview</span>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-3 mt-2">
       <button onclick="closeModal()" class="btn btn-outline flex-1">Close</button>
-      <button onclick="downloadReport()" class="btn btn-success flex-1">Download</button>
+      <button onclick="downloadReport()" class="btn btn-success flex-1">
+            <i class="material-icons">picture_as_pdf</i> Download
+      </button>
       <button onclick="printReport()" class="btn btn-outline flex-1">Print</button>
     </div>
 
@@ -152,87 +137,125 @@
 </div>
 
 <script>
-  // Image preview
-  const fileInput = document.getElementById('mriUpload');
-  const imagePreview = document.getElementById('imagePreview');
+const fileInput = document.getElementById('mriUpload');
+const imagePreview = document.getElementById('imagePreview');
+const form = document.getElementById('patientForm');
+const resultModal = document.getElementById('resultModal');
 
-  fileInput.addEventListener('change', e => {
+// Sidebar preview
+fileInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = e => imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="MRI Preview">`;
+    reader.onload = e => {
+        imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="MRI Preview">`;
+    };
     reader.readAsDataURL(file);
-  });
+});
 
-  // Modal controls
-  const form = document.getElementById('patientForm');
-  const resultModal = document.getElementById('resultModal');
+// Modal controls
+function openModal() { resultModal.classList.add('modal-open'); }
+function closeModal() { resultModal.classList.remove('modal-open'); }
 
-  function openModal() { resultModal.classList.add('modal-open'); }
-  function closeModal() { resultModal.classList.remove('modal-open'); }
-
-  form.addEventListener('submit', e => {
+// AJAX form submission
+form.addEventListener('submit', async e => {
     e.preventDefault();
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Processing...';
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-      fillModalReport();
-      openModal();
-    }, 1500);
-  });
+    const formData = new FormData(form);
+    const file = fileInput.files[0];
+    const imgSrc = file ? URL.createObjectURL(file) : '';
 
-  function fillModalReport() {
-    const name = form.querySelector('input[type="text"]').value;
-    const age = form.querySelector('input[type="number"]').value;
-    const gender = form.querySelector('select').value;
-    const history = form.querySelector('textarea').value || 'N/A';
-    const imgSrc = fileInput.files[0] ? URL.createObjectURL(fileInput.files[0]) : '';
-    const resultText = "Tumor Detected";
-    const confidence = 92;
+    try {
+        const response = await fetch("{% url 'mri_classification_view' %}", {
+            method: "POST",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            body: formData
+        });
+        const data = await response.json();
 
+        if (data.success) {
+            const result = data.result;
+            fillModalReport(
+                formData.get('full_name'),
+                formData.get('age'),
+                formData.get('gender'),
+                formData.get('history') || 'N/A',
+                result.predicted_class,
+                result.confidence.toFixed(2),
+                imgSrc
+            );
+            openModal();
+        } else {
+            alert("Failed to classify MRI. Try again.");
+        }
+    } catch(err) {
+        console.error(err);
+        alert("Error occurred while classifying MRI.");
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+function fillModalReport(name, age, gender, history, resultText, confidence, imgSrc) {
     document.getElementById('resultStatus').innerText = resultText;
     document.getElementById('resultConfidence').innerText = confidence + '%';
     document.getElementById('resultBar').value = confidence;
     document.getElementById('modalPatientName').innerText = name;
     document.getElementById('modalPatientAge').innerText = age;
     document.getElementById('modalPatientGender').innerText = gender;
-    document.getElementById('modalImagePreview').innerHTML = imgSrc ? `<img src="${imgSrc}" class="w-full h-full object-cover rounded-lg" />` : '<span class="text-gray-400 text-sm">MRI Image Preview</span>';
 
+    document.getElementById('modalImagePreview').innerHTML = imgSrc ?
+        `<img src="${imgSrc}" class="w-full h-full object-cover rounded-lg" />` :
+        '<span class="text-gray-400 text-sm">MRI Image Preview</span>';
+
+    // Original full-width styled HTML for print/pdf
     document.getElementById('reportContent').innerHTML = `
-      <h2 style="text-align:center;">MRI Tumor Classification Report</h2>
-      <hr>
-      <p><strong>Patient Name:</strong> ${name}</p>
-      <p><strong>Age:</strong> ${age}</p>
-      <p><strong>Gender:</strong> ${gender}</p>
-      <p><strong>Medical History:</strong> ${history}</p>
-      <hr>
-      <p><strong>Result:</strong> ${resultText}</p>
-      <p><strong>Confidence:</strong> ${confidence}%</p>
-      ${imgSrc ? `<img src="${imgSrc}" style="max-width:100%;border-radius:8px;margin-top:10px;" />` : ''}
-      <hr><p style="text-align:center;font-size:12px;color:#555;">*AI-assisted report. Consult a specialist for verification.*</p>
+        <h2 style="text-align:center;">MRI Tumor Classification Report</h2>
+        <hr>
+        <p><strong>Patient Name:</strong> ${name}</p>
+        <p><strong>Age:</strong> ${age}</p>
+        <p><strong>Gender:</strong> ${gender}</p>
+        <p><strong>Medical History:</strong> ${history}</p>
+        <hr>
+        <p><strong>Result:</strong> ${resultText}</p>
+        <p><strong>Confidence:</strong> ${confidence}%</p>
+        ${imgSrc ? `<img src="${imgSrc}" style="max-width:100%;border-radius:8px;margin-top:10px;" />` : ''}
+        <hr><p style="text-align:center;font-size:12px;color:#555;">*AI-assisted report. Consult a specialist for verification.*</p>
     `;
-  }
+}
 
-  function downloadReport() {
-    const blob = new Blob([document.getElementById('reportContent').innerHTML], {type: 'text/html'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'MRI_Tumor_Report.html';
-    link.click();
-  }
-
-  function printReport() {
-    const printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write('<html><head><title>MRI Tumor Report</title></head><body>');
-    printWindow.document.write(document.getElementById('reportContent').innerHTML);
+// Print function (previous full-width layout)
+function printReport() {
+    const reportHTML = document.getElementById('reportContent').innerHTML;
+    const printWindow = window.open('', '_blank', 'height=800,width=800');
+    printWindow.document.write('<html><head><title>MRI Tumor Report</title></head><body style="font-family:Arial, sans-serif; padding:20px;">');
+    printWindow.document.write(reportHTML);
     printWindow.document.write('</body></html>');
     printWindow.document.close();
+    printWindow.focus();
     printWindow.print();
-  }
+}
+
+// Download PDF with patient name
+async function downloadReport() {
+    const { jsPDF } = window.jspdf;
+    const reportContent = document.getElementById('reportContent');
+    const patientName = document.getElementById('modalPatientName').innerText || 'Patient';
+    const doc = new jsPDF('p', 'pt', 'a4');
+
+    await doc.html(reportContent, {
+        callback: function(doc) {
+            doc.save(`${patientName}_MRI_Report.pdf`);
+        },
+        x: 20,
+        y: 20,
+        html2canvas: { scale: 0.6 } // reduce scale to fit A4 better
+    });
+}
 </script>
 {% endblock %}

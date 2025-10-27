@@ -1,17 +1,11 @@
 import os
+import cv2
+import numpy as np
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-import numpy as np
-
-# Create your views here.
-
-def app(request):
-    return render(request, 'main.html')
 
 # Load model once
 MODEL_FILENAME = "brain_tumor_vgg16_model.h5"
@@ -20,6 +14,9 @@ model = load_model(MODEL_PATH)
 
 # Binary classification
 CLASS_LABELS = ['No Tumor', 'Tumor']
+
+def app(request):
+    return render(request, 'main.html')
 
 def mri_classification_view(request):
     if request.method == "POST" and request.FILES.get("mri_image"):
@@ -30,10 +27,11 @@ def mri_classification_view(request):
         temp_file_full_path = os.path.join(settings.MEDIA_ROOT, temp_path)
 
         try:
-            # Preprocess image
-            img = load_img(temp_file_full_path, target_size=(224, 224))
-            img_array = img_to_array(img)
-            img_array = np.expand_dims(img_array, axis=0) / 255.0
+            # Preprocess image for model (BGR 0-255, same as GUI)
+            img = cv2.imread(temp_file_full_path)  # Read BGR
+            img = cv2.resize(img, (224, 224))
+            img_array = np.expand_dims(img, axis=0)  # Shape (1,224,224,3)
+            # Note: do NOT divide by 255
 
             # Predict
             preds = model.predict(img_array)[0]
@@ -53,7 +51,7 @@ def mri_classification_view(request):
             return JsonResponse({"success": True, "result": result})
 
         finally:
-            pass  # Optional: delete temp files later
+            pass  # Optionally delete temp files later
 
     # GET request
     return render(request, "mri_classification.html")
