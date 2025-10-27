@@ -4,81 +4,36 @@
 {% block title %}MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<!-- Add Material Design CSS and Fonts -->
+<!-- Material Design Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-  }
-  .mdc-button {
-    background-color: #424242;
-    color: white;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.0892857143em;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-                0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-                0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .mdc-button:hover { box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12); }
-  .mdc-button--outlined { background-color: transparent; border: 1px solid #424242; color: #424242; }
-  .mdc-text-field { border-radius: 4px 4px 0 0; border-bottom: 1px solid #757575; padding: 16px 12px 8px; font-size: 16px; transition: border-color 0.2s; }
-  .mdc-text-field:focus { border-bottom: 2px solid #757575; outline: none; }
-  .mdc-card { border-radius: 8px; box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); background-color: white; }
-  .mdc-chip { background-color: #e0e0e0; color: #424242; border-radius: 16px; padding: 4px 12px; font-size: 14px; font-weight: 500; }
-  .mdc-linear-progress { height: 4px; background-color: #e0e0e0; border-radius: 2px; }
-  .mdc-linear-progress__bar { background-color: #757575; border-radius: 2px; }
-  .secondary-bg { background-color: #f5f5f5; }
-  .secondary-text { color: #757575; }
-  .muted-blue { color: #1976d2; }
-  .muted-blue-bg { background-color: #e3f2fd; }
-  .muted-blue-border { border-color: #1976d2; }
-  .success-bg { background-color: #e8f5e8; }
-  .success-text { color: #2e7d32; }
-  .warning-bg { background-color: #fff3e0; }
-  .warning-text { color: #ef6c00; }
-</style>
 
 <div class="max-w-6xl mx-auto p-6">
   <div class="mb-8">
     <h1 class="text-3xl font-medium text-gray-900 mb-2">MRI Tumor Classification</h1>
-    <p class="text-base secondary-text">Upload patient information and MRI scan for tumor detection</p>
+    <p class="text-base text-gray-500">Upload patient information and MRI scan for tumor detection</p>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Form Section -->
     <div class="lg:col-span-2">
-      <div class="mdc-card p-6">
+      <div class="card p-6 shadow-lg rounded-lg">
         <h2 class="text-xl font-medium text-gray-900 mb-6">Patient Information</h2>
 
         <form id="patientForm" class="space-y-6">
-          <!-- Full Name -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Full Name <span class="text-red-500">*</span>
-            </label>
-            <input type="text" required placeholder="Enter patient's full name" class="mdc-text-field w-full"/>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name <span class="text-red-500">*</span></label>
+            <input type="text" required placeholder="Enter patient's full name" class="input input-bordered w-full"/>
           </div>
 
-          <!-- Age & Gender -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Age <span class="text-red-500">*</span>
-              </label>
-              <input type="number" required placeholder="Age" min="1" max="120" class="mdc-text-field w-full"/>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Age <span class="text-red-500">*</span></label>
+              <input type="number" required placeholder="Age" min="1" max="120" class="input input-bordered w-full"/>
             </div>
-
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Gender <span class="text-red-500">*</span>
-              </label>
-              <select required class="mdc-text-field w-full bg-white">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gender <span class="text-red-500">*</span></label>
+              <select required class="select select-bordered w-full">
                 <option value="" disabled selected>Select gender</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -87,55 +42,27 @@
             </div>
           </div>
 
-          <!-- Medical History -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Medical History <span class="secondary-text font-normal">(Optional)</span>
-            </label>
-            <textarea placeholder="Enter relevant medical history..." rows="3" class="mdc-text-field w-full resize-none"></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Medical History <span class="text-gray-400">(Optional)</span></label>
+            <textarea placeholder="Enter relevant medical history..." rows="3" class="textarea textarea-bordered w-full"></textarea>
           </div>
 
-          <!-- Divider -->
-          <div class="relative py-4">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-300"></div>
-            </div>
-            <div class="relative flex justify-center">
-              <span class="px-4 bg-white text-sm font-medium secondary-text">MRI Scan Upload</span>
-            </div>
-          </div>
+          <div class="divider">MRI Scan Upload</div>
 
-          <!-- File Upload -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Upload MRI Image <span class="text-red-500">*</span>
-            </label>
-            <div class="relative">
-              <input type="file" class="hidden" id="mriUpload" accept="image/*" required/>
-              <label for="mriUpload" class="flex items-center justify-center w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:secondary-bg transition">
-                <div class="text-center">
-                  <i class="material-icons text-4xl secondary-text mb-2">cloud_upload</i>
-                  <p class="text-sm text-gray-600 font-medium">Click to upload or drag and drop</p>
-                  <p class="text-xs secondary-text mt-1">JPG, PNG or DICOM (max. 10MB)</p>
-                </div>
-              </label>
-            </div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Upload MRI Image <span class="text-red-500">*</span></label>
+            <input type="file" class="file-input file-input-bordered w-full" id="mriUpload" accept="image/*" required/>
           </div>
 
-          <!-- Additional Notes -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Additional Notes <span class="secondary-text font-normal">(Optional)</span>
-            </label>
-            <textarea placeholder="Any additional information..." rows="2" class="mdc-text-field w-full resize-none"></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes <span class="text-gray-400">(Optional)</span></label>
+            <textarea placeholder="Any additional information..." rows="2" class="textarea textarea-bordered w-full"></textarea>
           </div>
 
-          <!-- Action Buttons -->
           <div class="flex gap-4 pt-4">
-            <button type="reset" class="mdc-button mdc-button--outlined">Clear Form</button>
-            <button type="submit" class="mdc-button flex-1 flex items-center justify-center gap-2">
-              <i class="material-icons">send</i>
-              Detect Tumor
+            <button type="reset" class="btn btn-outline">Clear Form</button>
+            <button type="submit" class="btn btn-primary flex-1 flex items-center justify-center gap-2">
+              <i class="material-icons">send</i> Detect Tumor
             </button>
           </div>
         </form>
@@ -144,42 +71,37 @@
 
     <!-- Right Sidebar -->
     <div class="lg:col-span-1 space-y-6">
-      <!-- Image Preview -->
-      <div class="mdc-card p-5">
+      <div class="card p-5 shadow-lg rounded-lg">
         <h3 class="text-lg font-medium text-gray-900 mb-4">MRI Preview</h3>
-        <div id="imagePreview" class="aspect-square secondary-bg rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center">
+        <div id="imagePreview" class="aspect-square bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
           <div class="text-center">
-            <i class="material-icons text-5xl secondary-text mb-2">image</i>
-            <p class="text-sm secondary-text">No image uploaded</p>
+            <i class="material-icons text-5xl text-gray-400 mb-2">image</i>
+            <p class="text-sm text-gray-400">No image uploaded</p>
           </div>
         </div>
       </div>
 
-      <!-- Info Alert -->
-      <div class="mdc-card p-4 muted-blue-bg muted-blue-border border">
-        <div class="flex gap-3">
-          <i class="material-icons muted-blue flex-shrink-0 mt-1">info</i>
-          <div>
-            <h3 class="font-medium text-sm text-gray-900 mb-1">AI Classification</h3>
-            <p class="text-sm text-gray-700 leading-relaxed">Our AI model will detect if a tumor is present in the MRI scan. Results are for reference only and should be verified by a medical professional.</p>
-          </div>
+      <div class="card p-4 bg-blue-100 border border-blue-500 flex gap-3">
+        <i class="material-icons text-blue-600 mt-1">info</i>
+        <div>
+          <h3 class="font-medium text-sm text-gray-900 mb-1">AI Classification</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">Our AI model will detect if a tumor is present in the MRI scan. Results are for reference only and should be verified by a medical professional.</p>
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="mdc-card p-5">
+      <div class="card p-5 shadow-lg rounded-lg">
         <div class="grid grid-cols-3 gap-4 text-center">
           <div>
             <p class="text-2xl font-bold text-gray-900">1,234</p>
-            <p class="text-sm secondary-text mt-1">Total Scans</p>
+            <p class="text-sm text-gray-500 mt-1">Total Scans</p>
           </div>
           <div>
-            <p class="text-2xl font-bold muted-blue">98.5%</p>
-            <p class="text-sm secondary-text mt-1">Accuracy</p>
+            <p class="text-2xl font-bold text-blue-600">98.5%</p>
+            <p class="text-sm text-gray-500 mt-1">Accuracy</p>
           </div>
           <div>
             <p class="text-2xl font-bold text-gray-900">2.3s</p>
-            <p class="text-sm secondary-text mt-1">Avg Time</p>
+            <p class="text-sm text-gray-500 mt-1">Avg Time</p>
           </div>
         </div>
       </div>
@@ -188,90 +110,76 @@
 </div>
 
 <!-- Result Modal -->
-<dialog id="resultModal" class="modal">
-  <div class="modal-box max-w-2xl rounded-lg mdc-card p-6">
-    <h3 class="text-2xl font-medium text-gray-900 mb-6">Classification Result</h3>
+<div id="resultModal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box max-w-5xl w-full p-6">
+    <button onclick="closeModal()" class="btn btn-sm btn-ghost btn-circle absolute right-2 top-2">
+      <span class="material-icons">close</span>
+    </button>
+    <h2 class="text-3xl font-semibold text-center mb-4">MRI Classification Result</h2>
 
-    <div class="space-y-5">
-      <!-- Success Message -->
-      <div class="success-bg border border-green-200 rounded-lg p-4 flex items-center gap-3">
-        <i class="material-icons success-text flex-shrink-0">check_circle</i>
-        <span class="text-sm success-text font-medium">Analysis completed successfully</span>
-      </div>
-
-      <!-- Result Card -->
-      <div class="mdc-card p-5">
-        <h4 class="font-medium text-lg text-gray-900 mb-4">Tumor Detection</h4>
-        <div class="mdc-chip mb-5" id="resultText">Tumor Detected</div>
-        <div class="space-y-5">
-          <div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="font-medium text-gray-700">Confidence Level</span>
-              <span class="font-semibold text-gray-900" id="resultConfidence">94.7%</span>
-            </div>
-            <div class="mdc-linear-progress">
-              <div class="mdc-linear-progress__bar" id="resultBar" style="width: 94.7%"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Warning -->
-      <div class="warning-bg border border-orange-200 rounded-lg p-4 flex items-start gap-3">
-        <i class="material-icons warning-text flex-shrink-0 mt-1">warning</i>
-        <span class="text-sm warning-text leading-relaxed">Please consult with a specialist for proper diagnosis and treatment plan.</span>
-      </div>
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <span id="resultIcon" class="material-icons text-green-600 text-4xl">check_circle</span>
+      <span id="resultStatus" class="text-xl font-medium">Tumor Detected</span>
     </div>
 
-    <!-- Hidden Report for Download/Print -->
-    <div id="reportContent" class="hidden p-6" style="width:800px;"></div>
-
-    <div class="flex gap-4 mt-6">
-      <button onclick="resultModal.close()" class="mdc-button mdc-button--outlined">Close</button>
-      <button onclick="downloadReport()" class="mdc-button flex-1">Download Report</button>
-      <button onclick="printReport()" class="mdc-button mdc-button--outlined flex-1">Print Report</button>
+    <div class="mb-4">
+      <p class="text-sm text-gray-600 mb-1">Confidence</p>
+      <progress class="progress w-full" id="resultBar" value="90" max="100"></progress>
+      <p id="resultConfidence" class="text-right text-sm text-gray-700 mt-1">90%</p>
     </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-gray-700 text-sm mb-4">
+      <p><strong>Patient:</strong> <span id="modalPatientName">John Doe</span></p>
+      <p><strong>Age:</strong> <span id="modalPatientAge">35</span></p>
+      <p><strong>Gender:</strong> <span id="modalPatientGender">Male</span></p>
+    </div>
+
+    <div id="modalImagePreview" class="w-full h-[500px] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden mb-4">
+      <span class="text-gray-400 text-sm">MRI Image Preview</span>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mt-2">
+      <button onclick="closeModal()" class="btn btn-outline flex-1">Close</button>
+      <button onclick="downloadReport()" class="btn btn-success flex-1">Download</button>
+      <button onclick="printReport()" class="btn btn-outline flex-1">Print</button>
+    </div>
+
+    <div id="reportContent" class="hidden"></div>
   </div>
-  <form method="dialog" class="modal-backdrop"><button>close</button></form>
-</dialog>
+</div>
 
 <script>
   // Image preview
   const fileInput = document.getElementById('mriUpload');
   const imagePreview = document.getElementById('imagePreview');
 
-  fileInput.addEventListener('change', function(e) {
+  fileInput.addEventListener('change', e => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="MRI Preview">`;
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg" alt="MRI Preview">`;
+    reader.readAsDataURL(file);
   });
 
-  // Form submission
+  // Modal controls
   const form = document.getElementById('patientForm');
   const resultModal = document.getElementById('resultModal');
+  function openModal() { resultModal.classList.add('modal-open'); }
+  function closeModal() { resultModal.classList.remove('modal-open'); }
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> <span class="text-sm">Processing...</span>';
+    submitBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Processing...';
     submitBtn.disabled = true;
 
     setTimeout(() => {
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
-
-      // Fill report content dynamically
       fillReport();
-
-      resultModal.showModal();
-    }, 2000);
+      openModal();
+    }, 1500);
   });
 
   function fillReport() {
@@ -280,29 +188,30 @@
     const gender = form.querySelector('select').value;
     const history = form.querySelector('textarea').value || 'N/A';
     const imgSrc = fileInput.files[0] ? URL.createObjectURL(fileInput.files[0]) : '';
+    const resultText = "Tumor Detected";
+    const confidence = 92;
 
-    const resultText = document.getElementById('resultText').innerText;
-    const resultConfidence = document.getElementById('resultConfidence').innerText;
+    document.getElementById('resultStatus').innerText = resultText;
+    document.getElementById('resultConfidence').innerText = confidence + '%';
+    document.getElementById('resultBar').value = confidence;
+    document.getElementById('modalPatientName').innerText = name;
+    document.getElementById('modalPatientAge').innerText = age;
+    document.getElementById('modalPatientGender').innerText = gender;
+    document.getElementById('modalImagePreview').innerHTML = imgSrc ? `<img src="${imgSrc}" class="w-full h-full object-cover rounded-lg" />` : '<span class="text-gray-400 text-sm">MRI Image Preview</span>';
 
-    const report = `
+    document.getElementById('reportContent').innerHTML = `
       <h2 style="text-align:center;">MRI Tumor Classification Report</h2>
       <hr>
-      <div>
-        <p><strong>Patient Name:</strong> ${name}</p>
-        <p><strong>Age:</strong> ${age}</p>
-        <p><strong>Gender:</strong> ${gender}</p>
-        <p><strong>Medical History:</strong> ${history}</p>
-      </div>
+      <p><strong>Patient Name:</strong> ${name}</p>
+      <p><strong>Age:</strong> ${age}</p>
+      <p><strong>Gender:</strong> ${gender}</p>
+      <p><strong>Medical History:</strong> ${history}</p>
       <hr>
-      <div>
-        <p><strong>Result:</strong> ${resultText}</p>
-        <p><strong>Confidence:</strong> ${resultConfidence}</p>
-      </div>
-      ${imgSrc ? `<div style="margin-top:10px;text-align:center;"><img src="${imgSrc}" style="max-width:100%;border:1px solid #ccc;border-radius:8px;" /></div>` : ''}
-      <hr>
-      <p style="text-align:center;font-size:12px;color:#555;">*This is an AI-assisted report. Consult a specialist for verification.*</p>
+      <p><strong>Result:</strong> ${resultText}</p>
+      <p><strong>Confidence:</strong> ${confidence}%</p>
+      ${imgSrc ? `<img src="${imgSrc}" style="max-width:100%;border-radius:8px;margin-top:10px;" />` : ''}
+      <hr><p style="text-align:center;font-size:12px;color:#555;">*AI-assisted report. Consult a specialist for verification.*</p>
     `;
-    document.getElementById('reportContent').innerHTML = report;
   }
 
   function downloadReport() {
@@ -323,5 +232,3 @@
   }
 </script>
 {% endblock %}
-
-
