@@ -5,194 +5,267 @@
 
 {% block content %}
 <div class="space-y-6">
+
   <!-- Welcome Section -->
-  <div class="card bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-3xl">Welcome back, {{ user.first_name }}!</h2>
-      <p class="text-blue-100">Here's your MRI classification activity overview</p>
+  <div class="card bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-sm rounded-md">
+    <div class="card-body p-6">
+      <h2 class="text-3xl font-medium">Welcome back, {{ user.first_name }}!</h2>
+      <p class="text-blue-100 mt-2">Here's your MRI classification overview</p>
     </div>
   </div>
 
   <!-- Statistics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Total Classifications -->
-    <div class="stats shadow">
-      <div class="stat">
-        <div class="stat-figure text-primary">
-          <i class="material-icons text-5xl">science</i>
-        </div>
-        <div class="stat-title">Total Classifications</div>
-        <div class="stat-value text-primary">{{ total_classifications }}</div>
-        <div class="stat-desc">All time records</div>
+    <div class="card shadow-sm rounded-md bg-white p-4 flex items-center gap-4">
+      <div class="text-blue-600 text-4xl">
+        <i class="material-icons">science</i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Total Classifications</div>
+        <div class="text-xl font-semibold text-gray-800">{{ total_classifications }}</div>
+        <div class="text-xs text-gray-400">All time</div>
       </div>
     </div>
 
     <!-- This Month -->
-    <div class="stats shadow">
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-          <i class="material-icons text-5xl">today</i>
-        </div>
-        <div class="stat-title">This Month</div>
-        <div class="stat-value text-secondary">{{ month_classifications }}</div>
-        <div class="stat-desc">{{ month_change }}% from last month</div>
+    <div class="card shadow-sm rounded-md bg-white p-4 flex items-center gap-4">
+      <div class="text-green-600 text-4xl">
+        <i class="material-icons">today</i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">This Month</div>
+        <div class="text-xl font-semibold text-gray-800">{{ month_classifications }}</div>
+        <div class="text-xs text-gray-400">{{ month_change }}% from last month</div>
       </div>
     </div>
 
-    <!-- Average Confidence -->
-    <div class="stats shadow">
-      <div class="stat">
-        <div class="stat-figure text-accent">
-          <i class="material-icons text-5xl">trending_up</i>
-        </div>
-        <div class="stat-title">Avg Confidence</div>
-        <div class="stat-value text-accent">{{ avg_confidence|floatformat:1 }}%</div>
-        <div class="stat-desc">Classification accuracy</div>
+    <!-- Avg Confidence -->
+    <div class="card shadow-sm rounded-md bg-white p-4 flex items-center gap-4">
+      <div class="text-purple-600 text-4xl">
+        <i class="material-icons">trending_up</i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Avg Confidence</div>
+        <div class="text-xl font-semibold text-gray-800">{{ avg_confidence|floatformat:1 }}%</div>
+        <div class="text-xs text-gray-400">Classification accuracy</div>
       </div>
     </div>
 
     <!-- This Week -->
-    <div class="stats shadow">
-      <div class="stat">
-        <div class="stat-figure text-info">
-          <i class="material-icons text-5xl">calendar_today</i>
-        </div>
-        <div class="stat-title">This Week</div>
-        <div class="stat-value text-info">{{ week_classifications }}</div>
-        <div class="stat-desc">Last 7 days</div>
+    <div class="card shadow-sm rounded-md bg-white p-4 flex items-center gap-4">
+      <div class="text-teal-600 text-4xl">
+        <i class="material-icons">calendar_today</i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">This Week</div>
+        <div class="text-xl font-semibold text-gray-800">{{ week_classifications }}</div>
+        <div class="text-xs text-gray-400">Last 7 days</div>
       </div>
     </div>
   </div>
 
-  <!-- Charts and Recent Activity -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
     <!-- Diagnosis Distribution -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">
-          <i class="material-icons">pie_chart</i>
-          Diagnosis Distribution
-        </h2>
-        <div class="divider"></div>
-        {% if diagnosis_stats %}
-          <div class="space-y-3">
-            {% for stat in diagnosis_stats %}
-            <div>
-              <div class="flex justify-between mb-1">
-                <span class="text-sm font-medium">{{ stat.predicted_class }}</span>
-                <span class="text-sm text-base-content/60">{{ stat.count }} ({{ stat.percentage|floatformat:1 }}%)</span>
-              </div>
-              <progress class="progress progress-primary w-full" value="{{ stat.percentage }}" max="100"></progress>
-            </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <div class="text-center py-8">
-            <i class="material-icons text-6xl text-base-content/20">insights</i>
-            <p class="text-base-content/60 mt-2">No data available yet</p>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- Recent Classifications -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <div class="flex justify-between items-center">
-          <h2 class="card-title">
-            <i class="material-icons">history</i>
-            Recent Classifications
-          </h2>
-          <a href="{% url 'history' %}" class="btn btn-ghost btn-sm">View All</a>
-        </div>
-        <div class="divider"></div>
-        {% if recent_classifications %}
-          <div class="space-y-3">
-            {% for classification in recent_classifications %}
-            <a href="{% url 'history_detail' classification.pk %}"
-               class="flex items-center gap-3 p-3 hover:bg-base-200 rounded-lg transition">
-              <div class="avatar placeholder">
-                <div class="bg-primary text-primary-content rounded-full w-12">
-                  <span class="text-sm">{{ classification.full_name.0|upper }}</span>
-                </div>
-              </div>
-              <div class="flex-1">
-                <div class="font-medium">{{ classification.full_name }}</div>
-                <div class="text-sm text-base-content/60">
-                  {{ classification.predicted_class }} - {{ classification.confidence|floatformat:0 }}%
-                </div>
-              </div>
-              <div class="text-xs text-base-content/60">
-                {{ classification.date_uploaded|timesince }} ago
-              </div>
-            </a>
-            {% endfor %}
-          </div>
-        {% else %}
-          <div class="text-center py-8">
-            <i class="material-icons text-6xl text-base-content/20">folder_open</i>
-            <p class="text-base-content/60 mt-2">No recent classifications</p>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-
-  <!-- Activity Timeline -->
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">
-        <i class="material-icons">timeline</i>
-        Activity Timeline (Last 30 Days)
+    <div class="card shadow-sm rounded-md bg-white p-4">
+      <h2 class="text-lg font-medium flex items-center gap-2">
+        <i class="material-icons text-gray-700">pie_chart</i>
+        Diagnosis Distribution
       </h2>
-      <div class="divider"></div>
-      {% if daily_activity %}
-        <div class="overflow-x-auto">
-          <div class="flex gap-1 items-end h-48">
-            {% for day in daily_activity %}
-            <div class="tooltip flex-1" data-tip="{{ day.date|date:'M d' }}: {{ day.count }} classification{{ day.count|pluralize }}">
-              <div class="bg-primary hover:bg-primary-focus rounded-t transition-all cursor-pointer"
-                   style="height: {{ day.height }}%; min-height: 2px;"></div>
-              <div class="text-xs text-center mt-2 text-base-content/60">{{ day.date|date:"d" }}</div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        <div class="text-center text-sm text-base-content/60 mt-4">
-          Hover over bars to see details
-        </div>
+      <div class="divider my-2"></div>
+      {% if diagnosis_stats %}
+        <canvas id="diagnosisChart" class="w-full h-64"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+        <script>
+          const ctx = document.getElementById('diagnosisChart').getContext('2d');
+
+          const labels = [{% for stat in diagnosis_stats %}"{{ stat.predicted_class }}",{% endfor %}];
+          const data = [{% for stat in diagnosis_stats %}{{ stat.count }},{% endfor %}];
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Classifications',
+                data: data,
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderRadius: 4,
+                barPercentage: 0.6
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ctx.dataset.label + ": " + ctx.raw } },
+                datalabels: {
+                  anchor: 'end',
+                  align: 'end',
+                  color: '#374151',
+                  font: { weight: 'bold' },
+                  formatter: value => value
+                }
+              },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: '#4B5563' } },
+                y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { color: '#4B5563', stepSize: 1 } }
+              }
+            },
+            plugins: [ChartDataLabels]
+          });
+        </script>
       {% else %}
-        <div class="text-center py-8">
-          <i class="material-icons text-6xl text-base-content/20">show_chart</i>
-          <p class="text-base-content/60 mt-2">No activity data available</p>
+        <div class="text-center py-8 text-gray-400">
+          <i class="material-icons text-6xl">insights</i>
+          <p class="mt-2">No data available</p>
         </div>
       {% endif %}
     </div>
+
+    <!-- Recent Classifications -->
+    <div class="card shadow-sm rounded-md bg-white p-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-medium flex items-center gap-2">
+          <i class="material-icons text-gray-700">history</i>
+          Recent Classifications
+        </h2>
+        <a href="{% url 'history' %}" class="text-blue-600 text-sm hover:underline">View All</a>
+      </div>
+      <div class="divider my-2"></div>
+      {% if recent_classifications %}
+        <div class="space-y-2">
+          {% for classification in recent_classifications %}
+          <a href="{% url 'history_detail' classification.pk %}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-md transition">
+            <div class="bg-blue-600 text-white w-10 h-10 flex items-center justify-center rounded-sm">
+              {{ classification.full_name.0|upper }}
+            </div>
+            <div class="flex-1">
+              <div class="text-gray-800 font-medium">{{ classification.full_name }}</div>
+              <div class="text-gray-500 text-sm">{{ classification.predicted_class }} - {{ classification.confidence|floatformat:0 }}%</div>
+            </div>
+            <div class="text-xs text-gray-400">{{ classification.date_uploaded|timesince }} ago</div>
+          </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-8 text-gray-400">
+          <i class="material-icons text-6xl">folder_open</i>
+          <p class="mt-2">No recent classifications</p>
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 
+<!-- Activity Timeline as Line Chart -->
+<div class="card shadow-sm rounded-md bg-white p-4">
+  <h2 class="text-lg font-medium flex items-center gap-2">
+    <i class="material-icons text-gray-700">timeline</i>
+    Activity Timeline (Last 30 Days)
+  </h2>
+  <div class="divider my-2"></div>
+  {% if daily_activity %}
+    <canvas id="activityLineChart" class="w-full h-64"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script>
+      const lineCtx = document.getElementById('activityLineChart').getContext('2d');
+
+      const activityLabels = [{% for day in daily_activity %}"{{ day.date|date:'M d' }}",{% endfor %}];
+      const activityData = [{% for day in daily_activity %}{{ day.count }},{% endfor %}];
+
+    new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: activityLabels,
+        datasets: [{
+          label: 'Classifications',
+          data: activityData,
+          fill: false,
+          borderColor: 'rgba(16, 185, 129, 0.8)',
+          backgroundColor: 'rgba(16, 185, 129, 0.8)',
+          tension: 0.3,
+          pointRadius: 5,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgba(16, 185, 129, 0.8)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) { return context.dataset.label + ": " + context.raw; }
+            }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            color: '#374151',
+            font: { weight: 'bold' },
+            formatter: value => value
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: '#4B5563',
+              maxRotation: 0,
+              autoSkip: true,       // auto skip to avoid label clutter
+              maxTicksLimit: 10     // show maximum 10 labels
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#E5E7EB' },
+            ticks: {
+              color: '#4B5563',
+              stepSize: 2           // interval of 1 on Y-axis
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+
+    </script>
+  {% else %}
+    <div class="text-center py-8 text-gray-400">
+      <i class="material-icons text-6xl">show_chart</i>
+      <p class="mt-2">No activity data available</p>
+    </div>
+  {% endif %}
+</div>
+
+
   <!-- Quick Actions -->
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">
-        <i class="material-icons">bolt</i>
-        Quick Actions
-      </h2>
-      <div class="divider"></div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="{% url 'app' %}" class="btn btn-primary btn-lg">
-          <i class="material-icons">add_circle</i>
-          New Classification
-        </a>
-        <a href="{% url 'history' %}" class="btn btn-outline btn-lg">
-          <i class="material-icons">history</i>
-          View History
-        </a>
-        <a href="{% url 'history_export' %}" class="btn btn-outline btn-lg">
-          <i class="material-icons">download</i>
-          Export Data
-        </a>
-      </div>
+  <div class="card shadow-sm rounded-md bg-white p-4">
+    <h2 class="text-lg font-medium flex items-center gap-2">
+      <i class="material-icons text-gray-700">bolt</i>
+      Quick Actions
+    </h2>
+    <div class="divider my-2"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <a href="{% url 'app' %}" class="btn btn-primary w-full flex items-center justify-center gap-2 rounded-sm shadow-sm">
+        <i class="material-icons">add_circle</i>
+        New Classification
+      </a>
+      <a href="{% url 'history' %}" class="btn btn-outline w-full flex items-center justify-center gap-2 rounded-sm shadow-sm">
+        <i class="material-icons">history</i>
+        View History
+      </a>
+      <a href="{% url 'history_export' %}" class="btn btn-outline w-full flex items-center justify-center gap-2 rounded-sm shadow-sm">
+        <i class="material-icons">download</i>
+        Export Data
+      </a>
     </div>
   </div>
+
 </div>
 {% endblock %}
