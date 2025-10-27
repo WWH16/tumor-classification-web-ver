@@ -125,8 +125,9 @@
         </a>
       </li>
       <li>
-        <a href="{% url 'mri_classification_view' %}" class="{% if request.resolver_match.url_name == 'mri_classification_view' %}active{% endif %}">
-          <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-6 h-6">
+        <a href="{% url 'app' %}" class="{% if request.resolver_match.url_name == 'app' %}active{% endif %}">
+          <img src="{% if request.resolver_match.url_name == 'app' %}{% static 'user/images/mri(1).png' %}{% else %}{% static 'user/images/mri.png' %}{% endif %}"
+               alt="MRI Logo" class="w-6 h-6">
           MRI Classification
         </a>
       </li>
