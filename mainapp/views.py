@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from pyexpat.errors import messages
 from tensorflow.keras.models import load_model
 from .models import MRIClassification
+from django.contrib import messages
 
 # Load the trained model once at startup
 MODEL_FILENAME = "brain_tumor_vgg16_model.h5"
@@ -263,10 +264,10 @@ def history_print_view(request, pk):
         'classification': classification,
         'now': timezone.now()
     }
-    return render(request, 'user/history_print.html', context)
+    return render(request, 'history_print.html', context)
 
 
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Q
 from datetime import datetime, timedelta
 from django.utils import timezone
 
