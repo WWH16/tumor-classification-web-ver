@@ -5,11 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Dashboard{% endblock %}</title>
-  <!-- Tailwind + DaisyUI CDN -->
+
+  <!-- Tailwind + DaisyUI -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
-<style>
-    /* Smooth transition for width and text */
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* Sidebar transition and behavior */
     .sidebar {
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
@@ -17,7 +21,6 @@
     .sidebar ul li a {
       transition: all 0.3s ease;
     }
-    /* Center icons when collapsed */
     .sidebar.collapsed ul li a {
       justify-content: center;
     }
@@ -30,107 +33,137 @@
     .sidebar.collapsed .sidebar-text {
       opacity: 0;
     }
-    /* Ensure drawer toggle button stays at bottom */
-    .drawer-side .toggle-container {
-      margin-top: auto;
-      padding: 1rem;
-    }
-    /* Remove hover effect from toggle button */
-    #toggle-btn {
-      background: transparent !important;
-    }
-    #toggle-btn:hover {
-      background: transparent !important;
-    }
-    #toggle-btn svg {
-      transition: transform 0.3s ease;
-    }
-    #toggle-btn:hover svg {
-      transform: scale(1.1);
-    }
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
+
 <body class="min-h-screen bg-base-100">
 
-  <!-- Drawer Layout -->
-  <div class="drawer drawer-mobile lg:drawer-open">
-    <input id="sidebar-toggle" type="checkbox" class="drawer-toggle" />
+<!-- ✅ Drawer Structure -->
+<div class="drawer">
+  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
 
-    <!-- Page Content -->
-    <div class="bg-base-200 drawer-content p-6">
-      {% block content %}
-      <!-- Your main page content -->
-      {% endblock %}
+  <!-- Drawer Content -->
+  <div class="drawer-content">
+    <!-- ✅ Navbar -->
+    <div class="navbar bg-base-100 shadow-md sticky top-0 z-50">
+      <div class="flex-none">
+        <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+               class="inline-block h-5 w-5 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </label>
+      </div>
+      <div class="flex-1">
+        <a class="btn btn-ghost normal-case text-xl font-semibold">
+          <i class="material-icons mr-2">medical_services</i>
+          MRI Classifier
+        </a>
+      </div>
+      <div class="flex-none gap-2">
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
+            <div class="bg-neutral-focus text-neutral-content rounded-full w-10">
+              <span class="text-xs">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
+            </div>
+          </label>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li class="menu-title">
+              <span>{{ user.get_full_name }}</span>
+            </li>
+            <li><a href=""><i class="material-icons text-sm">dashboard</i> Dashboard</a></li>
+            <li><a href="#"><i class="material-icons text-sm">settings</i> Settings</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="material-icons text-sm">logout</i> Logout</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
 
-<!-- Sidebar -->
-<div class="drawer-side">
-  <label for="sidebar-toggle" class="drawer-overlay"></label>
-  <div id="sidebar" class="sidebar bg-base-200 min-h-full flex flex-col" style="width:16rem; position: relative;">
-    <!-- Add a vertical divider -->
-    <div class="absolute top-0 right-0 h-full w-[1px] bg-neutral/30"></div> <!-- smoky black line -->
+    <!-- ✅ Main Page Content -->
+    <div class="max-w-7xl mx-auto p-6">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
 
-    <!-- Sidebar Menu -->
-    <ul id="sidebar-menu" class="menu p-4 grow flex flex-col gap-1">
+  <!-- ✅ Drawer Sidebar -->
+  <div class="drawer-side z-50">
+    <label for="my-drawer" class="drawer-overlay"></label>
+    <ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content">
+
+      <!-- Sidebar Header -->
+      <li class="mb-4">
+        <div class="flex items-center gap-3 p-3 bg-primary text-primary-content rounded-lg">
+          <div class="avatar placeholder">
+            <div class="bg-primary-focus text-primary-content rounded-full w-12">
+              <span class="text-lg">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
+            </div>
+          </div>
+          <div>
+            <p class="font-bold">{{ user.get_full_name }}</p>
+            <p class="text-xs opacity-80">{{ user.email }}</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu-title">
+        <span>Navigation</span>
+      </li>
       <li>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-base-300 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-               fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round"
-               class="w-5 h-5">
-            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-            <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          </svg>
-          <span class="sidebar-text">Homepage</span>
+        <a href="">
+          <i class="material-icons">dashboard</i>
+          Dashboard
         </a>
       </li>
       <li>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-base-300 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-               fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round"
-               class="w-5 h-5">
-            <path d="M20 7h-9"></path>
-            <path d="M14 17H5"></path>
-            <circle cx="17" cy="17" r="3"></circle>
-            <circle cx="7" cy="7" r="3"></circle>
-          </svg>
-          <span class="sidebar-text">Settings</span>
+        <a href="{% url 'mri_classification_view' %}" class="{% if request.resolver_match.url_name == 'mri_classification_view' %}active{% endif %}">
+          <i class="material-icons">medical_services</i>
+          MRI Classification
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="material-icons">history</i>
+          History
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="material-icons">assessment</i>
+          Reports
+        </a>
+      </li>
+
+      <div class="divider"></div>
+
+      <li class="menu-title">
+        <span>Account</span>
+      </li>
+      <li>
+        <a href="#">
+          <i class="material-icons">settings</i>
+          Settings
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="material-icons">help</i>
+          Help & Support
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'logout_view' %}" class="text-error">
+          <i class="material-icons">logout</i>
+          Logout
         </a>
       </li>
     </ul>
-
-    <!-- Drawer Toggle Button -->
-    <div class="toggle-container">
-      <button id="toggle-btn" class="btn btn-ghost btn-circle w-full flex justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-             stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M4 4m0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/>
-          <path d="M9 4v16"/>
-          <path d="M14 10l2 2l-2 2"/>
-        </svg>
-      </button>
-    </div>
   </div>
 </div>
 
-
-  {% block extra_scripts %}{% endblock %}
-  <script>
-    const toggleBtn = document.getElementById('toggle-btn');
-    const sidebar = document.getElementById('sidebar');
-
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      if (sidebar.classList.contains('collapsed')) {
-        sidebar.style.width = '4rem';
-      } else {
-        sidebar.style.width = '16rem';
-      }
-    });
-  </script>
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>
