@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class="max-w-6xl mx-auto p-6">
+  <!-- Page Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-medium text-gray-900 mb-2">MRI Tumor Classification</h1>
     <p class="text-base text-gray-500">Upload patient information and MRI scan for tumor detection</p>
@@ -109,12 +110,13 @@
   </div>
 </div>
 
-<!-- Result Modal -->
+<!-- Modal for Result -->
 <div id="resultModal" class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box max-w-5xl w-full p-6">
+  <div class="modal-box max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
     <button onclick="closeModal()" class="btn btn-sm btn-ghost btn-circle absolute right-2 top-2">
       <span class="material-icons">close</span>
     </button>
+
     <h2 class="text-3xl font-semibold text-center mb-4">MRI Classification Result</h2>
 
     <div class="flex items-center justify-center gap-2 mb-4">
@@ -134,7 +136,8 @@
       <p><strong>Gender:</strong> <span id="modalPatientGender">Male</span></p>
     </div>
 
-    <div id="modalImagePreview" class="w-full h-[500px] bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden mb-4">
+    <!-- MRI Image Preview -->
+    <div id="modalImagePreview" class="w-full bg-gray-100 rounded-lg flex items-center justify-center overflow-auto mb-4" style="max-height:400px;">
       <span class="text-gray-400 text-sm">MRI Image Preview</span>
     </div>
 
@@ -164,6 +167,7 @@
   // Modal controls
   const form = document.getElementById('patientForm');
   const resultModal = document.getElementById('resultModal');
+
   function openModal() { resultModal.classList.add('modal-open'); }
   function closeModal() { resultModal.classList.remove('modal-open'); }
 
@@ -177,12 +181,12 @@
     setTimeout(() => {
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
-      fillReport();
+      fillModalReport();
       openModal();
     }, 1500);
   });
 
-  function fillReport() {
+  function fillModalReport() {
     const name = form.querySelector('input[type="text"]').value;
     const age = form.querySelector('input[type="number"]').value;
     const gender = form.querySelector('select').value;
