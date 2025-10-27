@@ -44,3 +44,4 @@ desktop.ini
 /models
 /temp
 /user/migrations/
+/mainapp/migrations

@@ -16,7 +16,10 @@
         <div class="card-body">
           <h2 class="card-title text-2xl mb-4">Patient Information</h2>
 
-          <form id="patientForm" class="space-y-1" enctype="multipart/form-data">
+          <!-- FORM START -->
+          <form id="patientForm" class="space-y-1" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+
             <div>
               <label class="label">
                 <span class="label-text font-medium">Full Name <span class="text-error">*</span></span>
@@ -35,10 +38,10 @@
               </div>
               <div>
                 <label class="label">
-                  <span class="label-text font-medium">Sex<span class="text-error">*</span></span>
+                  <span class="label-text font-medium">Gender <span class="text-error">*</span></span>
                 </label>
                 <select name="gender" required class="select select-bordered w-full">
-                  <option value="" disabled selected>Select sex</option>
+                  <option value="" disabled selected>Select gender</option>
                   <option>Male</option>
                   <option>Female</option>
                 </select>
@@ -60,7 +63,7 @@
               <label class="label">
                 <span class="label-text font-medium">Upload MRI Image <span class="text-error">*</span></span>
               </label>
-              <input type="file" name="mri_image" id="mriUpload"
+              <input type="file" name="image" id="mriUpload"
                      class="file-input file-input-bordered file-input-primary w-full"
                      accept="image/*" required/>
             </div>
@@ -74,6 +77,8 @@
                         class="textarea textarea-bordered w-full"></textarea>
             </div>
 
+            <input type="hidden" name="process_by" value="{{ request.user.id }}">
+
             <div class="card-actions justify-end gap-3 pt-4">
               <button type="reset" class="btn btn-outline btn-ghost">
                 <i class="material-icons">clear</i> Clear Form
@@ -83,6 +88,7 @@
               </button>
             </div>
           </form>
+          <!-- FORM END -->
         </div>
       </div>
     </div>
@@ -177,6 +183,7 @@ const imagePreview = document.getElementById('imagePreview');
 const form = document.getElementById('patientForm');
 const resultModal = document.getElementById('resultModal');
 
+// Preview image
 fileInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -187,6 +194,7 @@ fileInput.addEventListener('change', e => {
   reader.readAsDataURL(file);
 });
 
+// Submit form (adjusted for backend compatibility)
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
@@ -201,18 +209,19 @@ form.addEventListener('submit', async e => {
   try {
     const res = await fetch("{% url 'mri_classification_view' %}", {
       method: "POST",
-      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
       body: formData
     });
     const data = await res.json();
+
     if (data.success) {
       fillModalReport(
         formData.get('full_name'),
         formData.get('age'),
         formData.get('gender'),
         formData.get('history') || 'N/A',
-        data.result.predicted_class,
-        data.result.confidence.toFixed(2),
+        data.predicted_class,      // fixed for backend compatibility
+        (data.confidence * 100).toFixed(2),  // display as %
         imgSrc
       );
       resultModal.showModal();
@@ -237,7 +246,7 @@ function fillModalReport(name, age, gender, history, resultText, confidence, img
 
   const icon = document.getElementById('resultIcon');
   const bar = document.getElementById('resultBar');
-  if (resultText.toLowerCase().includes('tumor') || resultText.toLowerCase().includes('positive')) {
+  if (resultText.toLowerCase().includes('tumor')) {
     icon.className = 'material-icons text-warning text-5xl';
     icon.innerText = 'warning';
     bar.className = 'progress progress-warning w-full h-3';
