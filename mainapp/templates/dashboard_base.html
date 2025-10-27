@@ -11,6 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     /* Sidebar transition and behavior */
@@ -76,7 +77,10 @@
             </li>
             <li><a href=""><i class="material-icons text-sm">dashboard</i> Dashboard</a></li>
             <li><a href="#"><i class="material-icons text-sm">settings</i> Settings</a></li>
-            <li><a href="{% url 'logout_view' %}"><i class="material-icons text-sm">logout</i> Logout</a></li>
+            <li><a href="{% url 'logout_view' %}"class="text-error" onclick="confirmLogout(event)">
+                <i class="material-icons text-sm">logout</i>
+                Logout</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -155,7 +159,7 @@
         </a>
       </li>
       <li>
-        <a href="{% url 'logout_view' %}" class="text-error">
+        <a href="{% url 'logout_view' %}" onclick="confirmLogout(event)">
           <i class="material-icons">logout</i>
           Logout
         </a>
@@ -163,7 +167,44 @@
     </ul>
   </div>
 </div>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    {% if messages %}
+      {% for message in messages %}
+        Swal.fire({
+          icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+          title: "{{ message }}",
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: 'top-end',
+          timerProgressBar: true
+        });
+      {% endfor %}
+    {% endif %}
+  });
+</script>
+
+<script>
+  function confirmLogout(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure you want to logout?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, logout'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "{% url 'logout_view' %}";
+      }
+    });
+  }
+</script>
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>

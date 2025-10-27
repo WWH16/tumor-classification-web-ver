@@ -4,10 +4,6 @@
 {% block title %}MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <div class="max-w-7xl mx-auto p-0">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Form -->
@@ -176,6 +172,10 @@
     <div id="reportContent" class="hidden"></div>
   </div>
 </dialog>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 const fileInput = document.getElementById('mriUpload');
@@ -194,7 +194,7 @@ fileInput.addEventListener('change', e => {
   reader.readAsDataURL(file);
 });
 
-// Submit form (adjusted for backend compatibility)
+// Submit form
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
@@ -220,8 +220,8 @@ form.addEventListener('submit', async e => {
         formData.get('age'),
         formData.get('gender'),
         formData.get('history') || 'N/A',
-        data.predicted_class,      // fixed for backend compatibility
-        (data.confidence * 100).toFixed(2),  // display as %
+        data.predicted_class,
+        (data.confidence * 100).toFixed(2),
         imgSrc
       );
       resultModal.showModal();
