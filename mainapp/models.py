@@ -10,7 +10,7 @@ class MRIClassification(models.Model):
 
     predicted_class = models.CharField(max_length=100)
     confidence = models.FloatField()
-    image = models.ImageField(upload_to='mri_uploads/')
+    image = models.ImageField(upload_to='temp/')
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     process_by = models.ForeignKey(

@@ -13,6 +13,7 @@ from .models import MRIClassification
 from django.contrib import messages
 from django.http import HttpResponse
 import csv
+import os
 from django.db.models import Q
 from datetime import datetime, timedelta
 
@@ -31,15 +32,17 @@ def app(request):
 @login_required
 def mri_classification_view(request):
     if request.method == "POST":
+        # Check if an image was uploaded
         if "image" not in request.FILES:
             return JsonResponse({"success": False, "error": "No MRI file received."})
 
-        # Save uploaded image temporarily
+        # === Save uploaded image to MEDIA_ROOT/temp/ ===
         mri_file = request.FILES["image"]
+        # This saves the file to media/temp/ automatically
         file_path = default_storage.save(f"temp/{mri_file.name}", mri_file)
         full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)
 
-        # === Match GUI preprocessing ===
+        # === Preprocess image for model ===
         img = cv2.imread(full_file_path)
         img_resized = cv2.resize(img, (224, 224))
         img_resized = np.expand_dims(img_resized, axis=0)
@@ -50,7 +53,7 @@ def mri_classification_view(request):
         predicted_class = CLASS_LABELS[predicted_index]
         confidence = float(np.max(preds))
 
-        # === Save record ===
+        # === Save classification record ===
         record = MRIClassification.objects.create(
             full_name=request.POST.get("full_name", "Unknown"),
             age=request.POST.get("age", 0),
@@ -59,7 +62,7 @@ def mri_classification_view(request):
             notes=request.POST.get("notes", ""),
             predicted_class=predicted_class,
             confidence=confidence,
-            image=file_path,
+            image=file_path,  # stored relative to MEDIA_ROOT
             process_by=request.user,
         )
 
@@ -67,6 +70,7 @@ def mri_classification_view(request):
             "success": True,
             "predicted_class": predicted_class,
             "confidence": confidence,
+            "image_url": record.image.url,  # this will work now
         })
 
     return JsonResponse({"success": False, "error": "Invalid request method."})
@@ -166,7 +170,6 @@ def history_detail_view(request, pk):
         process_by=request.user
     )
     return render(request, 'history_detail.html', {'classification': classification})
-
 
 # python
 @login_required
