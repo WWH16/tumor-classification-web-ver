@@ -190,19 +190,20 @@
                 </td>
                 <td>{{ classification.predicted_class }}</td>
                 <td>
-<div class="flex items-center justify-center">
-  <svg class="w-16 h-16" viewBox="0 0 36 36">
-    <circle cx="18" cy="18" r="15.9155" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="3"></circle>
-    <circle cx="18" cy="18" r="15.9155" fill="none" stroke="{{ classification.confidence_color }}" stroke-width="3" stroke-linecap="round"
-            stroke-dasharray="{{ classification.confidence_percentage }}, 100"
-            class="transition-all duration-1000 ease-out confidence-circle"
-            style="transform: rotate(-90deg); transform-origin: center;"></circle>
-    <text x="18" y="18" text-anchor="middle" dy="0.3em" font-size="8" fill="{{ classification.confidence_color }}" font-weight="bold">
-      {{ classification.confidence_percentage|floatformat:0 }}%
-    </text>
-  </svg>
-</div>
-                </td>
+  <div class="flex items-center justify-center">
+    <svg class="w-12 h-12" viewBox="0 0 36 36" style="--value:{{ classification.confidence_percentage|floatformat:0 }}; --prog-color:{{ classification.confidence_color }};">
+      <!-- Track -->
+      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="4"></circle>
+      <!-- Progress (uses stroke-dasharray 100 so dashoffset can be percentage) -->
+      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--prog-color)" stroke-width="4" stroke-linecap="round"
+              style="stroke-dasharray:100; stroke-dashoffset:100; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset .6s ease, stroke .25s ease;"></circle>
+      <!-- Center text -->
+      <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="9" fill="var(--prog-color)" class="font-bold">
+        {{ classification.confidence_percentage|floatformat:0 }}%
+      </text>
+    </svg>
+  </div>
+</td>
                 <td class="text-sm">
                   {{ classification.date_uploaded|date:"M d, Y" }}
                   <div class="text-xs text-gray-500">{{ classification.date_uploaded|date:"h:i A" }}</div>
@@ -292,19 +293,17 @@ function confirmDelete(pk) {
   });
 }
 
-// Animate confidence circles on load
+// animate radial progress circles after DOM loads
 document.addEventListener('DOMContentLoaded', () => {
-  const circles = document.querySelectorAll('.confidence-circle');
-  circles.forEach(circle => {
-    const dasharray = circle.getAttribute('stroke-dasharray');
-    if (dasharray) {
-      // Start at 0
-      circle.setAttribute('stroke-dasharray', '0, 100');
-      // Animate to actual value
-      setTimeout(() => {
-        circle.setAttribute('stroke-dasharray', dasharray);
-      }, 100);
-    }
+  document.querySelectorAll('svg[viewBox="0 0 36 36"]').forEach(svg => {
+    const raw = getComputedStyle(svg).getPropertyValue('--value') || '0';
+    const value = Math.min(100, Math.max(0, parseFloat(raw)));
+    const circle = svg.querySelector('circle[stroke-linecap="round"]');
+    if (!circle) return;
+    // trigger animation a tick later so CSS transition runs
+    requestAnimationFrame(() => {
+      circle.style.strokeDashoffset = String(100 - value);
+    });
   });
 });
 </script>
