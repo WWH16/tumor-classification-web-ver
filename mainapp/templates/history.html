@@ -163,92 +163,131 @@
 
 
   <!-- Records Table -->
-  <div class="card bg-white shadow rounded-md">
-    <div class="card-body p-0 overflow-x-auto">
-      <table class="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Patient Name</th>
-            <th>Age/Gender</th>
-            <th>Diagnosis</th>
-            <th>Confidence</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if page_obj %}
-            {% for classification in page_obj %}
-              <tr class="hover">
-                <th>{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</th>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center">
-                        <span class="text-xs font-bold">{{ classification.full_name.0|upper }}</span>
+<div class="card bg-white shadow rounded-md">
+  <div class="card-body p-0 overflow-x-auto">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr>
+          <th class="text-center">#</th>
+          <th>Patient Name</th>
+          <th class="text-center">Age/Gender</th>
+          <th>Diagnosis</th>
+          <th class="text-center">Confidence</th>
+          <th class="text-center">Date</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if page_obj %}
+          {% for classification in page_obj %}
+            <tr class="hover">
+              <th class="text-center align-middle">{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</th>
+
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="avatar">
+                    <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                      <span class="text-xs font-bold">{{ classification.full_name.0|upper }}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="font-medium">{{ classification.full_name }}</div>
+                    {% if classification.history %}
+                      <div class="text-xs text-gray-500 flex items-center gap-1">
+                        <i class="material-icons" style="font-size: 14px;">info</i> Has medical history
                       </div>
-                    </div>
-                    <div>
-                      <div class="font-medium">{{ classification.full_name }}</div>
-                      {% if classification.history %}
-                        <div class="text-xs text-gray-500 flex items-center gap-1">
-                          <i class="material-icons" style="font-size: 14px;">info</i> Has medical history
-                        </div>
-                      {% endif %}
-                    </div>
-                  </div>
-                </td>
-                <td class="text-sm">
-                  {{ classification.age }} yrs
-                  <div class="badge badge-ghost badge-sm">{{ classification.gender }}</div>
-                </td>
-                <td>{{ classification.predicted_class }}</td>
-                <td class="text-center align-middle font-semibold text-lg" style="color: {{ classification.confidence_color }};">
-                  {{ classification.confidence_percentage|default:0|floatformat:0 }}%
-                </td>
-                <td class="text-sm">
-                  {{ classification.date_uploaded|date:"M d, Y" }}
-                  <div class="text-xs text-gray-500">{{ classification.date_uploaded|date:"h:i A" }}</div>
-                </td>
-                <td>
-                  <div class="dropdown dropdown-end">
-                    <label tabindex="0" class="btn btn-ghost btn-sm">
-                      <i class="material-icons">more_vert</i>
-                    </label>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52">
-                      <li><a href="{% url 'history_detail' classification.pk %}"><i class="material-icons text-sm">visibility</i> View</a></li>
-                      <li><a href="{% url 'history_edit' classification.pk %}"><i class="material-icons text-sm">edit</i> Edit</a></li>
-                      <li><a onclick="confirmDelete({{ classification.pk }})" class="text-error"><i class="material-icons text-sm">delete</i> Delete</a></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="7" class="text-center py-12">
-                <div class="flex flex-col items-center gap-4">
-                  <i class="material-icons text-6xl text-gray-200">folder_open</i>
-                  <p class="text-lg font-medium">No records found</p>
-                  <p class="text-sm text-gray-400">
-                    {% if search_query or diagnosis_filter or gender_filter or date_range %}
-                      Try adjusting your search criteria or filters
-                    {% else %}
-                      Start by classifying an MRI scan
                     {% endif %}
-                  </p>
-                  {% if search_query or diagnosis_filter or gender_filter or date_range %}
-                    <a href="{% url 'history' %}" class="btn btn-primary">Clear All Filters</a>
-                  {% endif %}
+                  </div>
                 </div>
               </td>
+
+              <td class="text-center align-middle text-sm">
+                {{ classification.age }} yrs
+                <div class="badge badge-ghost badge-sm mt-1">{{ classification.gender }}</div>
+              </td>
+
+              <td class="text-center align-middle">
+                {{ classification.predicted_class }}
+              </td>
+
+              <!-- Updated Confidence Column -->
+              <td class="text-center align-middle">
+                <div class="flex items-center justify-center">
+                  <svg class="w-12 h-12" viewBox="0 0 36 36"
+                       style="--value:{{ classification.confidence_percentage|floatformat:0 }};
+                              --prog-color:{{ classification.confidence_color }};">
+                    <!-- Background Circle -->
+                    <circle cx="18" cy="18" r="15.9155"
+                            fill="none"
+                            stroke="rgba(0,0,0,0.06)"
+                            stroke-width="4">
+                    </circle>
+                    <!-- Progress Circle -->
+                    <circle cx="18" cy="18" r="15.9155"
+                            fill="none"
+                            stroke="var(--prog-color)"
+                            stroke-width="4"
+                            stroke-linecap="round"
+                            style="stroke-dasharray:100;
+                                   stroke-dashoffset:100;
+                                   transform: rotate(-90deg);
+                                   transform-origin: 50% 50%;
+                                   transition: stroke-dashoffset .6s ease, stroke .25s ease;">
+                    </circle>
+                    <!-- Percentage Text -->
+                    <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="9"
+                          fill="var(--prog-color)" class="font-bold">
+                      {{ classification.confidence_percentage|floatformat:0 }}%
+                    </text>
+                  </svg>
+                </div>
+              </td>
+
+              <td class="text-center align-middle text-sm">
+                {{ classification.date_uploaded|date:"M d, Y" }}
+                <div class="text-xs text-gray-500">{{ classification.date_uploaded|date:"h:i A" }}</div>
+              </td>
+
+              <td class="text-center align-middle">
+                <div class="dropdown dropdown-end">
+                  <label tabindex="0" class="btn btn-ghost btn-sm">
+                    <i class="material-icons">more_vert</i>
+                  </label>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52">
+                    <li><a href="{% url 'history_detail' classification.pk %}"><i class="material-icons text-sm">visibility</i> View</a></li>
+                    <li><a href="{% url 'history_edit' classification.pk %}"><i class="material-icons text-sm">edit</i> Edit</a></li>
+                    <li><a onclick="confirmDelete({{ classification.pk }})" class="text-error"><i class="material-icons text-sm">delete</i> Delete</a></li>
+                  </ul>
+                </div>
+              </td>
+
             </tr>
-          {% endif %}
-        </tbody>
-      </table>
-    </div>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-12">
+              <div class="flex flex-col items-center gap-4">
+                <i class="material-icons text-6xl text-gray-200">folder_open</i>
+                <p class="text-lg font-medium">No records found</p>
+                <p class="text-sm text-gray-400">
+                  {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                    Try adjusting your search criteria or filters
+                  {% else %}
+                    Start by classifying an MRI scan
+                  {% endif %}
+                </p>
+                {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                  <a href="{% url 'history' %}" class="btn btn-primary">Clear All Filters</a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
   </div>
+</div>
+
 
   <!-- Pagination -->
   {% if page_obj.has_other_pages %}
