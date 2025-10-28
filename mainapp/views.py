@@ -402,7 +402,7 @@ def dashboard_view(request):
         'month_classifications': month_classifications,
         'month_change': round(month_change, 1),
         'week_classifications': week_classifications,
-        'avg_confidence': avg_confidenceence if False else avg_confidence,  # kept numeric (percentage, 1 decimal)
+        'avg_confidence': avg_confidence if False else avg_confidence,  # kept numeric (percentage, 1 decimal)
         'diagnosis_stats': diagnosis_stats,
         'recent_classifications': recent_classifications,
         'daily_activity': daily_activity,
