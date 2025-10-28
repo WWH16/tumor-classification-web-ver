@@ -73,20 +73,22 @@ def mri_classification_view(request):
 
 # Additional views for history, detail, edit, delete would go here
 # for CRUD
-def history_view(request):
-    # Get filter parameters
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.db.models import Q, Avg
+from datetime import datetime, timedelta
+from .models import MRIClassification
+
+
+def history(request):
+    # Get all classifications
+    classifications = MRIClassification.objects.all()
+
+    # Get total count before filtering
+    total_count = classifications.count()
+
+    # Search functionality
     search_query = request.GET.get('search', '')
-    diagnosis_filter = request.GET.get('diagnosis', '')
-    gender_filter = request.GET.get('gender', '')
-    date_range = request.GET.get('date_range', '')
-    sort_by = request.GET.get('sort', '-date_uploaded')
-
-    # Start with user's records
-    classifications = MRIClassification.objects.filter(
-        process_by=request.user
-    )
-
-    # Apply search filter
     if search_query:
         classifications = classifications.filter(
             Q(full_name__icontains=search_query) |
@@ -95,57 +97,49 @@ def history_view(request):
             Q(history__icontains=search_query)
         )
 
-    # Apply diagnosis filter
+    # Diagnosis filter
+    diagnosis_filter = request.GET.get('diagnosis', '')
     if diagnosis_filter:
         classifications = classifications.filter(predicted_class=diagnosis_filter)
 
-    # Apply gender filter
+    # Gender filter
+    gender_filter = request.GET.get('gender', '')
     if gender_filter:
         classifications = classifications.filter(gender=gender_filter)
 
-    # Apply date range filter
+    # Date range filter
+    date_range = request.GET.get('date_range', '')
     if date_range:
-        today = datetime.now().date()
+        today = datetime.now()
         if date_range == 'today':
-            classifications = classifications.filter(date_uploaded__date=today)
+            start_date = today.replace(hour=0, minute=0, second=0)
+            classifications = classifications.filter(date_uploaded__gte=start_date)
         elif date_range == 'week':
-            week_ago = today - timedelta(days=7)
-            classifications = classifications.filter(date_uploaded__date__gte=week_ago)
+            start_date = today - timedelta(days=7)
+            classifications = classifications.filter(date_uploaded__gte=start_date)
         elif date_range == 'month':
-            month_ago = today - timedelta(days=30)
-            classifications = classifications.filter(date_uploaded__date__gte=month_ago)
+            start_date = today - timedelta(days=30)
+            classifications = classifications.filter(date_uploaded__gte=start_date)
         elif date_range == 'year':
-            year_ago = today - timedelta(days=365)
-            classifications = classifications.filter(date_uploaded__date__gte=year_ago)
+            start_date = today - timedelta(days=365)
+            classifications = classifications.filter(date_uploaded__gte=start_date)
 
-    # Apply sorting
-    valid_sort_fields = [
-        'date_uploaded', '-date_uploaded',
-        'full_name', '-full_name',
-        'confidence', '-confidence',
-        'predicted_class', '-predicted_class'
-    ]
-    if sort_by in valid_sort_fields:
-        classifications = classifications.order_by(sort_by)
-    else:
-        classifications = classifications.order_by('-date_uploaded')
+    # Sorting
+    sort_by = request.GET.get('sort', '-date_uploaded')
+    classifications = classifications.order_by(sort_by)
 
-    # Get unique diagnoses and genders for filter dropdowns
-    all_diagnoses = MRIClassification.objects.filter(
-        process_by=request.user
-    ).values_list('predicted_class', flat=True).distinct()
-
-    all_genders = MRIClassification.objects.filter(
-        process_by=request.user
-    ).values_list('gender', flat=True).distinct()
+    # Get unique values for filters
+    all_diagnoses = MRIClassification.objects.values_list('predicted_class', flat=True).distinct()
+    all_genders = MRIClassification.objects.values_list('gender', flat=True).distinct()
 
     # Pagination
-    paginator = Paginator(classifications, 10)
+    paginator = Paginator(classifications, 10)  # 10 records per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
         'page_obj': page_obj,
+        'total_count': total_count,
         'search_query': search_query,
         'diagnosis_filter': diagnosis_filter,
         'gender_filter': gender_filter,
@@ -153,8 +147,8 @@ def history_view(request):
         'sort_by': sort_by,
         'all_diagnoses': all_diagnoses,
         'all_genders': all_genders,
-        'total_count': classifications.count(),
     }
+
     return render(request, 'history.html', context)
 
 

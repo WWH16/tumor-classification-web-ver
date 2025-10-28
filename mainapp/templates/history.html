@@ -46,7 +46,7 @@
       <div class="stat-value text-accent">
         {% widthratio page_obj.object_list|length 1 1 as count %}
         {% if count > 0 %}
-          {{ page_obj.object_list.0.confidence|floatformat:0 }}%
+          {{ page_obj.object_list.0.confidence_percentage|floatformat:0 }}%
         {% else %}
           0%
         {% endif %}
@@ -190,10 +190,18 @@
                 </td>
                 <td>{{ classification.predicted_class }}</td>
                 <td>
-                  <div class="radial-progress text-primary"
-                       style="--value:{{ classification.confidence|floatformat:0 }}; --size:3rem; --thickness:4px;">
-                    {{ classification.confidence|floatformat:0 }}%
-                  </div>
+<div class="flex items-center justify-center">
+  <svg class="w-16 h-16" viewBox="0 0 36 36">
+    <circle cx="18" cy="18" r="15.9155" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="3"></circle>
+    <circle cx="18" cy="18" r="15.9155" fill="none" stroke="{{ classification.confidence_color }}" stroke-width="3" stroke-linecap="round"
+            stroke-dasharray="{{ classification.confidence_percentage }}, 100"
+            class="transition-all duration-1000 ease-out confidence-circle"
+            style="transform: rotate(-90deg); transform-origin: center;"></circle>
+    <text x="18" y="18" text-anchor="middle" dy="0.3em" font-size="8" fill="{{ classification.confidence_color }}" font-weight="bold">
+      {{ classification.confidence_percentage|floatformat:0 }}%
+    </text>
+  </svg>
+</div>
                 </td>
                 <td class="text-sm">
                   {{ classification.date_uploaded|date:"M d, Y" }}
@@ -283,5 +291,21 @@ function confirmDelete(pk) {
     }
   });
 }
+
+// Animate confidence circles on load
+document.addEventListener('DOMContentLoaded', () => {
+  const circles = document.querySelectorAll('.confidence-circle');
+  circles.forEach(circle => {
+    const dasharray = circle.getAttribute('stroke-dasharray');
+    if (dasharray) {
+      // Start at 0
+      circle.setAttribute('stroke-dasharray', '0, 100');
+      // Animate to actual value
+      setTimeout(() => {
+        circle.setAttribute('stroke-dasharray', dasharray);
+      }, 100);
+    }
+  });
+});
 </script>
 {% endblock %}

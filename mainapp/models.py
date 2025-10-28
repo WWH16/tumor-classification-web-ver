@@ -18,5 +18,43 @@ class MRIClassification(models.Model):
         related_name='processed_mris'
     )
 
+    class Meta:
+        ordering = ['-date_uploaded']
+        verbose_name = 'MRI Classification'
+        verbose_name_plural = 'MRI Classifications'
+
     def __str__(self):
         return f"{self.full_name} - {self.predicted_class}"
+
+    @property
+    def confidence_percentage(self):
+        """Returns confidence as a percentage (0-100)"""
+        return round(self.confidence * 100, 2) if self.confidence <= 1 else round(self.confidence, 2)
+
+    @property
+    def confidence_level(self):
+        """Returns confidence level category"""
+        conf = self.confidence_percentage
+        if conf >= 90:
+            return 'excellent'
+        elif conf >= 75:
+            return 'high'
+        elif conf >= 60:
+            return 'moderate'
+        elif conf >= 40:
+            return 'low'
+        else:
+            return 'very-low'
+
+    @property
+    def confidence_color(self):
+        """Returns color based on confidence level"""
+        level = self.confidence_level
+        colors = {
+            'excellent': '#059669',  # emerald-600
+            'high': '#16a34a',  # green-600
+            'moderate': '#f59e0b',  # amber-500
+            'low': '#f97316',  # orange-500
+            'very-low': '#dc2626'  # red-600
+        }
+        return colors.get(level, '#6b7280')

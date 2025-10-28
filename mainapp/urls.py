@@ -5,7 +5,7 @@ urlpatterns = [
     path('app/', views.app, name='app'),
     path('mri/', views.mri_classification_view, name='mri_classification_view'),
 
-    path('history/', views.history_view, name='history'),
+    path('history/', views.history, name='history'),
     path('history/<int:pk>/', views.history_detail_view, name='history_detail'),
     path('history/<int:pk>/edit/', views.history_edit_view, name='history_edit'),
     path('history/<int:pk>/delete/', views.history_delete_view, name='history_delete'),
