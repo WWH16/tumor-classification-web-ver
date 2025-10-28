@@ -277,8 +277,12 @@ from django.utils import timezone
 
 
 @login_required
+# python
+@login_required
 def dashboard_view(request):
     """Main dashboard with statistics"""
+    from django.db.models import Avg, Max, Count  # local import to ensure Max is available
+
     user = request.user
 
     # Get date ranges
@@ -318,10 +322,21 @@ def dashboard_view(request):
         date_uploaded__gte=week_start
     ).count()
 
-    # Average confidence
-    avg_confidence = MRIClassification.objects.filter(
-        process_by=user
-    ).aggregate(Avg('confidence'))['confidence__avg'] or 0
+    # Robust average confidence: detect stored scale using max value
+    agg = MRIClassification.objects.filter(process_by=user).aggregate(
+        avg_conf=Avg('confidence'),
+        max_conf=Max('confidence'),
+    )
+    avg_conf = agg.get('avg_conf') or 0
+    max_conf = agg.get('max_conf') or 0
+
+    if max_conf <= 1:
+        avg_percentage = avg_conf * 100
+    else:
+        avg_percentage = avg_conf
+
+    # Ensure numeric and round for display (one decimal place)
+    avg_confidence = round(float(avg_percentage), 1)
 
     # Diagnosis distribution
     diagnosis_stats = MRIClassification.objects.filter(
@@ -341,11 +356,7 @@ def dashboard_view(request):
 
     # Daily activity for last 30 days
     thirty_days_ago = today - timedelta(days=29)
-    daily_counts = {}
-
-    for i in range(30):
-        date = thirty_days_ago + timedelta(days=i)
-        daily_counts[date] = 0
+    daily_counts = { (thirty_days_ago + timedelta(days=i)): 0 for i in range(30) }
 
     activities = MRIClassification.objects.filter(
         process_by=user,
@@ -356,7 +367,7 @@ def dashboard_view(request):
         daily_counts[activity['date_uploaded__date']] = activity['count']
 
     # Prepare daily activity data
-    max_count = max(daily_counts.values()) if daily_counts.values() else 1
+    max_count = max(daily_counts.values()) if daily_counts else 1
     daily_activity = []
     for date, count in sorted(daily_counts.items()):
         height = (count / max_count * 100) if max_count > 0 else 0
@@ -371,7 +382,7 @@ def dashboard_view(request):
         'month_classifications': month_classifications,
         'month_change': round(month_change, 1),
         'week_classifications': week_classifications,
-        'avg_confidence': avg_confidence,
+        'avg_confidence': avg_confidenceence if False else avg_confidence,  # kept numeric (percentage, 1 decimal)
         'diagnosis_stats': diagnosis_stats,
         'recent_classifications': recent_classifications,
         'daily_activity': daily_activity,
