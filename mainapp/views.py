@@ -168,6 +168,7 @@ def history_detail_view(request, pk):
     return render(request, 'history_detail.html', {'classification': classification})
 
 
+# python
 @login_required
 def history_edit_view(request, pk):
     classification = get_object_or_404(
@@ -187,7 +188,23 @@ def history_edit_view(request, pk):
         messages.success(request, 'Record updated successfully!')
         return redirect('history_detail', pk=pk)
 
-    return render(request, 'history_edit.html', {'classification': classification})
+    # Prepare display-ready confidence percent (two decimals)
+    raw_conf = classification.confidence if classification.confidence is not None else 0.0
+    try:
+        raw_conf_f = float(raw_conf)
+    except (TypeError, ValueError):
+        raw_conf_f = 0.0
+
+    # If stored in 0..1 scale, convert to percentage
+    if raw_conf_f <= 1:
+        confidence_percent = round(raw_conf_f * 100, 2)
+    else:
+        confidence_percent = round(raw_conf_f, 2)
+
+    return render(request, 'history_edit.html', {
+        'classification': classification,
+        'confidence_percent': confidence_percent,
+    })
 
 
 @login_required
