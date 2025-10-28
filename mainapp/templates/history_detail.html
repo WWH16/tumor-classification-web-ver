@@ -5,32 +5,33 @@
 
 {% block content %}
 <div class="space-y-6">
+
   <!-- Back Button -->
   <div class="flex items-center gap-4">
-    <a href="{% url 'history' %}" class="btn btn-ghost">
+    <a href="{% url 'history' %}" class="btn btn-ghost btn-sm gap-2">
       <i class="material-icons">arrow_back</i>
       Back to History
     </a>
   </div>
 
   <!-- Patient Information Card -->
-  <div class="card bg-base-100 shadow-xl">
+  <div class="card bg-base-100 shadow-xl rounded-xl border border-gray-100">
     <div class="card-body">
       <div class="flex justify-between items-start">
-        <h2 class="card-title text-2xl">
-          <i class="material-icons text-primary">person</i>
+        <h2 class="card-title text-2xl gap-2">
+          <i class="material-icons text-blue-600">person</i>
           Patient Information
         </h2>
         <div class="flex gap-2">
-          <a href="{% url 'history_print' classification.pk %}" target="_blank" class="btn btn-ghost btn-sm">
+          <a href="{% url 'history_print' classification.pk %}" target="_blank" class="btn btn-ghost btn-sm gap-1">
             <i class="material-icons text-sm">print</i>
             Print
           </a>
-          <a href="{% url 'history_edit' classification.pk %}" class="btn btn-primary btn-sm">
+          <a href="{% url 'history_edit' classification.pk %}" class="btn btn-primary btn-sm gap-1">
             <i class="material-icons text-sm">edit</i>
             Edit
           </a>
-          <button onclick="confirmDelete({{ classification.pk }})" class="btn btn-error btn-sm">
+          <button onclick="confirmDelete({{ classification.pk }})" class="btn btn-error btn-sm gap-1">
             <i class="material-icons text-sm">delete</i>
             Delete
           </button>
@@ -40,6 +41,7 @@
       <div class="divider"></div>
 
       <div class="grid md:grid-cols-2 gap-6">
+        <!-- Left Column -->
         <div class="space-y-4">
           <div>
             <label class="text-sm text-base-content/60">Full Name</label>
@@ -65,6 +67,7 @@
           </div>
         </div>
 
+        <!-- Right Column -->
         <div class="space-y-4">
           <div>
             <label class="text-sm text-base-content/60">Medical History</label>
@@ -78,66 +81,67 @@
   </div>
 
   <!-- Classification Results Card -->
-  <div class="card bg-base-100 shadow-xl">
+  <div class="card bg-base-100 shadow-xl rounded-xl border border-gray-100">
     <div class="card-body">
-      <h2 class="card-title text-2xl">
-        <i class="material-icons text-primary">science</i>
+      <h2 class="card-title text-2xl gap-2">
+        <i class="material-icons text-blue-600">science</i>
         Classification Results
       </h2>
 
       <div class="divider"></div>
 
       <div class="grid md:grid-cols-2 gap-6">
+        <!-- Predicted Diagnosis & Confidence -->
         <div class="space-y-4">
+        <div>
+          <label class="text-sm text-base-content/60">Predicted Diagnosis</label>
+          <div class="mt-2">
+            <span class="inline-block bg-blue-600 text-white text-lg font-medium p-4">
+              {{ classification.predicted_class }}
+            </span>
+          </div>
+        </div>
           <div>
-            <label class="text-sm text-base-content/60">Predicted Diagnosis</label>
-            <div class="mt-2">
-              <span class="badge badge-primary badge-lg text-lg p-4">
-                {{ classification.predicted_class }}
-              </span>
+            <label class="text-sm text-base-content/60">Confidence Level</label>
+            <div class="flex items-center gap-4 mt-2">
+              <div class="radial-progress"
+                   style="--value:{{ classification.confidence_percentage|default_if_none:0|floatformat:0 }}; --size:5rem; --thickness:6px; color:{{ classification.confidence_color|default:'#6b7280' }};"
+                   role="progressbar"
+                   aria-valuenow="{{ classification.confidence_percentage|default_if_none:0|floatformat:0 }}"
+                   aria-valuemin="0"
+                   aria-valuemax="100">
+                {{ classification.confidence_percentage|default_if_none:0|floatformat:2 }}%
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ classification.confidence_percentage|default_if_none:0|floatformat:2 }}%</p>
+                <p class="text-sm text-base-content/60">Confidence Score</p>
+              </div>
             </div>
           </div>
-        <div>
-          <label class="text-sm text-base-content/60">Confidence Level</label>
-        <!-- html -->
-        <div class="flex items-center gap-4 mt-2">
-          <div class="radial-progress"
-               style="--value:{{ classification.confidence_percentage|default_if_none:0.0|floatformat:0 }}; --size:5rem; --thickness:6px; color:{{ classification.confidence_color|default:'#6b7280' }};"
-               role="progressbar"
-               aria-valuenow="{{ classification.confidence_percentage|default_if_none:0.0|floatformat:0 }}"
-               aria-valuemin="0"
-               aria-valuemax="100">
-            {{ classification.confidence_percentage|default_if_none:0.0|floatformat:2 }}%
-          </div>
-          <div>
-            <p class="text-2xl font-bold">{{ classification.confidence_percentage|default_if_none:0.0|floatformat:2 }}%</p>
-            <p class="text-sm text-base-content/60">Confidence Score</p>
-          </div>
-        </div>
-        </div>
         </div>
 
-<div>
-  <label class="text-sm text-base-content/60 ">MRI Scan Image</label>
-  <div class="mt-2 text-center">
-    <a href="{{ classification.image.url }}" download="{{ classification.full_name }}_MRI.jpg">
-      <img src="{{ classification.image.url }}"
-           alt="MRI Scan"
-           class="rounded-lg border-2 border-base-300 w-full max-w-md mx-auto cursor-pointer"
-      />
-    </a>
-    <p class="text-xs text-base-content/50 mt-1">Click the image to download</p>
-  </div>
-</div>
+        <!-- MRI Image -->
+        <div>
+          <label class="text-sm text-base-content/60 text-center w-full block">MRI Scan Image</label>
+          <div class="mt-2 text-center">
+            <a href="{{ classification.image.url }}" download="{{ classification.full_name }}_MRI.jpg">
+              <img src="{{ classification.image.url }}"
+                   alt="MRI Scan"
+                   class="rounded-lg border-2 border-base-300 w-full max-w-md mx-auto cursor-pointer"
+              />
+            </a>
+            <p class="text-xs text-base-content/50 mt-1">Click the image to download</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Notes Card -->
-  <div class="card bg-base-100 shadow-xl">
+  <!-- Clinical Notes Card -->
+  <div class="card bg-base-100 shadow-xl rounded-xl border border-gray-100">
     <div class="card-body">
-      <h2 class="card-title text-2xl">
-        <i class="material-icons text-primary">note</i>
+      <h2 class="card-title text-2xl gap-2">
+        <i class="material-icons text-blue-600">note</i>
         Clinical Notes
       </h2>
 
@@ -148,6 +152,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- Image Modal -->
@@ -157,9 +162,7 @@
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
     <h3 class="font-bold text-lg mb-4">MRI Scan - {{ classification.full_name }}</h3>
-    <img src="{{ classification.image.url }}"
-         alt="MRI Scan"
-         class="w-full rounded-lg" />
+    <img src="{{ classification.image.url }}" alt="MRI Scan" class="w-full rounded-lg" />
   </div>
   <form method="dialog" class="modal-backdrop">
     <button>close</button>
@@ -179,15 +182,12 @@ function confirmDelete(pk) {
     cancelButtonText: 'Cancel'
   }).then((result) => {
     if (result.isConfirmed) {
-      // Create a form and submit it
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = `/history/${pk}/delete/`;
 
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-      if (csrfToken) {
-        form.appendChild(csrfToken.cloneNode());
-      }
+      if (csrfToken) form.appendChild(csrfToken.cloneNode());
 
       document.body.appendChild(form);
       form.submit();
