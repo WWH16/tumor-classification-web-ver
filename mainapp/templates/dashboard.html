@@ -19,8 +19,8 @@
   <!-- Total Classifications -->
   <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
     <div class="card-body flex flex-row items-center gap-4">
-      <div class="text-blue-600 text-4xl">
-        <i class="material-icons">science</i>
+      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100">
+        <i class="material-icons text-blue-600 text-4xl">science</i>
       </div>
       <div>
         <p class="text-sm text-gray-500">Total Classifications</p>
@@ -33,8 +33,8 @@
   <!-- This Month -->
   <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
     <div class="card-body flex flex-row items-center gap-4">
-      <div class="text-green-600 text-4xl">
-        <i class="material-icons">today</i>
+      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100">
+        <i class="material-icons text-green-600 text-4xl">today</i>
       </div>
       <div>
         <p class="text-sm text-gray-500">This Month</p>
@@ -47,8 +47,8 @@
   <!-- Avg Confidence -->
   <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
     <div class="card-body flex flex-row items-center gap-4">
-      <div class="text-purple-600 text-4xl">
-        <i class="material-icons">trending_up</i>
+      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100">
+        <i class="material-icons text-purple-600 text-4xl">trending_up</i>
       </div>
       <div>
         <p class="text-sm text-gray-500">Avg Confidence</p>
@@ -63,8 +63,8 @@
   <!-- This Week -->
   <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
     <div class="card-body flex flex-row items-center gap-4">
-      <div class="text-teal-600 text-4xl">
-        <i class="material-icons">calendar_today</i>
+      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-teal-100">
+        <i class="material-icons text-teal-600 text-4xl">calendar_today</i>
       </div>
       <div>
         <p class="text-sm text-gray-500">This Week</p>
@@ -75,19 +75,14 @@
   </div>
 </div>
 
-  <!-- Statistics Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    {% comment %} Stats cards {% endcomment %}
-    {% for stat in stats %}  [
-      {'icon':'science','color':'text-blue-600','label':'Total Classifications','value':total_classifications,'desc':'All time'},
-      {'icon':'today','color':'text-green-600','label':'This Month','value':month_classifications,'desc':month_change|stringformat:"s%% from last month"},
-      {'icon':'trending_up','color':'text-purple-600','label':'Avg Confidence','value':avg_confidence|default_if_none:0|floatformat:1|stringformat:"s%%",'desc':'Classification accuracy'},
-      {'icon':'calendar_today','color':'text-teal-600','label':'This Week','value':week_classifications,'desc':'Last 7 days'}
-    ] %}
+<!-- Dynamic Statistics Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+  {% comment %} Stats cards {% endcomment %}
+  {% for stat in stats %}
     <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
       <div class="card-body flex flex-row items-center gap-4">
-        <div class="{{ stat.color }} text-4xl">
-          <i class="material-icons">{{ stat.icon }}</i>
+        <div class="flex items-center justify-center w-12 h-12 rounded-full {{ stat.bg_color }}">
+          <i class="material-icons {{ stat.color }} text-4xl">{{ stat.icon }}</i>
         </div>
         <div>
           <p class="text-sm text-gray-500">{{ stat.label }}</p>
@@ -96,8 +91,9 @@
         </div>
       </div>
     </div>
-    {% endfor %}
-  </div>
+  {% endfor %}
+</div>
+
 
   <!-- Charts Section -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
