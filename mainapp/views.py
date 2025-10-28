@@ -137,6 +137,11 @@ def history(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Compute database-wide average confidence (use 0 if no records)
+    avg_conf = MRIClassification.objects.aggregate(avg_confidence=Avg('confidence'))['avg_confidence'] or 0
+    # convert to percentage for display (e.g. 0.85 -> 85.0)
+    avg_confidence = avg_conf * 100
+
     context = {
         'page_obj': page_obj,
         'total_count': total_count,
@@ -147,6 +152,7 @@ def history(request):
         'sort_by': sort_by,
         'all_diagnoses': all_diagnoses,
         'all_genders': all_genders,
+        'avg_confidence': avg_confidence,
     }
 
     return render(request, 'history.html', context)

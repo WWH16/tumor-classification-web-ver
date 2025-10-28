@@ -38,21 +38,16 @@
       <div class="stat-desc">Currently viewing</div>
     </div>
 
-    <div class="stat">
-      <div class="stat-figure text-accent">
-        <i class="material-icons text-4xl">science</i>
-      </div>
-      <div class="stat-title">Avg Confidence</div>
-      <div class="stat-value text-accent">
-        {% widthratio page_obj.object_list|length 1 1 as count %}
-        {% if count > 0 %}
-          {{ page_obj.object_list.0.confidence_percentage|floatformat:0 }}%
-        {% else %}
-          0%
-        {% endif %}
-      </div>
-      <div class="stat-desc">Classification accuracy</div>
-    </div>
+<div class="stat">
+  <div class="stat-figure text-accent">
+    <i class="material-icons text-4xl">science</i>
+  </div>
+  <div class="stat-title">Avg Confidence</div>
+  <div class="stat-value text-accent">
+    {{ avg_confidence|default:0|floatformat:0 }}%
+  </div>
+  <div class="stat-desc">Classification accuracy</div>
+</div>
   </div>
 
   <!-- Search & Filters -->
