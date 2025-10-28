@@ -80,23 +80,17 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <select name="diagnosis" class="select select-bordered">
-            <option value="">All Diagnoses</option>
-            {% for diagnosis in all_diagnoses %}
-              <option value="{{ diagnosis }}" {% if diagnosis_filter == diagnosis %}selected{% endif %}>
-                {{ diagnosis }}
-              </option>
-            {% endfor %}
-          </select>
+            <select name="diagnosis" class="select select-bordered">
+              <option value="">All Diagnoses</option>
+              <option value="Tumor" {% if diagnosis_filter == "Tumor" %}selected{% endif %}>Tumor</option>
+              <option value="No Tumor" {% if diagnosis_filter == "No Tumor" %}selected{% endif %}>No Tumor</option>
+            </select>
 
-          <select name="gender" class="select select-bordered">
-            <option value="">All Genders</option>
-            {% for gender in all_genders %}
-              <option value="{{ gender }}" {% if gender_filter == gender %}selected{% endif %}>
-                {{ gender }}
-              </option>
-            {% endfor %}
-          </select>
+            <select name="gender" class="select select-bordered">
+              <option value="">All Genders</option>
+              <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
+              <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
+            </select>
 
           <select name="date_range" class="select select-bordered">
             <option value="">All Time</option>
@@ -128,36 +122,45 @@
     </div>
   </div>
 
-  <!-- Active Filters Badges -->
-  {% if search_query or diagnosis_filter or gender_filter or date_range %}
-    <div class="flex flex-wrap gap-2 items-center">
-      <span class="text-sm font-medium">Active Filters:</span>
-      {% if search_query %}
-        <div class="badge badge-primary gap-2">
-          Search: {{ search_query }}
-          <a href="?{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
-        </div>
-      {% endif %}
-      {% if diagnosis_filter %}
-        <div class="badge badge-secondary gap-2">
-          Diagnosis: {{ diagnosis_filter }}
-          <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
-        </div>
-      {% endif %}
-      {% if gender_filter %}
-        <div class="badge badge-accent gap-2">
-          Gender: {{ gender_filter }}
-          <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-white">✕</a>
-        </div>
-      {% endif %}
-      {% if date_range %}
-        <div class="badge badge-info gap-2">
-          Date: {{ date_range|title }}
-          <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}{% endif %}" class="text-white">✕</a>
-        </div>
-      {% endif %}
-    </div>
-  {% endif %}
+<!-- Active Filters Badges -->
+{% if search_query or diagnosis_filter or gender_filter or date_range %}
+  <div class="flex flex-wrap gap-2 items-center mt-2">
+    <span class="text-sm font-medium">Active Filters:</span>
+
+    {% if search_query %}
+      <span class="badge badge-outline badge-sm flex items-center gap-1">
+        <i class="material-icons text-sm">search</i>
+        {{ search_query }}
+        <a href="?{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+      </span>
+    {% endif %}
+
+    {% if diagnosis_filter %}
+      <span class="badge badge-outline badge-sm flex items-center gap-1">
+        <i class="material-icons text-sm">medical_services</i>
+        {{ diagnosis_filter }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+      </span>
+    {% endif %}
+
+    {% if gender_filter %}
+      <span class="badge badge-outline badge-sm flex items-center gap-1">
+        <i class="material-icons text-sm">person</i>
+        {{ gender_filter }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+      </span>
+    {% endif %}
+
+    {% if date_range %}
+      <span class="badge badge-outline badge-sm flex items-center gap-1">
+        <i class="material-icons text-sm">calendar_today</i>
+        {{ date_range|title }}
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+      </span>
+    {% endif %}
+  </div>
+{% endif %}
+
 
   <!-- Records Table -->
   <div class="card bg-white shadow rounded-md">
@@ -201,17 +204,8 @@
                   <div class="badge badge-ghost badge-sm">{{ classification.gender }}</div>
                 </td>
                 <td>{{ classification.predicted_class }}</td>
-                <td>
-                  <div class="flex items-center justify-center">
-                    <svg class="w-12 h-12" viewBox="0 0 36 36" style="--value:{{ classification.confidence_percentage|floatformat:0 }}; --prog-color:{{ classification.confidence_color }};">
-                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="4"></circle>
-                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--prog-color)" stroke-width="4" stroke-linecap="round"
-                              style="stroke-dasharray:100; stroke-dashoffset:100; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset .6s ease, stroke .25s ease;"></circle>
-                      <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="9" fill="var(--prog-color)" class="font-bold">
-                        {{ classification.confidence_percentage|floatformat:0 }}%
-                      </text>
-                    </svg>
-                  </div>
+                <td class="text-center align-middle font-semibold text-lg" style="color: {{ classification.confidence_color }};">
+                  {{ classification.confidence_percentage|default:0|floatformat:0 }}%
                 </td>
                 <td class="text-sm">
                   {{ classification.date_uploaded|date:"M d, Y" }}
