@@ -14,65 +14,89 @@
     </div>
   </div>
 
+<!-- Statistics Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <!-- Total Classifications -->
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
+    <div class="card-body flex flex-row items-center gap-4">
+      <div class="text-blue-600 text-4xl">
+        <i class="material-icons">science</i>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">Total Classifications</p>
+        <h3 class="text-xl font-semibold">{{ total_classifications }}</h3>
+        <p class="text-xs opacity-70">All time</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- This Month -->
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
+    <div class="card-body flex flex-row items-center gap-4">
+      <div class="text-green-600 text-4xl">
+        <i class="material-icons">today</i>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">This Month</p>
+        <h3 class="text-xl font-semibold">{{ month_classifications }}</h3>
+        <p class="text-xs opacity-70">{{ month_change }}% from last month</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avg Confidence -->
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
+    <div class="card-body flex flex-row items-center gap-4">
+      <div class="text-purple-600 text-4xl">
+        <i class="material-icons">trending_up</i>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">Avg Confidence</p>
+        <h3 class="text-xl font-semibold">
+          {{ avg_confidence|default_if_none:0|floatformat:1 }}%
+        </h3>
+        <p class="text-xs opacity-70">Classification accuracy</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- This Week -->
+  <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
+    <div class="card-body flex flex-row items-center gap-4">
+      <div class="text-teal-600 text-4xl">
+        <i class="material-icons">calendar_today</i>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500">This Week</p>
+        <h3 class="text-xl font-semibold">{{ week_classifications }}</h3>
+        <p class="text-xs opacity-70">Last 7 days</p>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Statistics Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Total Classifications -->
+    {% comment %} Stats cards {% endcomment %}
+    {% for stat in stats %}  [
+      {'icon':'science','color':'text-blue-600','label':'Total Classifications','value':total_classifications,'desc':'All time'},
+      {'icon':'today','color':'text-green-600','label':'This Month','value':month_classifications,'desc':month_change|stringformat:"s%% from last month"},
+      {'icon':'trending_up','color':'text-purple-600','label':'Avg Confidence','value':avg_confidence|default_if_none:0|floatformat:1|stringformat:"s%%",'desc':'Classification accuracy'},
+      {'icon':'calendar_today','color':'text-teal-600','label':'This Week','value':week_classifications,'desc':'Last 7 days'}
+    ] %}
     <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
       <div class="card-body flex flex-row items-center gap-4">
-        <div class="text-blue-600 text-4xl">
-          <i class="material-icons">science</i>
+        <div class="{{ stat.color }} text-4xl">
+          <i class="material-icons">{{ stat.icon }}</i>
         </div>
         <div>
-          <p class="text-sm text-gray-500">Total Classifications</p>
-          <h3 class="text-xl font-semibold">{{ total_classifications }}</h3>
-          <p class="text-xs opacity-70">All time</p>
+          <p class="text-sm text-gray-500">{{ stat.label }}</p>
+          <h3 class="text-xl font-semibold">{{ stat.value }}</h3>
+          <p class="text-xs opacity-70">{{ stat.desc }}</p>
         </div>
       </div>
     </div>
-
-    <!-- This Month -->
-    <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
-      <div class="card-body flex flex-row items-center gap-4">
-        <div class="text-green-600 text-4xl">
-          <i class="material-icons">today</i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">This Month</p>
-          <h3 class="text-xl font-semibold">{{ month_classifications }}</h3>
-          <p class="text-xs opacity-70">{{ month_change }}% from last month</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Avg Confidence -->
-    <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
-      <div class="card-body flex flex-row items-center gap-4">
-        <div class="text-purple-600 text-4xl">
-          <i class="material-icons">trending_up</i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">Avg Confidence</p>
-          <h3 class="text-xl font-semibold">
-            {{ avg_confidence|default_if_none:0|floatformat:1 }}%
-          </h3>
-          <p class="text-xs opacity-70">Classification accuracy</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- This Week -->
-    <div class="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300">
-      <div class="card-body flex flex-row items-center gap-4">
-        <div class="text-teal-600 text-4xl">
-          <i class="material-icons">calendar_today</i>
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">This Week</p>
-          <h3 class="text-xl font-semibold">{{ week_classifications }}</h3>
-          <p class="text-xs opacity-70">Last 7 days</p>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 
   <!-- Charts Section -->
@@ -82,51 +106,13 @@
     <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300">
       <div class="card-body">
         <h2 class="card-title flex items-center gap-2">
-          <i class="material-icons text-gray-700">pie_chart</i>
+          <i class="material-icons text-gray-700">bar_chart</i>
           Diagnosis Distribution
         </h2>
         <div class="divider my-2"></div>
+
         {% if diagnosis_stats %}
           <canvas id="diagnosisChart" class="w-full h-64"></canvas>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-          <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-          <script>
-            const ctx = document.getElementById('diagnosisChart').getContext('2d');
-            const labels = [{% for stat in diagnosis_stats %}"{{ stat.predicted_class }}",{% endfor %}];
-            const data = [{% for stat in diagnosis_stats %}{{ stat.count }},{% endfor %}];
-            new Chart(ctx, {
-              type: 'bar',
-              data: {
-                labels: labels,
-                datasets: [{
-                  label: 'Classifications',
-                  data: data,
-                  backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                  borderRadius: 6,
-                  barPercentage: 0.6
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  legend: { display: false },
-                  tooltip: { callbacks: { label: ctx => ctx.dataset.label + ": " + ctx.raw } },
-                  datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    color: '#374151',
-                    font: { weight: 'bold' },
-                    formatter: value => value
-                  }
-                },
-                scales: {
-                  x: { grid: { display: false }, ticks: { color: '#4B5563' } },
-                  y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { color: '#4B5563', stepSize: 1 } }
-                }
-              },
-              plugins: [ChartDataLabels]
-            });
-          </script>
         {% else %}
           <div class="text-center py-8 text-gray-400">
             <i class="material-icons text-6xl">insights</i>
@@ -185,53 +171,6 @@
       <div class="divider my-2"></div>
       {% if daily_activity %}
         <canvas id="activityLineChart" class="w-full h-64"></canvas>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-        <script>
-          const lineCtx = document.getElementById('activityLineChart').getContext('2d');
-          const activityLabels = [{% for day in daily_activity %}"{{ day.date|date:'M d' }}",{% endfor %}];
-          const activityData = [{% for day in daily_activity %}{{ day.count }},{% endfor %}];
-          new Chart(lineCtx, {
-            type: 'line',
-            data: {
-              labels: activityLabels,
-              datasets: [{
-                label: 'Classifications',
-                data: activityData,
-                fill: false,
-                borderColor: 'rgba(16, 185, 129, 0.8)',
-                backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                tension: 0.3,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                pointBackgroundColor: 'rgba(16, 185, 129, 0.8)'
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    label: function(context) { return context.dataset.label + ": " + context.raw; }
-                  }
-                },
-                datalabels: {
-                  anchor: 'end',
-                  align: 'top',
-                  color: '#374151',
-                  font: { weight: 'bold' },
-                  formatter: value => value
-                }
-              },
-              scales: {
-                x: { grid: { display: false }, ticks: { color: '#4B5563', maxTicksLimit: 10 } },
-                y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { color: '#4B5563', stepSize: 2 } }
-              }
-            },
-            plugins: [ChartDataLabels]
-          });
-        </script>
       {% else %}
         <div class="text-center py-8 text-gray-400">
           <i class="material-icons text-6xl">show_chart</i>
@@ -267,4 +206,99 @@
   </div>
 
 </div>
+
+<!-- Chart.js Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  // ==== Diagnosis Distribution (Bar Chart) ====
+  {% if diagnosis_stats %}
+  const diagnosisCtx = document.getElementById('diagnosisChart').getContext('2d');
+  new Chart(diagnosisCtx, {
+    type: 'bar',
+    data: {
+      labels: [{% for stat in diagnosis_stats %}"{{ stat.predicted_class }}",{% endfor %}],
+      datasets: [{
+        label: 'Classifications',
+        data: [{% for stat in diagnosis_stats %}{{ stat.count }},{% endfor %}],
+        backgroundColor: [
+          'rgba(34,197,94,0.7)',
+          'rgba(234,179,8,0.7)',
+          'rgba(239,68,68,0.7)',
+          'rgba(59,130,246,0.7)',
+          'rgba(139,92,246,0.7)'
+        ],
+        borderRadius: 8,
+        barPercentage: 0.6
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 800, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true },
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          color: '#374151',
+          font: { weight: 'bold' },
+          formatter: value => value
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#4B5563' } },
+        y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { color: '#4B5563' } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+  {% endif %}
+
+  // ==== Activity Timeline (Line Chart) ====
+  {% if daily_activity %}
+  const activityCtx = document.getElementById('activityLineChart').getContext('2d');
+  new Chart(activityCtx, {
+    type: 'line',
+    data: {
+      labels: [{% for day in daily_activity %}"{{ day.date|date:'M d' }}",{% endfor %}],
+      datasets: [{
+        label: 'Classifications',
+        data: [{% for day in daily_activity %}{{ day.count }},{% endfor %}],
+        borderColor: 'rgba(16, 185, 129, 0.8)',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: 'rgba(16, 185, 129, 0.8)'
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 900, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true },
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          color: '#374151',
+          font: { weight: 'bold' },
+          formatter: value => value
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#4B5563', maxTicksLimit: 10 } },
+        y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { color: '#4B5563' } }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+  {% endif %}
+});
+</script>
 {% endblock %}
