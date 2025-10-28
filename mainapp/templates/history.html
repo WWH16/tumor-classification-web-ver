@@ -181,9 +181,9 @@
                 <th>{{ forloop.counter|add:page_obj.start_index|add:"-1" }}</th>
                 <td>
                   <div class="flex items-center gap-3">
-                    <div class="avatar placeholder">
-                      <div class="bg-blue-600 text-primary-content rounded-full w-10">
-                        <span class="text-xs">{{ classification.full_name.0|upper }}</span>
+                    <div class="avatar">
+                      <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                        <span class="text-xs font-bold">{{ classification.full_name.0|upper }}</span>
                       </div>
                     </div>
                     <div>
