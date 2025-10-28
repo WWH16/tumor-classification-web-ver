@@ -4,7 +4,7 @@
 {% block title %}MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto p-0">
+<div class="max-w-7xl mx-auto p-4">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Form -->
     <div class="lg:col-span-2">
@@ -20,8 +20,13 @@
               <label class="label">
                 <span class="label-text font-medium">Full Name <span class="text-error">*</span></span>
               </label>
-              <input type="text" name="full_name" required placeholder="Enter patient's full name"
-                     class="input input-bordered w-full"/>
+              <input
+                type="text"
+                name="full_name"
+                required
+                placeholder="Enter patient's full name"
+                class="input input-bordered w-full"
+              />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -29,8 +34,15 @@
                 <label class="label">
                   <span class="label-text font-medium">Age <span class="text-error">*</span></span>
                 </label>
-                <input type="number" name="age" required placeholder="Age" min="1" max="120"
-                       class="input input-bordered w-full"/>
+                <input
+                  type="number"
+                  name="age"
+                  required
+                  placeholder="Age"
+                  min="1"
+                  max="120"
+                  class="input input-bordered w-full"
+                />
               </div>
               <div>
                 <label class="label">
@@ -49,8 +61,12 @@
                 <span class="label-text font-medium">Medical History</span>
                 <span class="label-text-alt text-gray-500">(Optional)</span>
               </label>
-              <textarea name="history" placeholder="Enter relevant medical history..." rows="3"
-                        class="textarea textarea-bordered w-full"></textarea>
+              <textarea
+                name="history"
+                placeholder="Enter relevant medical history..."
+                rows="3"
+                class="textarea textarea-bordered w-full"
+              ></textarea>
             </div>
 
             <div class="divider">MRI Scan Upload</div>
@@ -59,9 +75,14 @@
               <label class="label">
                 <span class="label-text font-medium">Upload MRI Image <span class="text-error">*</span></span>
               </label>
-              <input type="file" name="image" id="mriUpload"
-                     class="file-input file-input-bordered file-input-primary w-full"
-                     accept="image/*" required/>
+              <input
+                type="file"
+                name="image"
+                id="mriUpload"
+                class="file-input file-input-bordered w-full"
+                accept="image/*"
+                required
+              />
             </div>
 
             <div>
@@ -69,18 +90,24 @@
                 <span class="label-text font-medium">Additional Notes</span>
                 <span class="label-text-alt text-gray-500">(Optional)</span>
               </label>
-              <textarea name="notes" placeholder="Any additional information..." rows="2"
-                        class="textarea textarea-bordered w-full"></textarea>
+              <textarea
+                name="notes"
+                placeholder="Any additional information..."
+                rows="2"
+                class="textarea textarea-bordered w-full"
+              ></textarea>
             </div>
 
-            <input type="hidden" name="process_by" value="{{ request.user.id }}">
+            <input type="hidden" name="process_by" value="{{ request.user.id }}" />
 
             <div class="card-actions justify-end gap-3 pt-4">
-              <button type="reset" class="btn btn-outline btn-ghost">
-                <i class="material-icons">clear</i> Clear Form
+              <button type="reset" class="btn btn-outline flex items-center gap-2">
+                <span class="material-icons">clear</span>
+                Clear Form
               </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="material-icons">send</i> Detect Tumor
+              <button type="submit" class="btn btn-primary flex items-center gap-2">
+                <span class="material-icons">send</span>
+                Detect Tumor
               </button>
             </div>
           </form>
@@ -94,29 +121,32 @@
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <h3 class="card-title text-lg">MRI Preview</h3>
-          <div id="imagePreview" class="aspect-square bg-base-200 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center">
+          <div
+            id="imagePreview"
+            class="aspect-square bg-base-200 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center"
+          >
             <div class="text-center p-4">
-              <i class="material-icons text-5xl text-base-content opacity-40 mb-2">image</i>
+              <span class="material-icons text-5xl text-base-content opacity-40 mb-2">image</span>
               <p class="text-sm text-base-content opacity-60">No image uploaded</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="alert alert-info shadow-lg">
+      <div class="alert alert-info text-info-content shadow-lg">
+        <span class="material-icons">info</span>
         <div>
-          <i class="material-icons">info</i>
-          <div>
-            <h3 class="font-bold">AI Classification</h3>
-            <p class="text-sm">Our AI model detects tumors in MRI scans. Results are for reference only and should be verified by medical professionals.</p>
-          </div>
+          <h3 class="font-bold">AI Classification</h3>
+          <p class="text-sm">
+            Our AI model detects tumors in MRI scans. Results are for reference only and should be verified by medical professionals.
+          </p>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Result Modal -->
+<!-- Result Modal (must be at end of body in DaisyUI v5) -->
 <dialog id="resultModal" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box max-w-4xl w-full">
     <form method="dialog">
@@ -135,7 +165,12 @@
         <span class="text-sm font-medium">Confidence Level</span>
         <span id="resultConfidence" class="text-sm font-bold">90%</span>
       </div>
-      <progress class="progress progress-success w-full h-3" id="resultBar" value="90" max="100"></progress>
+      <progress
+        class="progress progress-success w-full h-3"
+        id="resultBar"
+        value="90"
+        max="100"
+      ></progress>
     </div>
 
     <div class="stats stats-vertical sm:stats-horizontal shadow w-full mb-6">
@@ -153,20 +188,22 @@
       </div>
     </div>
 
-    <div id="modalImagePreview" class="w-full bg-base-200 rounded-lg flex items-center justify-center overflow-hidden mb-6" style="max-height:400px;">
+    <div
+      id="modalImagePreview"
+      class="w-full bg-base-200 rounded-lg flex items-center justify-center overflow-hidden mb-6"
+      style="max-height: 400px;"
+    >
       <span class="text-base-content opacity-60 text-sm p-4">MRI Image Preview</span>
     </div>
 
-    <div class="modal-action">
-      <form method="dialog" class="w-full flex flex-col sm:flex-row gap-3">
-        <button class="btn btn-outline flex-1">Close</button>
-        <button type="button" onclick="downloadReport()" class="btn btn-success flex-1">
-          <i class="material-icons">picture_as_pdf</i> Download PDF
-        </button>
-        <button type="button" onclick="printReport()" class="btn btn-info flex-1">
-          <i class="material-icons">print</i> Print
-        </button>
-      </form>
+    <div class="modal-action flex flex-col sm:flex-row gap-3">
+      <button class="btn btn-outline flex-1">Close</button>
+      <button type="button" onclick="downloadReport()" class="btn btn-success flex-1 flex items-center gap-2">
+        <span class="material-icons">picture_as_pdf</span> Download PDF
+      </button>
+      <button type="button" onclick="printReport()" class="btn btn-info flex-1 flex items-center gap-2">
+        <span class="material-icons">print</span> Print
+      </button>
     </div>
 
     <div id="reportContent" class="hidden"></div>
@@ -226,10 +263,10 @@ form.addEventListener('submit', async e => {
       );
       resultModal.showModal();
     } else {
-      alert("Failed to classify MRI. Try again.");
+      Swal.fire("Error", "Failed to classify MRI. Try again.", "error");
     }
   } catch (err) {
-    alert("Error occurred while classifying MRI.");
+    Swal.fire("Error", "Error occurred while classifying MRI.", "error");
   } finally {
     btn.innerHTML = origText;
     btn.disabled = false;
@@ -256,9 +293,9 @@ function fillModalReport(name, age, gender, history, resultText, confidence, img
     bar.className = 'progress progress-success w-full h-3';
   }
 
-  document.getElementById('modalImagePreview').innerHTML = imgSrc ?
-    `<img src="${imgSrc}" class="w-full h-auto rounded-lg" alt="MRI Scan" />` :
-    '<span class="text-base-content opacity-60 text-sm p-4">MRI Image Preview</span>';
+  document.getElementById('modalImagePreview').innerHTML = imgSrc
+    ? `<img src="${imgSrc}" class="w-full h-auto rounded-lg" alt="MRI Scan" />`
+    : '<span class="text-base-content opacity-60 text-sm p-4">MRI Image Preview</span>';
 }
 </script>
 {% endblock %}

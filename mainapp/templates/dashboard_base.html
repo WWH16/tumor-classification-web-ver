@@ -5,15 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Dashboard{% endblock %}</title>
-    <link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="{% static 'user/images/logo.png' %}">
-  <!-- Tailwind + DaisyUI -->
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
+
+  <!-- DaisyUI v5 -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+
+  <!-- Tailwind CSS v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     /* Sidebar transition and behavior */
@@ -36,6 +41,34 @@
     .sidebar.collapsed .sidebar-text {
       opacity: 0;
     }
+
+    /* Fix for drawer overlay z-index */
+    .drawer-overlay {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Active state styling with left border */
+    .menu li > a.active {
+      background-color: #eff6ff !important;
+      color: #2563eb !important;
+      font-weight: 500;
+      border-left: 4px solid #3b82f6;
+      padding-left: calc(1rem - 4px);
+    }
+
+    .menu li > a.active i.material-icons {
+      color: #2563eb !important;
+    }
+
+    /* Hover state */
+    .menu li > a:hover:not(.active) {
+      background-color: #f3f4f6;
+    }
+
+    /* Prevent content shift when drawer opens */
+    html {
+      overflow-y: scroll;
+    }
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -43,13 +76,13 @@
 
 <body class="min-h-screen bg-base-100">
 
-<!-- ✅ Drawer Structure -->
+<!-- Drawer Structure -->
 <div class="drawer">
   <input id="my-drawer" type="checkbox" class="drawer-toggle" />
 
   <!-- Drawer Content -->
-  <div class="drawer-content">
-    <!-- ✅ Navbar -->
+  <div class="drawer-content flex flex-col">
+    <!-- Navbar -->
     <div class="navbar bg-base-100 shadow-md sticky top-0 z-50">
       <div class="flex-none">
         <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
@@ -61,7 +94,7 @@
         </label>
       </div>
       <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl font-semibold">
+        <a class="btn btn-ghost text-xl font-semibold normal-case">
           <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-6 h-6">
           MRI Classifier
         </a>
@@ -69,87 +102,94 @@
       <div class="flex-none gap-2">
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
-            <div class="bg-base-300 border-base-300 text-base-content rounded-full w-10">
+            <div class="bg-base-300 text-base-content rounded-full w-10 flex items-center justify-center">
               <span class="text-xs">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
             </div>
           </label>
-            <!-- In the top navbar dropdown menu -->
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li class="menu-title">
-                <span>{{ user.get_full_name }}</span>
-              </li>
-              <li>
-                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                  <i class="material-icons text-sm">dashboard</i>
-                  Dashboard
-                </a>
-              </li>
-              <li><a href="#"><i class="material-icons text-sm">settings</i> Settings</a></li>
-              <li>
-                <a href="{% url 'logout_view' %}" class="text-error" onclick="confirmLogout(event)">
-                  <i class="material-icons text-sm">logout</i>
-                  Logout
-                </a>
-              </li>
-            </ul>
+          <!-- Top navbar dropdown menu -->
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li class="menu-title">
+              <span>{{ user.get_full_name }}</span>
+            </li>
+            <li>
+              <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="material-icons text-sm">dashboard</i>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i class="material-icons text-sm">settings</i>
+                Settings
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'logout_view' %}" class="text-error" onclick="confirmLogout(event)">
+                <i class="material-icons text-sm">logout</i>
+                Logout
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- ✅ Main Page Content -->
-    <div class="max-w-7xl mx-auto p-6">
-      {% block content %}
-      {% endblock %}
+    <!-- Main Page Content -->
+    <div class="flex-1">
+      <div class="max-w-7xl mx-auto p-6">
+        {% block content %}
+        {% endblock %}
+      </div>
     </div>
   </div>
 
-  <!-- ✅ Drawer Sidebar -->
+  <!-- Drawer Sidebar -->
   <div class="drawer-side z-50">
-    <label for="my-drawer" class="drawer-overlay"></label>
+    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content">
 
-      <!-- Sidebar Header -->
+      <!-- Sidebar Header with Gradient -->
       <li class="mb-4">
-        <div class="flex items-center gap-3 p-3 bg-blue-600 hover:bg-blue-700 text-primary-content rounded-lg">
+        <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all duration-300">
           <div class="avatar placeholder">
-            <div class="bg-base-100 border-base-300 text-base-content rounded-full w-12">
-              <span class="text-lg">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
+            <div class="bg-white text-blue-600 rounded-full w-12 flex items-center justify-center">
+              <span class="text-lg font-semibold">{{ user.first_name.0|upper }}{{ user.last_name.0|upper }}</span>
             </div>
           </div>
-          <div>
-            <p class="font-bold">{{ user.get_full_name }}</p>
-            <p class="text-xs opacity-80">{{ user.email }}</p>
+          <div class="flex-1 min-w-0">
+            <p class="font-bold truncate">{{ user.get_full_name }}</p>
+            <p class="text-xs opacity-90 truncate">{{ user.email }}</p>
           </div>
         </div>
       </li>
 
-        <!-- In the drawer sidebar - Navigation section -->
-        <li class="menu-title">
-          <span>Navigation</span>
-        </li>
-        <li>
-          <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            <i class="material-icons">dashboard</i>
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'app' %}" class="{% if request.resolver_match.url_name == 'app' %}active{% endif %}">
-            <img src="{% if request.resolver_match.url_name == 'app' %}{% static 'user/images/mri(1).png' %}{% else %}{% static 'user/images/mri.png' %}{% endif %}"
-                 alt="MRI Logo" class="w-6 h-6">
-            MRI Classification
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'history' %}" class="{% if 'history' in request.resolver_match.url_name %}active{% endif %}">
-            <i class="material-icons">history</i>
-            History
-          </a>
-        </li>
-        <li>
+      <!-- Navigation section -->
+      <li class="menu-title">
+        <span>Navigation</span>
+      </li>
+      <li>
+        <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="material-icons">dashboard</i>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'app' %}" class="{% if request.resolver_match.url_name == 'app' %}active{% endif %}">
+          <img src="{% if request.resolver_match.url_name == 'app' %}{% static 'user/images/mri(1).png' %}{% else %}{% static 'user/images/mri.png' %}{% endif %}"
+               alt="MRI Logo" class="w-6 h-6">
+          MRI Classification
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'history' %}" class="{% if 'history' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="material-icons">history</i>
+          History
+        </a>
+      </li>
 
       <div class="divider"></div>
 
+      <!-- Account section -->
       <li class="menu-title">
         <span>Account</span>
       </li>
@@ -174,9 +214,8 @@
     </ul>
   </div>
 </div>
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- SweetAlert2 Messages -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     {% if messages %}
@@ -195,6 +234,7 @@
   });
 </script>
 
+<!-- Logout Confirmation -->
 <script>
   function confirmLogout(event) {
     event.preventDefault();
@@ -212,6 +252,7 @@
     });
   }
 </script>
+
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>
