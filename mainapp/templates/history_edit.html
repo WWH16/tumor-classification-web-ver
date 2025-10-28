@@ -4,71 +4,58 @@
 {% block title %}Edit Record - {{ classification.full_name }}{% endblock %}
 
 {% block content %}
-<div class="space-y-6 max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto space-y-6">
+
   <!-- Back Button -->
   <div class="flex items-center gap-4">
-    <a href="{% url 'history_detail' classification.pk %}" class="btn btn-ghost">
+    <a href="{% url 'history_detail' classification.pk %}" class="btn btn-ghost btn-sm gap-2 shadow-md hover:shadow-lg rounded-md">
       <i class="material-icons">arrow_back</i>
       Back to Details
     </a>
   </div>
 
   <!-- Edit Form Card -->
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-2xl">
-        <i class="material-icons text-primary">edit</i>
-        Edit Classification Record
-      </h2>
+  <div class="card shadow-lg rounded-xl bg-base-100">
+    <div class="card-body space-y-8">
 
-      <div class="divider"></div>
+      <!-- Title -->
+      <div class="flex items-center gap-2">
+        <i class="material-icons text-blue-600 text-3xl">edit</i>
+        <h2 class="text-2xl font-bold">Edit Classification Record</h2>
+      </div>
 
-      <form method="POST" class="space-y-6">
+      <form method="POST" class="space-y-8">
         {% csrf_token %}
 
-        <!-- Patient Information Section -->
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <i class="material-icons">person</i>
-            Patient Information
-          </h3>
+        <!-- Patient Information -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2">
+            <i class="material-icons text-blue-600 text-xl">person</i>
+            <h3 class="text-lg font-semibold">Patient Information</h3>
+          </div>
 
-          <div class="form-control">
+          <div class="form-control w-full">
             <label class="label">
               <span class="label-text">Full Name <span class="text-error">*</span></span>
             </label>
-            <input
-              type="text"
-              name="full_name"
-              value="{{ classification.full_name }}"
-              placeholder="Enter patient's full name"
-              class="input input-bordered"
-              required
-            />
+            <input type="text" name="full_name" value="{{ classification.full_name }}" placeholder="Enter patient's full name"
+                   class="input input-bordered w-full" required>
           </div>
 
           <div class="grid md:grid-cols-2 gap-4">
-            <div class="form-control">
+            <div class="form-control w-full">
               <label class="label">
                 <span class="label-text">Age <span class="text-error">*</span></span>
               </label>
-              <input
-                type="number"
-                name="age"
-                value="{{ classification.age }}"
-                placeholder="Enter age"
-                class="input input-bordered"
-                min="0"
-                max="150"
-                required
-              />
+              <input type="number" name="age" value="{{ classification.age }}" placeholder="Enter age"
+                     class="input input-bordered w-full" min="0" max="150" required>
             </div>
 
-            <div class="form-control">
+            <div class="form-control w-full">
               <label class="label">
                 <span class="label-text">Gender <span class="text-error">*</span></span>
               </label>
-              <select name="gender" class="select select-bordered" required>
+              <select name="gender" class="select select-bordered w-full" required>
                 <option value="Male" {% if classification.gender == "Male" %}selected{% endif %}>Male</option>
                 <option value="Female" {% if classification.gender == "Female" %}selected{% endif %}>Female</option>
                 <option value="Other" {% if classification.gender == "Other" %}selected{% endif %}>Other</option>
@@ -76,91 +63,84 @@
             </div>
           </div>
 
-          <div class="form-control">
+          <div class="form-control w-full">
             <label class="label">
               <span class="label-text">Medical History</span>
             </label>
-            <textarea
-              name="history"
-              placeholder="Enter patient's medical history..."
-              class="textarea textarea-bordered h-32"
-            >{{ classification.history }}</textarea>
-            <label class="label">
-              <span class="label-text-alt">Include relevant medical conditions, medications, allergies, etc.</span>
-            </label>
+            <textarea name="history" placeholder="Enter patient's medical history..." class="textarea textarea-bordered h-32 w-full">{{ classification.history }}</textarea>
+            <span class="text-sm text-gray-500 mt-1">Include relevant medical conditions, medications, allergies, etc.</span>
           </div>
-        </div>
+        </section>
 
         <div class="divider"></div>
 
-        <!-- Clinical Notes Section -->
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <i class="material-icons">note</i>
-            Clinical Notes
-          </h3>
+        <!-- Clinical Notes -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2">
+            <i class="material-icons text-blue-600 text-xl">note</i>
+            <h3 class="text-lg font-semibold">Clinical Notes</h3>
+          </div>
 
-          <div class="form-control">
+          <div class="form-control w-full">
             <label class="label">
               <span class="label-text">Additional Notes</span>
             </label>
-            <textarea
-              name="notes"
-              placeholder="Add clinical observations, recommendations, or additional notes..."
-              class="textarea textarea-bordered h-32"
-            >{{ classification.notes }}</textarea>
+            <textarea name="notes" placeholder="Add clinical observations, recommendations, or additional notes..." class="textarea textarea-bordered h-32 w-full">{{ classification.notes }}</textarea>
           </div>
-        </div>
+        </section>
 
         <div class="divider"></div>
 
-        <!-- Classification Info (Read-only) -->
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <i class="material-icons">info</i>
-            Classification Results (Read-only)
-          </h3>
+        <!-- Classification Results -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2">
+            <i class="material-icons text-orange-500 text-xl">info</i>
+            <h3 class="text-lg font-semibold">Classification Results</h3>
+          </div>
 
-          <div class="alert">
+          <div class="alert alert-info shadow-lg flex items-center gap-2">
             <i class="material-icons">info</i>
             <span>Classification results cannot be modified. Only patient information and notes can be updated.</span>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="p-4 bg-base-200 rounded-lg">
-              <label class="text-sm text-base-content/60">Predicted Diagnosis</label>
-              <p class="text-lg font-medium mt-1">{{ classification.predicted_class }}</p>
+          <div class="grid md:grid-cols-2 gap-4 mt-2">
+            <!-- Predicted Diagnosis -->
+            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
+              <span class="text-sm text-gray-500">Predicted Diagnosis</span>
+              <span class="text-lg font-medium mt-1">{{ classification.predicted_class }}</span>
             </div>
 
-            <div class="p-4 bg-base-200 rounded-lg">
-              <label class="text-sm text-base-content/60">Confidence</label>
-              <p class="text-lg font-medium mt-1">
-                {{ confidence_percent|default:classification.confidence|default_if_none:0.0|floatformat:2 }}%
-              </p>
+            <!-- Confidence -->
+            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
+              <span class="text-sm text-gray-500">Confidence</span>
+              <span class="text-lg font-medium mt-1">{{ confidence_percent|default:classification.confidence|default_if_none:0.0|floatformat:2 }}%</span>
             </div>
 
-            <div class="p-4 bg-base-200 rounded-lg">
-              <label class="text-sm text-base-content/60">Date Processed</label>
-              <p class="text-lg font-medium mt-1">{{ classification.date_uploaded|date:"M d, Y" }}</p>
+            <!-- Date Processed -->
+            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
+              <span class="text-sm text-gray-500">Date Processed</span>
+              <span class="text-lg font-medium mt-1">{{ classification.date_uploaded|date:"M d, Y" }}</span>
             </div>
 
-            <div class="p-4 bg-base-200 rounded-lg">
-              <label class="text-sm text-base-content/60">Processed By</label>
-              <p class="text-lg font-medium mt-1">{{ classification.process_by.get_full_name }}</p>
+            <!-- Processed By -->
+            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
+              <span class="text-sm text-gray-500">Processed By</span>
+              <span class="text-lg font-medium mt-1">{{ classification.process_by.get_full_name }}</span>
             </div>
           </div>
-        </div>
+        </section>
 
         <!-- Form Actions -->
-        <div class="flex gap-4 justify-end pt-4">
-          <a href="{% url 'history' %}" class="btn btn-ghost">
+        <div class="flex justify-end gap-4 pt-4">
+          <a href="{% url 'history' %}" class="btn btn-ghost flex items-center gap-2">
             Cancel
           </a>
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
             <i class="material-icons">save</i>
             Save Changes
           </button>
         </div>
+
       </form>
     </div>
   </div>
