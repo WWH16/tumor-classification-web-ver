@@ -54,6 +54,8 @@ def signup_view(request):
 
 
 def login_view(request):
+    login_error = None
+
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -61,24 +63,26 @@ def login_view(request):
             password = form.cleaned_data["password"]
 
             try:
-                # ✅ Authenticate using linked User object
                 profile = UserProfile.objects.get(employee_id=employee_id)
                 user = authenticate(request, username=profile.user.username, password=password)
 
                 if user is not None:
                     login(request, user)
                     messages.success(request, f"Welcome back, {user.first_name}!")
-                    return redirect("/app")  # Use your actual dashboard URL name
+                    return redirect("/app")
                 else:
-                    messages.error(request, "Invalid employee ID or password.")
+                    login_error = "Invalid credentials."
             except UserProfile.DoesNotExist:
-                messages.error(request, "Employee ID not found.")
+                login_error = "Invalid credentials."
         else:
-            messages.error(request, "Please fill in all required fields.")
+            login_error = "Invalid credentials."
     else:
         form = LoginForm()
 
-    return render(request, "login.html", {"form": form})
+    return render(request, "login.html", {
+        "form": form,
+        "login_error": login_error
+    })
 
 
 def logout_view(request):

@@ -4,11 +4,6 @@
 
 {% block content %}
 <div class="max-w-[480px] w-full mx-auto mt-16">
-  <!-- <a href="#"><img
-    src="https://readymadeui.com/readymadeui.svg"
-    alt="logo"
-    class="w-40 mb-8 mx-auto block"
-  /></a> -->
   <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
     <h1 class="text-slate-900 text-center text-3xl font-semibold">Sign in</h1>
 
@@ -20,12 +15,15 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Employee ID</label>
         <div class="relative flex items-center">
           <input name="employee_id" id="id_employee_id" type="text" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            class="w-full text-slate-900 text-sm border {% if login_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 rounded-md outline-blue-600"
             placeholder="Enter your employee ID" value="{{ request.POST.employee_id|default:'' }}" />
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
           </svg>
         </div>
+        {% if login_error %}
+        <p class="text-red-500 text-xs mt-1">{{ login_error }}</p>
+        {% endif %}
       </div>
 
       <!-- Password -->
@@ -33,9 +31,8 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Password</label>
         <div class="relative flex items-center">
           <input name="password" id="id_password" type="password" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
-            placeholder="Enter password"
-            minlength="8" />
+            class="w-full text-slate-900 text-sm border {% if login_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 pr-10 rounded-md outline-blue-600"
+            placeholder="Enter password" />
           <button type="button" onclick="togglePassword('id_password', this)"
             class="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
             aria-label="Toggle password visibility">
@@ -44,6 +41,9 @@
             </svg>
           </button>
         </div>
+        {% if login_error %}
+        <p class="text-red-500 text-xs mt-1">{{ login_error }}</p>
+        {% endif %}
       </div>
 
       <div class="!mt-12">
@@ -87,7 +87,7 @@ function togglePassword(inputId, buttonElement) {
   input.focus();
 }
 
-// SweetAlert for Django messages
+// SweetAlert only for success messages
 document.addEventListener("DOMContentLoaded", () => {
   {% if messages %}
     {% for message in messages %}
@@ -101,40 +101,17 @@ document.addEventListener("DOMContentLoaded", () => {
           position: 'top-end',
           timerProgressBar: true
         });
-      {% elif message.tags == 'error' %}
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: "{{ message|escapejs }}",
-          confirmButtonColor: '#006600',
-        }).then(() => {
-          // Focus back on Employee ID input after error
-          const input = document.getElementById('id_employee_id');
-          if (input) input.focus();
-        });
-      {% else %}
-        Swal.fire({
-          icon: 'info',
-          title: "{{ message|escapejs }}",
-          showConfirmButton: false,
-          timer: 2500,
-          toast: true,
-          position: 'top-end',
-          timerProgressBar: true
-        });
       {% endif %}
     {% endfor %}
   {% endif %}
 });
+
 document.getElementById('loginForm').addEventListener('submit', function() {
   const btn = document.getElementById('loginBtn');
   const btnText = document.getElementById('btnText');
   const btnSpinner = document.getElementById('btnSpinner');
 
-  // Disable button to prevent multiple clicks
   btn.disabled = true;
-
-  // Show spinner and hide text
   btnText.classList.add('hidden');
   btnSpinner.classList.remove('hidden');
 });
