@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 class MRIClassification(models.Model):
     full_name = models.CharField(max_length=150)
     age = models.IntegerField()
-    gender = models.CharField(max_length=10)
+    sex = models.CharField(max_length=10)
     history = models.TextField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
