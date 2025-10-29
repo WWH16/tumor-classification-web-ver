@@ -215,18 +215,27 @@ def history_edit_view(request, pk):
 @login_required
 @csrf_exempt
 def history_delete_view(request, pk):
-    classification = get_object_or_404(
-        MRIClassification,
-        pk=pk,
-        process_by=request.user
-    )
-
     if request.method == 'POST':
+        classification = get_object_or_404(
+            MRIClassification,
+            pk=pk,
+            process_by=request.user
+        )
         classification.delete()
-        messages.success(request, 'Record deleted successfully!')
-        return redirect('history')
+        return JsonResponse({
+            "success": True,
+            "message": "Record deleted successfully!"
+        })
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
 
-    return render(request, 'history_delete.html', {'classification': classification})
+@login_required
+@csrf_exempt
+def history_delete_endpoint(request, pk):
+    if request.method == 'POST':
+        classification = get_object_or_404(MRIClassification, pk=pk, process_by=request.user)
+        classification.delete()
+        return JsonResponse({"success": True, "message": "Record deleted successfully!"})
+    return JsonResponse({"success": False, "message": "Invalid request."}, status=400)
 
 
 
