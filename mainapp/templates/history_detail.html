@@ -169,26 +169,28 @@
 
 <script>
 function confirmDelete(pk) {
-  Swal.fire({
-    title: 'Delete Record?',
-    text: "This action cannot be undone!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'Cancel'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = `/history/${pk}/delete/`;
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-      if (csrfToken) form.appendChild(csrfToken.cloneNode());
-      document.body.appendChild(form);
-      form.submit();
-    }
-  });
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Submit POST request without CSRF
+            const deleteUrlTemplate = "{% url 'history_delete' 0 %}";
+            const deleteUrl = deleteUrlTemplate.replace("0", pk);
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = deleteUrl;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
+
 </script>
 {% endblock %}

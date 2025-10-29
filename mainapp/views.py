@@ -16,6 +16,8 @@ import csv
 import os
 from django.db.models import Q
 from datetime import datetime, timedelta
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Load the trained model once at startup
 MODEL_FILENAME = "brain_tumor_vgg16_model.h5"
@@ -211,6 +213,7 @@ def history_edit_view(request, pk):
 
 
 @login_required
+@csrf_exempt
 def history_delete_view(request, pk):
     classification = get_object_or_404(
         MRIClassification,
@@ -224,6 +227,7 @@ def history_delete_view(request, pk):
         return redirect('history')
 
     return render(request, 'history_delete.html', {'classification': classification})
+
 
 
 @login_required
