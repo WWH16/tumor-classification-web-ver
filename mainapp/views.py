@@ -182,6 +182,8 @@ def history_edit_view(request, pk):
         process_by=request.user
     )
 
+    success = False  # flag for showing SweetAlert
+
     if request.method == 'POST':
         classification.full_name = request.POST.get('full_name')
         classification.age = request.POST.get('age')
@@ -190,8 +192,7 @@ def history_edit_view(request, pk):
         classification.notes = request.POST.get('notes')
         classification.save()
 
-        messages.success(request, 'Record updated successfully!')
-        return redirect('history_detail', pk=pk)
+        success = True  # trigger SweetAlert
 
     # Prepare display-ready confidence percent (two decimals)
     raw_conf = classification.confidence if classification.confidence is not None else 0.0
@@ -200,7 +201,6 @@ def history_edit_view(request, pk):
     except (TypeError, ValueError):
         raw_conf_f = 0.0
 
-    # If stored in 0..1 scale, convert to percentage
     if raw_conf_f <= 1:
         confidence_percent = round(raw_conf_f * 100, 2)
     else:
@@ -209,6 +209,7 @@ def history_edit_view(request, pk):
     return render(request, 'history_edit.html', {
         'classification': classification,
         'confidence_percent': confidence_percent,
+        'success': success,
     })
 
 
