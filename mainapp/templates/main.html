@@ -46,10 +46,10 @@
               </div>
               <div>
                 <label class="label">
-                  <span class="label-text font-medium">Gender <span class="text-error">*</span></span>
+                  <span class="label-text font-medium">Sex <span class="text-error">*</span></span>
                 </label>
-                <select name="gender" required class="select select-bordered w-full">
-                  <option value="" disabled selected>Select gender</option>
+                <select name="sex" required class="select select-bordered w-full">
+                  <option value="" disabled selected>Select sex</option>
                   <option>Male</option>
                   <option>Female</option>
                 </select>
@@ -146,7 +146,7 @@
   </div>
 </div>
 
-<!-- Result Modal (must be at end of body in DaisyUI v5) -->
+<!-- Result Modal -->
 <dialog id="resultModal" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box max-w-4xl w-full">
     <form method="dialog">
@@ -183,8 +183,8 @@
         <div class="stat-value text-lg" id="modalPatientAge">35</div>
       </div>
       <div class="stat">
-        <div class="stat-title">Gender</div>
-        <div class="stat-value text-lg" id="modalPatientGender">Male</div>
+        <div class="stat-title">Sex</div>
+        <div class="stat-value text-lg" id="modalPatientSex">Male</div>
       </div>
     </div>
 
@@ -255,7 +255,7 @@ form.addEventListener('submit', async e => {
       fillModalReport(
         formData.get('full_name'),
         formData.get('age'),
-        formData.get('gender'),
+        formData.get('sex'),
         formData.get('history') || 'N/A',
         data.predicted_class,
         (data.confidence * 100).toFixed(2),
@@ -273,13 +273,13 @@ form.addEventListener('submit', async e => {
   }
 });
 
-function fillModalReport(name, age, gender, history, resultText, confidence, imgSrc) {
+function fillModalReport(name, age, sex, history, resultText, confidence, imgSrc) {
   document.getElementById('resultStatus').innerText = resultText;
   document.getElementById('resultConfidence').innerText = confidence + '%';
   document.getElementById('resultBar').value = confidence;
   document.getElementById('modalPatientName').innerText = name;
   document.getElementById('modalPatientAge').innerText = age;
-  document.getElementById('modalPatientGender').innerText = gender;
+  document.getElementById('modalPatientSex').innerText = sex;
 
   const icon = document.getElementById('resultIcon');
   const bar = document.getElementById('resultBar');

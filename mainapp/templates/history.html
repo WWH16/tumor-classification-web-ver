@@ -86,10 +86,10 @@
               <option value="No Tumor" {% if diagnosis_filter == "No Tumor" %}selected{% endif %}>No Tumor</option>
             </select>
 
-            <select name="gender" class="select select-bordered">
+            <select name="sex" class="select select-bordered">
               <option value="">All Sex</option>
-              <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
-              <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
+              <option value="Male" {% if sex_filter == "Male" %}selected{% endif %}>Male</option>
+              <option value="Female" {% if sex_filter == "Female" %}selected{% endif %}>Female</option>
             </select>
 
           <select name="date_range" class="select select-bordered">
@@ -123,7 +123,7 @@
   </div>
 
 <!-- Active Filters Badges -->
-{% if search_query or diagnosis_filter or gender_filter or date_range %}
+{% if search_query or diagnosis_filter or sex_filter or date_range %}
   <div class="flex flex-wrap gap-2 items-center mt-2">
     <span class="text-sm font-medium">Active Filters:</span>
 
@@ -131,7 +131,7 @@
       <span class="badge badge-outline badge-sm flex items-center gap-1">
         <i class="material-icons text-sm">search</i>
         {{ search_query }}
-        <a href="?{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+        <a href="?{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if sex_filter %}sex={{ sex_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
       </span>
     {% endif %}
 
@@ -139,14 +139,14 @@
       <span class="badge badge-outline badge-sm flex items-center gap-1">
         <i class="material-icons text-sm">medical_services</i>
         {{ diagnosis_filter }}
-        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if sex_filter %}sex={{ sex_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
       </span>
     {% endif %}
 
-    {% if gender_filter %}
+    {% if sex_filter %}
       <span class="badge badge-outline badge-sm flex items-center gap-1">
         <i class="material-icons text-sm">person</i>
-        {{ gender_filter }}
+        {{ sex_filter }}
         <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if date_range %}date_range={{ date_range }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
       </span>
     {% endif %}
@@ -155,11 +155,12 @@
       <span class="badge badge-outline badge-sm flex items-center gap-1">
         <i class="material-icons text-sm">calendar_today</i>
         {{ date_range|title }}
-        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if gender_filter %}gender={{ gender_filter }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
+        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if diagnosis_filter %}diagnosis={{ diagnosis_filter }}&{% endif %}{% if sex_filter %}sex={{ sex_filter }}{% endif %}" class="text-gray-500 hover:text-gray-800">✕</a>
       </span>
     {% endif %}
   </div>
 {% endif %}
+
 
 
   <!-- Records Table -->
@@ -203,7 +204,7 @@
 
               <td class="text-center align-middle text-sm">
                 {{ classification.age }} yrs
-                <div class="badge badge-ghost badge-sm mt-1">{{ classification.gender }}</div>
+                <div class="badge badge-ghost badge-sm mt-1">{{ classification.sex }}</div>
               </td>
 
               <td class="text-center align-middle">
@@ -270,13 +271,13 @@
                 <i class="material-icons text-6xl text-gray-200">folder_open</i>
                 <p class="text-lg font-medium">No records found</p>
                 <p class="text-sm text-gray-400">
-                  {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                  {% if search_query or diagnosis_filter or sex_filter or date_range %}
                     Try adjusting your search criteria or filters
                   {% else %}
                     Start by classifying an MRI scan
                   {% endif %}
                 </p>
-                {% if search_query or diagnosis_filter or gender_filter or date_range %}
+                {% if search_query or diagnosis_filter or sex_filter or date_range %}
                   <a href="{% url 'history' %}" class="btn btn-primary">Clear All Filters</a>
                 {% endif %}
               </div>

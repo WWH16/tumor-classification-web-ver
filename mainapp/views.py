@@ -59,7 +59,7 @@ def mri_classification_view(request):
         record = MRIClassification.objects.create(
             full_name=request.POST.get("full_name", "Unknown"),
             age=request.POST.get("age", 0),
-            gender=request.POST.get("gender", "Unknown"),
+            sex=request.POST.get("sex", "Unknown"),
             history=request.POST.get("history", ""),
             notes=request.POST.get("notes", ""),
             predicted_class=predicted_class,
@@ -108,10 +108,10 @@ def history(request):
     if diagnosis_filter:
         classifications = classifications.filter(predicted_class=diagnosis_filter)
 
-    # Gender filter
-    gender_filter = request.GET.get('gender', '')
-    if gender_filter:
-        classifications = classifications.filter(gender=gender_filter)
+    # Sex filter
+    sex_filter = request.GET.get('sex', '')
+    if sex_filter:
+        classifications = classifications.filter(sex=sex_filter)
 
     # Date range filter
     date_range = request.GET.get('date_range', '')
@@ -136,8 +136,7 @@ def history(request):
 
     # Get unique values for filters
     all_diagnoses = MRIClassification.objects.values_list('predicted_class', flat=True).distinct()
-    all_genders = MRIClassification.objects.values_list('gender', flat=True).distinct()
-
+    all_sexes = MRIClassification.objects.values_list('sex', flat=True).distinct()
     # Pagination
     paginator = Paginator(classifications, 10)  # 10 records per page
     page_number = request.GET.get('page')
@@ -153,11 +152,11 @@ def history(request):
         'total_count': total_count,
         'search_query': search_query,
         'diagnosis_filter': diagnosis_filter,
-        'gender_filter': gender_filter,
+        'sex_filter': sex_filter,
         'date_range': date_range,
         'sort_by': sort_by,
         'all_diagnoses': all_diagnoses,
-        'all_genders': all_genders,
+        'all_sexes': all_sexes,
         'avg_confidence': avg_confidence,
     }
 
@@ -187,7 +186,7 @@ def history_edit_view(request, pk):
     if request.method == 'POST':
         classification.full_name = request.POST.get('full_name')
         classification.age = request.POST.get('age')
-        classification.gender = request.POST.get('gender')
+        classification.sex = request.POST.get('sex')
         classification.history = request.POST.get('history')
         classification.notes = request.POST.get('notes')
         classification.save()
@@ -237,7 +236,7 @@ def history_export_csv(request):
 
     writer = csv.writer(response)
     writer.writerow([
-        'ID', 'Patient Name', 'Age', 'Gender',
+        'ID', 'Patient Name', 'Age', 'Sex',
         'Diagnosis', 'Confidence (%)', 'Date',
         'Medical History', 'Notes', 'Processed By'
     ])
@@ -251,7 +250,7 @@ def history_export_csv(request):
             c.id,
             c.full_name,
             c.age,
-            c.gender,
+            c.sex,
             c.predicted_class,
             f"{c.confidence:.2f}",
             c.date_uploaded.strftime('%Y-%m-%d %H:%M'),

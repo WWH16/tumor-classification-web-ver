@@ -53,11 +53,11 @@
 
             <div class="form-control w-full">
               <label class="label">
-                <span class="label-text">Gender <span class="text-error">*</span></span>
+                <span class="label-text">Sex <span class="text-error">*</span></span>
               </label>
-              <select name="gender" class="select select-bordered w-full" required>
-                <option value="Male" {% if classification.gender == "Male" %}selected{% endif %}>Male</option>
-                <option value="Female" {% if classification.gender == "Female" %}selected{% endif %}>Female</option>
+              <select name="sex" class="select select-bordered w-full" required>
+                <option value="Male" {% if classification.sex == "Male" %}selected{% endif %}>Male</option>
+                <option value="Female" {% if classification.sex == "Female" %}selected{% endif %}>Female</option>
               </select>
             </div>
           </div>
