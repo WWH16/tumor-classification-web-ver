@@ -319,6 +319,9 @@
 
 <script>
 function confirmDelete(pk) {
+      // This generates the full URL: /app/history/0/delete/
+  const deleteUrlTemplate = "{% url 'history_delete' 0 %}";
+  const deleteUrl = deleteUrlTemplate.replace("0", pk);
   Swal.fire({
     title: 'Delete Record?',
     text: "This action cannot be undone!",
@@ -330,7 +333,7 @@ function confirmDelete(pk) {
     cancelButtonText: 'Cancel'
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = `/history/${pk}/delete/`;
+      window.location.href = deleteUrl;
     }
   });
 }
