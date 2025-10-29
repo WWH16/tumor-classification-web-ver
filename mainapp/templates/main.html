@@ -6,6 +6,7 @@
 {% block content %}
 <div class="max-w-7xl mx-auto p-4">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
     <!-- Form -->
     <div class="lg:col-span-2">
       <div class="card bg-base-100 shadow-xl">
@@ -20,13 +21,7 @@
               <label class="label">
                 <span class="label-text font-medium">Full Name <span class="text-error">*</span></span>
               </label>
-              <input
-                type="text"
-                name="full_name"
-                required
-                placeholder="Enter patient's full name"
-                class="input input-bordered w-full"
-              />
+              <input type="text" name="full_name" required placeholder="Enter patient's full name" class="input input-bordered w-full" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -34,15 +29,7 @@
                 <label class="label">
                   <span class="label-text font-medium">Age <span class="text-error">*</span></span>
                 </label>
-                <input
-                  type="number"
-                  name="age"
-                  required
-                  placeholder="Age"
-                  min="1"
-                  max="120"
-                  class="input input-bordered w-full"
-                />
+                <input type="number" name="age" required placeholder="Age" min="1" max="120" class="input input-bordered w-full" />
               </div>
               <div>
                 <label class="label">
@@ -61,12 +48,7 @@
                 <span class="label-text font-medium">Medical History</span>
                 <span class="label-text-alt text-gray-500">(Optional)</span>
               </label>
-              <textarea
-                name="history"
-                placeholder="Enter relevant medical history..."
-                rows="3"
-                class="textarea textarea-bordered w-full"
-              ></textarea>
+              <textarea name="history" placeholder="Enter relevant medical history..." rows="3" class="textarea textarea-bordered w-full"></textarea>
             </div>
 
             <div class="divider">MRI Scan Upload</div>
@@ -75,14 +57,7 @@
               <label class="label">
                 <span class="label-text font-medium">Upload MRI Image <span class="text-error">*</span></span>
               </label>
-              <input
-                type="file"
-                name="image"
-                id="mriUpload"
-                class="file-input file-input-bordered w-full"
-                accept="image/*"
-                required
-              />
+              <input type="file" name="image" id="mriUpload" class="file-input file-input-bordered w-full" accept="image/*" required />
             </div>
 
             <div>
@@ -90,28 +65,22 @@
                 <span class="label-text font-medium">Additional Notes</span>
                 <span class="label-text-alt text-gray-500">(Optional)</span>
               </label>
-              <textarea
-                name="notes"
-                placeholder="Any additional information..."
-                rows="2"
-                class="textarea textarea-bordered w-full"
-              ></textarea>
+              <textarea name="notes" placeholder="Any additional information..." rows="2" class="textarea textarea-bordered w-full"></textarea>
             </div>
 
             <input type="hidden" name="process_by" value="{{ request.user.id }}" />
 
             <div class="card-actions justify-end gap-3 pt-4">
               <button type="reset" class="btn btn-outline flex items-center gap-2">
-                <span class="material-icons">clear</span>
-                Clear Form
+                <span class="material-icons">clear</span> Clear Form
               </button>
               <button type="submit" class="btn flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                <span class="material-icons">send</span>
-                Detect Tumor
+                <span class="material-icons">send</span> Detect Tumor
               </button>
             </div>
           </form>
           <!-- FORM END -->
+
         </div>
       </div>
     </div>
@@ -121,10 +90,7 @@
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <h3 class="card-title text-lg">MRI Preview</h3>
-          <div
-            id="imagePreview"
-            class="aspect-square bg-base-200 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center"
-          >
+          <div id="imagePreview" class="aspect-square bg-base-200 rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center">
             <div class="text-center p-4">
               <span class="material-icons text-5xl text-base-content opacity-40 mb-2">image</span>
               <p class="text-sm text-base-content opacity-60">No image uploaded</p>
@@ -143,6 +109,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -155,14 +122,11 @@
 
     <div class="text-center mb-6">
       <h2 class="text-3xl font-bold mb-2">MRI Classification Result</h2>
-      <p class="text-sm text-base-content/70">
-        The result is generated by the AI model and should be verified by medical professionals.
-      </p>
+      <p class="text-sm text-base-content/70">The result is generated by the AI model and should be verified by medical professionals.</p>
     </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-      <div id="resultIconWrapper"
-           class="flex items-center justify-center w-20 h-20 rounded-full bg-base-200 shadow-inner transition-all duration-300">
+      <div id="resultIconWrapper" class="flex items-center justify-center w-20 h-20 rounded-full bg-base-200 shadow-inner transition-all duration-300">
         <span id="resultIcon" class="material-icons text-success text-5xl">check_circle</span>
       </div>
       <div class="text-center sm:text-left">
@@ -176,16 +140,8 @@
         <span class="label-text font-medium">Confidence Level</span>
       </label>
       <div class="relative w-full">
-        <progress
-          id="resultBar"
-          class="progress progress-success w-full h-3 transition-all duration-300"
-          value="0"
-          max="100"
-        ></progress>
-        <span id="confidenceText"
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-base-content/70">
-          0%
-        </span>
+        <progress id="resultBar" class="progress progress-success w-full h-3 transition-all duration-300" value="0" max="100"></progress>
+        <span id="confidenceText" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs font-semibold text-base-content/70">0%</span>
       </div>
     </div>
 
@@ -206,11 +162,7 @@
 
     <div class="mb-8">
       <h3 class="text-lg font-medium mb-2">MRI Image Preview</h3>
-      <div
-        id="modalImagePreview"
-        class="w-full bg-base-200 rounded-xl border border-base-300 overflow-auto flex items-center justify-center"
-        style="max-height: 400px; min-height: 200px;"
-      >
+      <div id="modalImagePreview" class="w-full bg-base-200 rounded-xl border border-base-300 overflow-auto flex items-center justify-center" style="max-height: 400px; min-height: 200px;">
         <span class="text-base-content opacity-60 text-sm p-4">No MRI Image Available</span>
       </div>
     </div>
@@ -233,184 +185,150 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
-// === Utility: Get CSRF Token ===
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + "=")) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
+  // === CSRF Token Utility ===
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
       }
     }
+    return cookieValue;
   }
-  return cookieValue;
-}
-const csrftoken = getCookie("csrftoken");
+  const csrftoken = getCookie("csrftoken");
 
-// === DOM Elements ===
-const fileInput = document.getElementById("mriUpload");
-const imagePreview = document.getElementById("imagePreview");
-const form = document.getElementById("patientForm");
-const resultModal = document.getElementById("resultModal");
-const btnClose = document.getElementById("closeModalBtn");
-const btnDownload = document.getElementById("downloadBtn");
-const btnPrint = document.getElementById("printBtn");
+  // DOM Elements
+  const fileInput = document.getElementById("mriUpload");
+  const imagePreview = document.getElementById("imagePreview");
+  const form = document.getElementById("patientForm");
+  const resultModal = document.getElementById("resultModal");
+  const btnClose = document.getElementById("closeModalBtn");
+  const btnDownload = document.getElementById("downloadBtn");
+  const btnPrint = document.getElementById("printBtn");
 
-// === Preview Image ===
-fileInput.addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border border-base-300" alt="MRI Preview">`;
-  };
-  reader.readAsDataURL(file);
-});
+  // === Image Preview ===
+  fileInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      imagePreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border border-base-300" alt="MRI Preview">`;
+    };
+    reader.readAsDataURL(file);
+  });
 
-// === Submit Form ===
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-  const btn = form.querySelector('button[type="submit"]');
-  const original = btn.innerHTML;
-  btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Processing...';
-  btn.disabled = true;
+  // === Submit Form ===
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const original = btn.innerHTML;
+    btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Processing...';
+    btn.disabled = true;
 
-  const formData = new FormData(form);
-  const file = fileInput.files[0];
-  if (!file) {
-    alert("Please upload an MRI image before submitting.");
-    btn.innerHTML = original;
-    btn.disabled = false;
-    return;
-  }
-
-  const imgSrc = URL.createObjectURL(file);
-
-  try {
-    const res = await fetch("{% url 'mri_classification_view' %}", {
-      method: "POST",
-      headers: { "X-CSRFToken": csrftoken },
-      body: formData
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Server returned ${res.status}: ${text}`);
+    const formData = new FormData(form);
+    const file = fileInput.files[0];
+    if (!file) {
+      alert("Please upload an MRI image before submitting.");
+      btn.innerHTML = original;
+      btn.disabled = false;
+      return;
     }
 
-    const data = await res.json();
+    const imgSrc = URL.createObjectURL(file);
 
-    if (data.success) {
-      // Store classification ID for print route
-      window.currentClassificationId = data.id;
+    try {
+      const res = await fetch("{% url 'mri_classification_view' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        body: formData
+      });
 
-      fillModalReport(
-        formData.get("full_name"),
-        formData.get("age"),
-        formData.get("sex"),
-        formData.get("history") || "N/A",
-        data.predicted_class,
-        (data.confidence * 100).toFixed(2),
-        imgSrc
-      );
-      resultModal.showModal();
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Server returned ${res.status}: ${text}`);
+      }
+
+      const data = await res.json();
+      if (data.success) {
+        window.currentClassificationId = data.id;
+        fillModalReport(
+          formData.get("full_name"),
+          formData.get("age"),
+          formData.get("sex"),
+          formData.get("history") || "N/A",
+          data.predicted_class,
+          (data.confidence * 100).toFixed(2),
+          imgSrc
+        );
+        resultModal.showModal();
+      } else {
+        alert(data.error || "Classification failed.");
+      }
+    } catch (err) {
+      alert("Error: " + (err.message || "Unexpected error occurred."));
+    } finally {
+      btn.innerHTML = original;
+      btn.disabled = false;
+    }
+  });
+
+  // === Fill Modal ===
+  function fillModalReport(name, age, sex, history, resultText, confidence, imgSrc) {
+    document.getElementById("modalPatientName").innerText = name;
+    document.getElementById("modalPatientAge").innerText = age;
+    document.getElementById("modalPatientSex").innerText = sex;
+    document.getElementById("resultConfidence").innerText = `Confidence: ${confidence}%`;
+
+    const iconWrapper = document.getElementById("resultIconWrapper");
+    const icon = document.getElementById("resultIcon");
+    const status = document.getElementById("resultStatus");
+    const bar = document.getElementById("resultBar");
+    const confidenceText = document.getElementById("confidenceText");
+
+    bar.value = confidence;
+    confidenceText.innerText = `${confidence}%`;
+
+    const resultLower = resultText.toLowerCase().trim();
+    if (resultLower.includes("no tumor") || resultLower === "normal" || resultLower.includes("without tumor")) {
+      icon.innerText = "verified";
+      icon.className = "material-icons text-green-600 text-6xl";
+      status.innerText = resultText;
+      status.className = "text-green-600 font-semibold text-lg";
+      bar.className = "progress progress-success w-full h-3";
+      iconWrapper.className = "flex items-center justify-center w-20 h-20 rounded-full bg-green-100 shadow-inner";
     } else {
-      alert(data.error || "Classification failed.");
+      icon.innerText = "warning";
+      icon.className = "material-icons text-red-600 text-6xl";
+      status.innerText = resultText;
+      status.className = "text-red-600 font-semibold text-lg";
+      bar.className = "progress progress-error w-full h-3";
+      iconWrapper.className = "flex items-center justify-center w-20 h-20 rounded-full bg-red-100 shadow-inner";
     }
-  } catch (err) {
-    alert("Error: " + (err.message || "Unexpected error occurred."));
-  } finally {
-    btn.innerHTML = original;
-    btn.disabled = false;
-  }
-});
 
-// === Fill Modal ===
-function fillModalReport(name, age, sex, history, resultText, confidence, imgSrc) {
-  // Fill patient info
-  document.getElementById("modalPatientName").innerText = name;
-  document.getElementById("modalPatientAge").innerText = age;
-  document.getElementById("modalPatientSex").innerText = sex;
-  document.getElementById("resultConfidence").innerText = "Confidence: " + confidence + "%";
-
-  const iconWrapper = document.getElementById("resultIconWrapper");
-  const icon = document.getElementById("resultIcon");
-  const status = document.getElementById("resultStatus");
-  const bar = document.getElementById("resultBar");
-  const confidenceText = document.getElementById("confidenceText");
-
-  // ✅ Update progress bar value & label dynamically
-  bar.value = confidence;
-  confidenceText.innerText = `${confidence}%`;
-
-  // Normalize result text
-  const resultLower = resultText.toLowerCase().trim();
-
-  // Apply color and icon styles
-  if (resultLower.includes("no tumor") || resultLower === "normal" || resultLower.includes("without tumor")) {
-    // 🟢 No Tumor — Success
-    icon.innerText = "verified";
-    icon.className = "material-icons text-green-600 text-6xl";
-    status.innerText = resultText;
-    status.className = "text-green-600 font-semibold text-lg";
-    bar.className = "progress progress-success w-full h-3";
-    iconWrapper.className = "flex items-center justify-center w-20 h-20 rounded-full bg-green-100 shadow-inner";
-  } else {
-    // 🔴 Tumor Detected — Error
-    icon.innerText = "warning";
-    icon.className = "material-icons text-red-600 text-6xl";
-    status.innerText = resultText;
-    status.className = "text-red-600 font-semibold text-lg";
-    bar.className = "progress progress-error w-full h-3";
-    iconWrapper.className = "flex items-center justify-center w-20 h-20 rounded-full bg-red-100 shadow-inner";
+    document.getElementById("modalImagePreview").innerHTML = `
+      <div class="p-2 w-full flex justify-center">
+        <img src="${imgSrc}" class="max-w-full h-auto rounded-lg border border-base-300 shadow-md" style="object-fit: contain; max-height: 380px;" alt="MRI Scan" />
+      </div>`;
   }
 
-  // 🧩 Image Preview
-  document.getElementById("modalImagePreview").innerHTML = `
-    <div class="p-2 w-full flex justify-center">
-      <img src="${imgSrc}"
-           class="max-w-full h-auto rounded-lg border border-base-300 shadow-md"
-           style="object-fit: contain; max-height: 380px;"
-           alt="MRI Scan" />
-    </div>
-  `;
-}
-// === Modal Buttons ===
-btnClose.addEventListener("click", () => resultModal.close());
-
-// === Download PDF ===
-btnDownload.addEventListener("click", () => {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  const name = document.getElementById("modalPatientName").innerText;
-  const age = document.getElementById("modalPatientAge").innerText;
-  const sex = document.getElementById("modalPatientSex").innerText;
-  const result = document.getElementById("resultStatus").innerText;
-  const confidence = document.getElementById("resultConfidence").innerText;
-
-  pdf.setFontSize(18);
-  pdf.text("MRI Classification Report", 65, 20);
-  pdf.setFontSize(12);
-  pdf.text(`Patient Name: ${name}`, 20, 40);
-  pdf.text(`Age: ${age}`, 20, 48);
-  pdf.text(`Sex: ${sex}`, 20, 56);
-  pdf.text(`Result: ${result}`, 20, 72);
-  pdf.text(`${confidence}`, 20, 80);
-  pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, 100);
-  pdf.save(`${name.replace(/\s+/g, "_")}_MRI_Report.pdf`);
-});
-
-// === Print using Django route ===
-btnPrint.addEventListener("click", () => {
-  const recordId = window.currentClassificationId || 1; // fallback if backend doesn't return yet
-  const printUrl = `{% url 'history_print' 0 %}`.replace('0', recordId);
-  window.open(printUrl, "_blank");
-});
+  // === Modal Buttons ===
+  btnClose.addEventListener("click", () => resultModal.close());
+  btnDownload.addEventListener("click", () => {
+    const recordId = window.currentClassificationId;
+    if (!recordId) return alert("Record not found. Cannot download PDF.");
+    const pdfUrl = `{% url 'history_print' 0 %}`.replace('0', recordId);
+    window.open(pdfUrl + '?download=1', '_blank');
+  });
+  btnPrint.addEventListener("click", () => {
+    const recordId = window.currentClassificationId || 1;
+    const printUrl = `{% url 'history_print' 0 %}`.replace('0', recordId);
+    window.open(printUrl, "_blank");
+  });
 </script>
 {% endblock %}

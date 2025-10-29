@@ -70,6 +70,7 @@ def mri_classification_view(request):
 
         return JsonResponse({
             "success": True,
+            "id": record.id,
             "predicted_class": predicted_class,
             "confidence": confidence,
             "image_url": record.image.url,  # this will work now
@@ -278,9 +279,10 @@ def history_bulk_delete(request):
 
 from django.utils import timezone
 
+from django.template.loader import get_template
 @login_required
 def history_print_view(request, pk):
-    """Generate printable report for a classification"""
+    """Generate printable report or PDF for a classification"""
     classification = get_object_or_404(
         MRIClassification,
         pk=pk,
