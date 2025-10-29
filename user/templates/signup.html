@@ -15,12 +15,15 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Employee ID</label>
         <div class="relative flex items-center">
           <input name="employee_id" id="id_employee_id" type="text" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            class="w-full text-slate-900 text-sm border {% if employee_id_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 rounded-md outline-blue-600"
             placeholder="Enter your employee ID" value="{{ request.POST.employee_id|default:'' }}" />
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
           </svg>
         </div>
+        {% if employee_id_error %}
+        <p class="text-red-500 text-xs mt-1">{{ employee_id_error }}</p>
+        {% endif %}
       </div>
 
       <!-- First Name & Last Name -->
@@ -54,12 +57,15 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Email</label>
         <div class="relative flex items-center">
           <input name="email" id="id_email" type="email" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
+            class="w-full text-slate-900 text-sm border {% if email_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 rounded-md outline-blue-600"
             placeholder="mail@example.com" value="{{ request.POST.email|default:'' }}" />
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
         </div>
+        {% if email_error %}
+        <p class="text-red-500 text-xs mt-1">{{ email_error }}</p>
+        {% endif %}
       </div>
 
       <!-- Password -->
@@ -67,9 +73,8 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Password</label>
         <div class="relative flex items-center">
           <input name="password1" id="id_password1" type="password" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
+            class="w-full text-slate-900 text-sm border {% if password_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 pr-10 rounded-md outline-blue-600"
             placeholder="Enter password"
-            minlength="8"
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
           <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password1', this)" aria-label="Toggle password visibility">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,6 +116,9 @@
             At least one uppercase letter
           </p>
         </div>
+        {% if password_error %}
+        <p class="text-red-500 text-xs mt-1">{{ password_error }}</p>
+        {% endif %}
       </div>
 
       <!-- Confirm Password -->
@@ -118,7 +126,7 @@
         <label class="text-slate-900 text-sm font-medium mb-2 block">Confirm password</label>
         <div class="relative flex items-center">
           <input name="password2" id="id_password2" type="password" required
-            class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-10 rounded-md outline-blue-600"
+            class="w-full text-slate-900 text-sm border {% if password_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 pr-10 rounded-md outline-blue-600"
             placeholder="Confirm password" />
           <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password2', this)" aria-label="Toggle password visibility">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,7 +141,7 @@
         <button type="submit" id="signupBtn"
           class="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
           <span id="btnText">Sign up</span>
-            <span id="btnSpinner" class="hidden ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <span id="btnSpinner" class="hidden ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
         </button>
       </div>
 
@@ -147,21 +155,26 @@
   </div>
 </div>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// Show SweetAlert2 for Django messages
-{% if messages %}
-  {% for message in messages %}
-    {% if 'error' in message.tags %}
-      Swal.fire({ icon: 'error', title: 'Oops...', text: '{{ message|escapejs }}' });
-    {% elif 'success' in message.tags %}
-      Swal.fire({ icon: 'success', title: 'Success', text: '{{ message|escapejs }}' });
-    {% endif %}
-  {% endfor %}
-{% endif %}
+// SweetAlert only for success
+document.addEventListener("DOMContentLoaded", () => {
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'success' %}
+        Swal.fire({
+          icon: 'success',
+          title: "{{ message|escapejs }}",
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: 'top-end',
+          timerProgressBar: true
+        });
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+});
 
-// Password toggle
 function togglePassword(inputId, buttonElement) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -185,6 +198,7 @@ const matchError = document.getElementById('password-match-error');
 
 function updateRequirement(id, isValid) {
   const req = document.getElementById(id);
+  if (!req) return;
   const svg = req.querySelector('svg');
   if (isValid) {
     svg.classList.remove('text-gray-400');
@@ -203,6 +217,7 @@ password1.addEventListener('input', function() {
   updateRequirement('req-number', /\d/.test(value));
   updateRequirement('req-lowercase', /[a-z]/.test(value));
   updateRequirement('req-uppercase', /[A-Z]/.test(value));
+
   if (password2.value) {
     if (value === password2.value) {
       password2.classList.remove('border-red-500');
@@ -228,25 +243,14 @@ password2.addEventListener('input', function() {
   }
 });
 
-// Form submission + loading spinner
-const signupForm = document.getElementById('signupForm');
-const signupBtn = document.getElementById('signupBtn');
+document.getElementById('signupForm').addEventListener('submit', function() {
+  const btn = document.getElementById('signupBtn');
+  const btnText = document.getElementById('btnText');
+  const btnSpinner = document.getElementById('btnSpinner');
 
-signupForm.addEventListener('submit', function(e) {
-  if (password1.value !== password2.value) {
-    e.preventDefault();
-    password2.classList.add('border-red-500');
-    matchError.classList.remove('hidden');
-    password2.focus();
-    return;
-  }
-
-  // Disable button and show spinner
-  signupBtn.disabled = true;
-  signupBtn.innerHTML = `
-    <span id="btnText" class="hidden">Sign up</span>
-    <span id="btnSpinner" class="ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-  `;
+  btn.disabled = true;
+  btnText.classList.add('hidden');
+  btnSpinner.classList.remove('hidden');
 });
 </script>
 

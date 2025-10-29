@@ -5,52 +5,64 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .forms import SignupForm, LoginForm
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .forms import SignupForm
+from .models import UserProfile
+
 def signup_view(request):
+    employee_id_error = None
+    email_error = None
+    password_error = None
+
     if request.method == "POST":
         form = SignupForm(request.POST)
-        if form.is_valid():
-            employee_id = form.cleaned_data["employee_id"]
-            email = form.cleaned_data["email"]
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            password1 = form.cleaned_data["password1"]
-            password2 = form.cleaned_data["password2"]
+        employee_id = request.POST.get("employee_id", "").strip()
+        email = request.POST.get("email", "").strip()
+        password1 = request.POST.get("password1", "")
+        password2 = request.POST.get("password2", "")
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
 
-            # ✅ Password match check
-            if password1 != password2:
-                messages.error(request, "Passwords do not match.")
-                return render(request, "signup.html", {"form": form})
+        has_error = False
 
-            # ✅ Check for duplicate employee ID
-            if UserProfile.objects.filter(employee_id=employee_id).exists():
-                messages.error(request, "Employee ID already exists.")
-                return render(request, "signup.html", {"form": form})
+        # Password match check
+        if password1 != password2:
+            password_error = "Passwords do not match."
+            has_error = True
 
-            # ✅ Check for duplicate email
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "Email is already registered.")
-                return render(request, "signup.html", {"form": form})
+        # Employee ID uniqueness
+        if UserProfile.objects.filter(employee_id=employee_id).exists():
+            employee_id_error = "Employee ID already exists."
+            has_error = True
 
-            # ✅ Create new user
+        # Email uniqueness
+        if User.objects.filter(email=email).exists():
+            email_error = "Email is already registered."
+            has_error = True
+
+        # Create user if no errors
+        if not has_error:
             user = User.objects.create_user(
-                username=employee_id,  # Use employee_id as internal username
+                username=employee_id,
                 email=email,
                 first_name=first_name,
                 last_name=last_name,
                 password=password1
             )
-
-            # ✅ Create linked profile
             UserProfile.objects.create(user=user, employee_id=employee_id)
-
             messages.success(request, "Account created successfully! Please log in.")
             return redirect("login_view")
-        else:
-            messages.error(request, "Please correct the errors below.")
     else:
         form = SignupForm()
 
-    return render(request, "signup.html", {"form": form})
+    return render(request, "signup.html", {
+        "form": form,
+        "employee_id_error": employee_id_error,
+        "email_error": email_error,
+        "password_error": password_error
+    })
 
 
 def login_view(request):
