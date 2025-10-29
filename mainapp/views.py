@@ -229,17 +229,6 @@ def history_delete_view(request, pk):
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
 
 @login_required
-@csrf_exempt
-def history_delete_endpoint(request, pk):
-    if request.method == 'POST':
-        classification = get_object_or_404(MRIClassification, pk=pk, process_by=request.user)
-        classification.delete()
-        return JsonResponse({"success": True, "message": "Record deleted successfully!"})
-    return JsonResponse({"success": False, "message": "Invalid request."}, status=400)
-
-
-
-@login_required
 def history_export_csv(request):
     """Export classification history to CSV"""
     response = HttpResponse(content_type='text/csv')
