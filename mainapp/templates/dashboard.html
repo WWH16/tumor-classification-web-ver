@@ -138,11 +138,10 @@
               </div>
 <div class="flex-1">
   <div class="font-medium">{{ classification.full_name }}</div>
-  <div class="text-sm text-gray-500">
-    {{ classification.predicted_class }} -
-    {% widthratio classification.confidence 1 100 as confidence_percent %}
-    {{ confidence_percent|floatformat:0 }}%
-  </div>
+<div class="text-sm text-gray-500">
+  {{ classification.predicted_class }} -
+  {{ classification.confidence_percentage }}%
+</div>
 </div>
 
               <div class="text-xs opacity-70">{{ classification.date_uploaded|timesince }} ago</div>
