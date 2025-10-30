@@ -5,19 +5,16 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from django.core.files.storage import default_storage
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
-from pyexpat.errors import messages
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q, Avg, Max, Count
+from django.utils import timezone
+from datetime import datetime, timedelta
+import csv
 from tensorflow.keras.models import load_model
 from .models import MRIClassification
-from django.contrib import messages
-from django.http import HttpResponse
-import csv
-import os
-from django.db.models import Q
-from datetime import datetime, timedelta
-from django.views.decorators.csrf import csrf_exempt
-
 
 # Load the trained model once at startup
 MODEL_FILENAME = "brain_tumor_vgg16_model.h5"
@@ -40,7 +37,6 @@ def mri_classification_view(request):
 
         # === Save uploaded image to MEDIA_ROOT/temp/ ===
         mri_file = request.FILES["image"]
-        # This saves the file to media/temp/ automatically
         file_path = default_storage.save(f"temp/{mri_file.name}", mri_file)
         full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)
 
@@ -64,7 +60,7 @@ def mri_classification_view(request):
             notes=request.POST.get("notes", ""),
             predicted_class=predicted_class,
             confidence=confidence,
-            image=file_path,  # stored relative to MEDIA_ROOT
+            image=file_path,
             process_by=request.user,
         )
 
@@ -73,18 +69,10 @@ def mri_classification_view(request):
             "id": record.id,
             "predicted_class": predicted_class,
             "confidence": confidence,
-            "image_url": record.image.url,  # this will work now
+            "image_url": record.image.url,
         })
 
     return JsonResponse({"success": False, "error": "Invalid request method."})
-
-# Additional views for history, detail, edit, delete would go here
-# for CRUD
-from django.shortcuts import render
-from django.core.paginator import Paginator
-from django.db.models import Q, Avg
-from datetime import datetime, timedelta
-from .models import MRIClassification
 
 
 def history(request):
@@ -138,14 +126,14 @@ def history(request):
     # Get unique values for filters
     all_diagnoses = MRIClassification.objects.values_list('predicted_class', flat=True).distinct()
     all_sexes = MRIClassification.objects.values_list('sex', flat=True).distinct()
+
     # Pagination
-    paginator = Paginator(classifications, 10)  # 10 records per page
+    paginator = Paginator(classifications, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Compute database-wide average confidence (use 0 if no records)
+    # Compute database-wide average confidence
     avg_conf = MRIClassification.objects.aggregate(avg_confidence=Avg('confidence'))['avg_confidence'] or 0
-    # convert to percentage for display (e.g. 0.85 -> 85.0)
     avg_confidence = avg_conf * 100
 
     context = {
@@ -173,7 +161,7 @@ def history_detail_view(request, pk):
     )
     return render(request, 'history_detail.html', {'classification': classification})
 
-# python
+
 @login_required
 def history_edit_view(request, pk):
     classification = get_object_or_404(
@@ -182,7 +170,7 @@ def history_edit_view(request, pk):
         process_by=request.user
     )
 
-    success = False  # flag for showing SweetAlert
+    success = False
 
     if request.method == 'POST':
         classification.full_name = request.POST.get('full_name')
@@ -191,10 +179,9 @@ def history_edit_view(request, pk):
         classification.history = request.POST.get('history')
         classification.notes = request.POST.get('notes')
         classification.save()
+        success = True
 
-        success = True  # trigger SweetAlert
-
-    # Prepare display-ready confidence percent (two decimals)
+    # Prepare display-ready confidence percent
     raw_conf = classification.confidence if classification.confidence is not None else 0.0
     try:
         raw_conf_f = float(raw_conf)
@@ -229,6 +216,7 @@ def history_delete_view(request, pk):
         })
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
 
+
 @login_required
 def history_export_csv(request):
     """Export classification history to CSV"""
@@ -262,6 +250,7 @@ def history_export_csv(request):
 
     return response
 
+
 @login_required
 def history_bulk_delete(request):
     """Bulk delete multiple records"""
@@ -277,9 +266,7 @@ def history_bulk_delete(request):
             messages.warning(request, 'No records selected!')
     return redirect('history')
 
-from django.utils import timezone
 
-from django.template.loader import get_template
 @login_required
 def history_print_view(request, pk):
     """Generate printable report or PDF for a classification"""
@@ -295,18 +282,9 @@ def history_print_view(request, pk):
     return render(request, 'history_print.html', context)
 
 
-from django.db.models import Count, Avg, Q
-from datetime import datetime, timedelta
-from django.utils import timezone
-
-
-@login_required
-# python
 @login_required
 def dashboard_view(request):
     """Main dashboard with statistics"""
-    from django.db.models import Avg, Max, Count  # local import to ensure Max is available
-
     user = request.user
 
     # Get date ranges
@@ -346,7 +324,7 @@ def dashboard_view(request):
         date_uploaded__gte=week_start
     ).count()
 
-    # Robust average confidence: detect stored scale using max value
+    # Robust average confidence
     agg = MRIClassification.objects.filter(process_by=user).aggregate(
         avg_conf=Avg('confidence'),
         max_conf=Max('confidence'),
@@ -359,7 +337,6 @@ def dashboard_view(request):
     else:
         avg_percentage = avg_conf
 
-    # Ensure numeric and round for display (one decimal place)
     avg_confidence = round(float(avg_percentage), 1)
 
     # Diagnosis distribution
@@ -380,7 +357,7 @@ def dashboard_view(request):
 
     # Daily activity for last 30 days
     thirty_days_ago = today - timedelta(days=29)
-    daily_counts = { (thirty_days_ago + timedelta(days=i)): 0 for i in range(30) }
+    daily_counts = {(thirty_days_ago + timedelta(days=i)): 0 for i in range(30)}
 
     activities = MRIClassification.objects.filter(
         process_by=user,
@@ -406,7 +383,7 @@ def dashboard_view(request):
         'month_classifications': month_classifications,
         'month_change': round(month_change, 1),
         'week_classifications': week_classifications,
-        'avg_confidence': avg_confidence if False else avg_confidence,  # kept numeric (percentage, 1 decimal)
+        'avg_confidence': avg_confidence,
         'diagnosis_stats': diagnosis_stats,
         'recent_classifications': recent_classifications,
         'daily_activity': daily_activity,

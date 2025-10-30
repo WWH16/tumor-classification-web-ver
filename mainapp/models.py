@@ -29,9 +29,14 @@ class MRIClassification(models.Model):
     @property
     def confidence_percentage(self):
         """Returns confidence as a percentage (0-100)"""
-        import math
         value = self.confidence * 100 if self.confidence <= 1 else self.confidence
-        return int(math.floor(value))
+        return round(value, 2)
+
+    @property
+    def confidence_percentage_int(self):
+        """Returns confidence as integer percentage (truncated)"""
+        value = self.confidence * 100 if self.confidence <= 1 else self.confidence
+        return int(value)
 
     @property
     def confidence_level(self):
