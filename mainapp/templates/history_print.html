@@ -200,7 +200,7 @@
     <div class="diagnosis">{{ classification.predicted_class }}</div>
     <div class="info-label">Confidence Score</div>
     <div class="confidence">
-      {{ confidence_percent|default:classification.confidence|default_if_none:0.0|floatformat:2 }}%
+      {{ classification.confidence_percentage|floatformat:2 }}%
     </div>
   </div>
 </div>
