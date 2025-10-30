@@ -76,8 +76,8 @@ def mri_classification_view(request):
 
 
 def history(request):
-    # Get all classifications
-    classifications = MRIClassification.objects.all()
+    # Get only current user's classifications
+    classifications = MRIClassification.objects.filter(process_by=request.user)
 
     # Get total count before filtering
     total_count = classifications.count()
@@ -132,8 +132,8 @@ def history(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Compute database-wide average confidence
-    avg_conf = MRIClassification.objects.aggregate(avg_confidence=Avg('confidence'))['avg_confidence'] or 0
+    # Compute average confidence for current user only
+    avg_conf = classifications.aggregate(avg_confidence=Avg('confidence'))['avg_confidence'] or 0
     avg_confidence = avg_conf * 100
 
     context = {
