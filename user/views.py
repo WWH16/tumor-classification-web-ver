@@ -11,6 +11,9 @@ from django.contrib import messages
 from .forms import SignupForm
 from .models import UserProfile
 
+def landing_page(request):
+    return render(request, "index.html")
+
 def signup_view(request):
     employee_id_error = None
     email_error = None

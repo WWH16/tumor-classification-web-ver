@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MRI Tumor Classification</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
+
+    <!-- CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200">
+    <div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <div class="flex flex-1 justify-center">
+                <div class="layout-content-container flex flex-col w-full max-w-6xl">
+
+                    <!-- TopNavBar -->
+                    <header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-gray-700 px-10 py-4 font-display">
+                        <div class="flex items-center gap-4 text-gray-900 dark:text-white">
+                            <div class="size-6 text-primary">
+                                <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
+                            </div>
+                            <h2 class="text-xl font-bold">MRI Tumor Classification</h2>
+                        </div>
+                        <div class="flex flex-1 justify-end gap-8">
+                            <div class="hidden md:flex items-center gap-9">
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#features">Features</a>
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#testimonials">Testimonials</a>
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#about">About</a>
+                            </div>
+
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'dashboard' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+                                    <span class="truncate">Dashboard</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'signup_view' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+                                    <span class="truncate">Sign Up</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </header>
+
+                    <!-- HeroSection -->
+                    <main class="w-full">
+                        <div class="py-20 px-10">
+                            <div class="container mx-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                    <div class="flex flex-col gap-6 text-left">
+                                        <div class="flex flex-col gap-4">
+                                            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white">AI-Powered MRI Tumor Classification</h1>
+                                            <p class="text-base md:text-lg text-gray-600 dark:text-gray-300">Harness the power of artificial intelligence for fast, accurate, and reliable tumor classification from MRI scans, empowering medical professionals with critical insights.</p>
+                                        </div>
+                                        {% if user.is_authenticated %}
+                                            <a href="{% url 'app' %}" class="flex w-fit min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors">
+                                                <span class="truncate">Start Classification</span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'signup_view' %}" class="flex w-fit min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors">
+                                                <span class="truncate">Get Started</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl" data-alt="Abstract 3D rendering of a human brain scan with neural network connections overlaid" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1fKK7rEO5YC-SiorUaxWrw1syZmH-quxSa01Zd9cRf2guiMeTHy3mAJX_1byQTVg5osJeRTxiTdB5P-IQMF4X8ts4CXd1KcVKvpyLz3K8RYYK3P78uGH0udIpWgz_J0ODzF7kK3zbWuL-zf9FUpgkQTSAvUkESZoD6uAb_6hgfhsYHRS9kffNqihlu5RXmEw-EWpA0_1ISSmlvpk1y1dHesJORErineONhYDRd8jhLAAHZqDio_-cZHHGdSIltjsujuny6IDNGJE");'></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SectionHeader - Features -->
+                        <div class="pt-16" id="features">
+                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase">Key Features</h4>
+                        </div>
+
+                        <!-- FeatureSection -->
+                        <div class="flex flex-col gap-10 px-10 py-10">
+                            <div class="flex flex-col items-center gap-4 text-center">
+                                <h1 class="text-3xl md:text-4xl font-bold tracking-tight max-w-2xl text-gray-900 dark:text-white">Advanced Technology for Better Diagnostics</h1>
+                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl">Our platform is built with cutting-edge technology to provide you with the most accurate and efficient analysis.</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">verified</span></div>
+                                    <div class="flex flex-col gap-1">
+                                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">High Accuracy</h2>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Leverage a state-of-the-art AI model with proven high precision in tumor classification.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">speed</span></div>
+                                    <div class="flex flex-col gap-1">
+                                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Rapid Analysis</h2>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Receive comprehensive analysis in minutes, significantly reducing turnaround time.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">mouse</span></div>
+                                    <div class="flex flex-col gap-1">
+                                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Intuitive Interface</h2>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">A simple, user-friendly process for uploading scans and viewing results.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">lock</span></div>
+                                    <div class="flex flex-col gap-1">
+                                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Secure &amp; Private</h2>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Your data is protected with HIPAA-compliant security standards and encryption.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SectionHeader - Testimonials -->
+                        <div class="pt-16" id="testimonials">
+                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase">Trusted by Medical Professionals</h4>
+                        </div>
+
+                        <!-- Testimonials Section -->
+                        <div class="flex flex-col gap-10 px-10 py-10">
+                            <div class="flex flex-col items-center gap-4 text-center">
+                                <h1 class="text-3xl md:text-4xl font-bold tracking-tight max-w-2xl text-gray-900 dark:text-white">What Our Users Say</h1>
+                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl">Real stories from clinicians who are leveraging our AI to improve patient outcomes.</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <p class="text-gray-600 dark:text-gray-300">"This tool has revolutionized how we approach preliminary MRI analysis. The speed and accuracy are unparalleled, allowing us to focus more on patient care."</p>
+                                    <div class="flex items-center gap-4 mt-2">
+                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. Jane Doe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKHr7E09GiSJvsDeVUi0d7DTa8dQXGb4EuIny5j2iSmLzdukmr7dw22BdoZ174KDVgrn3InDz8JxvtZkPvkAlp06uz3iURNrmdsvwGGQ7Z-QzxJSeJVXkgmFS21dIiAiYqgO4SXEjatkEFxi0OMKOpm1gAgeGReCvd9faNHEmuzUHpGSTSeA_01tjXxREA-6kF7eR1XKUjEHSxOrN9yvJHy9fKI_e95VwQt7BTCuWTPFdWP77XTQCVBMeUq49Peo9_OHeTtn_gzmQ"/>
+                                        <div>
+                                            <p class="font-bold text-gray-900 dark:text-white">Dr. Jane Doe</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Oncologist</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <p class="text-gray-600 dark:text-gray-300">"The intuitive interface made integration into our workflow seamless. We were up and running in hours, not weeks. Highly recommended."</p>
+                                    <div class="flex items-center gap-4 mt-2">
+                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. John Smith" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2qm53QfRnVXr2KG2p-3KCQqHaWICwgyyNuYpKrQrZvWD5TpkjdqEY82pII-6QM8GvfJPHQkkbw6K2ju7Tjs_JiAol2lneTYYligURok5vM4TCPCDZgUyy2Lrg8T8l74ICtV03uEalfnl2HJQgMrQh2kfzEW5rxFCAlyWB1uyMoMpw6lHAehmlk-1lOZEqZw6a-61wh6wwdN7OhXKF_zlTPMChKCB7LaQP_niPzRAbPfEzcTTVkazBvXFwePxHIjm_WJJIqxGHiIc"/>
+                                        <div>
+                                            <p class="font-bold text-gray-900 dark:text-white">Dr. John Smith</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Radiologist</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                    <p class="text-gray-600 dark:text-gray-300">"Data security is our top priority. The platform's commitment to HIPAA compliance gives us the peace of mind we need to use this technology confidently."</p>
+                                    <div class="flex items-center gap-4 mt-2">
+                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. Emily White" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Fr2zQICkZgzbNY3Nj5SU6gV3TJe4QhpwZlr353uVyJ-ghPZCp_mFvuguPEfYvP5q-QdDIA02GaVvu5wq4GLtXDj8opEr3M8g_o9DzS7Y9Lf63Gh7m10vHVrYpqskrQsEDpOjmtKGob6LFYtZsOII3tILZeu_OGhbq7LhMk7RfUjBvh5EWz34YQWB3ESkaGrA563kwsIU60Cf6h0gQM8z9eYXbW7E-7lTF_mavP55IsnrfMFJHQYnXaz18nApeJ4pO0Xuurhm4aY"/>
+                                        <div>
+                                            <p class="font-bold text-gray-900 dark:text-white">Dr. Emily White</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Neurosurgeon</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <!-- Footer -->
+                    <footer class="bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-700 mt-20">
+                        <div class="max-w-6xl mx-auto px-10 py-12">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                <div class="col-span-1 md:col-span-2">
+                                    <div class="flex items-center gap-3 text-gray-900 dark:text-white">
+                                        <div class="size-6 text-primary">
+                                            <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
+                                        </div>
+                                        <h2 class="text-xl font-bold">MRI Tumor Classification</h2>
+                                    </div>
+                                    <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 max-w-sm">Empowering healthcare with AI for faster, more accurate diagnostics.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900 dark:text-white">Navigation</h3>
+                                    <ul class="mt-4 space-y-2 text-sm">
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#features">Features</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#testimonials">Testimonials</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#about">About</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#contact">Contact</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900 dark:text-white">Legal</h3>
+                                    <ul class="mt-4 space-y-2 text-sm">
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#">Privacy Policy</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#">Terms of Service</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="mt-12 border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+                                <p>© {% now "Y" %} MRI Tumor Classification. All rights reserved.</p>
+                                <div class="flex space-x-4 mt-4 md:mt-0">
+                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg></a>
+                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg></a>
+                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.019c0 4.438 2.865 8.229 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.019C22 6.477 17.523 2 12 2z" fill-rule="evenodd"></path></svg></a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 Messages -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+                        title: "{{ message }}",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        toast: true,
+                        position: 'top-end',
+                        timerProgressBar: true
+                    });
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
