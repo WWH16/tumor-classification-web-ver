@@ -1,52 +1,78 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}My App{% endblock %}</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{% block title %}MRI Tumor Classification{% endblock %}</title>
 
-  <!-- Favicon -->
-<link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'user/images/mri(1).png' %}">
 
+    <!-- CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  {% block extra_head %}{% endblock %}
+    {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center py-6 px-4">
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 min-h-screen">
 
-  {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
-  <!-- SweetAlert2 for Django messages -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      {% if messages %}
-        {% for message in messages %}
-          Swal.fire({
-            icon: "{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}",
-            title: "{{ message|escapejs }}",
-            showConfirmButton: false,
-            timer: 2000,
-            toast: true,
-            position: 'top-end',
-            timerProgressBar: true
-          });
-        {% endfor %}
-      {% endif %}
-    });
-  </script>
+    <!-- SweetAlert2 for Django messages -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+                        title: "{{ message|escapejs }}",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        toast: true,
+                        position: 'top-end',
+                        timerProgressBar: true
+                    });
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
 
-  {% block extra_scripts %}{% endblock %}
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

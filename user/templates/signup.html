@@ -1,194 +1,221 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Register{% endblock %}
+{% block title %}Register - MRI Tumor Classification{% endblock %}
 
 {% block content %}
-<div class="max-w-[480px] w-full mx-auto mt-16">
-  <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
-    <h1 class="text-slate-900 text-center text-3xl font-semibold">Create an account</h1>
+<div class="relative flex min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+        <div class="flex flex-1 justify-center items-center">
+            <div class="layout-content-container flex flex-col w-full max-w-6xl">
 
-    <form method="POST" action="" class="mt-12 space-y-6" id="signupForm">
-      {% csrf_token %}
+                <!-- Header -->
+                <header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-10 py-4 font-display">
+                    <div class="flex items-center gap-3 sm:gap-4 text-gray-900 dark:text-white">
+                        <div class="size-5 sm:size-6 text-primary">
+                            <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
+                        </div>
+                        <h2 class="text-lg sm:text-xl font-bold">MRI Tumor Classification</h2>
+                    </div>
+                            <a href="{% url 'landing_page' %}" class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200">
+                                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                                <span class="hidden sm:inline">Back to Home</span>
+                            </a>
+                </header>
 
-      <!-- Employee ID -->
-      <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">Employee ID</label>
-        <div class="relative flex items-center">
-          <input name="employee_id" id="id_employee_id" type="text" required
-            class="w-full text-slate-900 text-sm border {% if employee_id_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 rounded-md outline-blue-600"
-            placeholder="Enter your employee ID" value="{{ request.POST.employee_id|default:'' }}" />
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
+                <!-- Main Content -->
+                <main class="w-full py-8 sm:py-12 lg:py-16">
+                    <div class="max-w-md w-full mx-auto">
+                        <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6 sm:p-8 shadow-sm">
+                            <!-- Header -->
+                            <div class="text-center mb-8">
+                                <h1 class="text-2xl sm:text-3xl font-black tracking-tighter text-gray-900 dark:text-white mb-3">
+                                    Create Account
+                                </h1>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    Join us to start classifying MRI tumors
+                                </p>
+                            </div>
+
+                            <!-- Signup Form -->
+                            <form method="POST" action="" class="space-y-6" id="signupForm">
+                                {% csrf_token %}
+
+                                <!-- Employee ID -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Employee ID</label>
+                                    <div class="relative flex items-center">
+                                        <input name="employee_id" id="id_employee_id" type="text" required
+                                            class="w-full text-sm border {% if employee_id_error %}border-red-500{% else %}border-gray-200 dark:border-gray-600{% endif %} bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 rounded-lg outline-primary transition-colors duration-200"
+                                            placeholder="Enter your employee ID"
+                                            value="{{ request.POST.employee_id|default:'' }}" />
+                                        <span class="material-symbols-outlined absolute right-3 text-gray-400 text-lg">
+                                            badge
+                                        </span>
+                                    </div>
+                                    {% if employee_id_error %}
+                                    <p class="text-red-500 text-xs mt-2">{{ employee_id_error }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- First Name & Last Name -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">First Name</label>
+                                        <div class="relative flex items-center">
+                                            <input name="first_name" id="id_first_name" type="text" required
+                                                class="w-full text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 rounded-lg outline-primary transition-colors duration-200"
+                                                placeholder="First name"
+                                                value="{{ request.POST.first_name|default:'' }}" />
+                                            <span class="material-symbols-outlined absolute right-3 text-gray-400 text-lg">
+                                                person
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Last Name</label>
+                                        <div class="relative flex items-center">
+                                            <input name="last_name" id="id_last_name" type="text" required
+                                                class="w-full text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 rounded-lg outline-primary transition-colors duration-200"
+                                                placeholder="Last name"
+                                                value="{{ request.POST.last_name|default:'' }}" />
+                                            <span class="material-symbols-outlined absolute right-3 text-gray-400 text-lg">
+                                                person
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Email</label>
+                                    <div class="relative flex items-center">
+                                        <input name="email" id="id_email" type="email" required
+                                            class="w-full text-sm border {% if email_error %}border-red-500{% else %}border-gray-200 dark:border-gray-600{% endif %} bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 rounded-lg outline-primary transition-colors duration-200"
+                                            placeholder="mail@example.com"
+                                            value="{{ request.POST.email|default:'' }}" />
+                                        <span class="material-symbols-outlined absolute right-3 text-gray-400 text-lg">
+                                            mail
+                                        </span>
+                                    </div>
+                                    {% if email_error %}
+                                    <p class="text-red-500 text-xs mt-2">{{ email_error }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Password -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Password</label>
+                                    <div class="relative flex items-center">
+                                        <input name="password1" id="id_password1" type="password" required
+                                            class="w-full text-sm border {% if password_error %}border-red-500{% else %}border-gray-200 dark:border-gray-600{% endif %} bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 pr-12 rounded-lg outline-primary transition-colors duration-200"
+                                            placeholder="Create password"
+                                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+                                        <button type="button" onclick="togglePassword('id_password1', this)"
+                                            class="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+                                            aria-label="Toggle password visibility">
+                                            <span class="material-symbols-outlined text-lg">
+                                                visibility
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1" id="password-requirements">
+                                        <p class="flex items-center gap-2">
+                                            <span class="requirement" id="req-length">
+                                                <span class="material-symbols-outlined text-sm text-gray-400">
+                                                    radio_button_unchecked
+                                                </span>
+                                            </span>
+                                            At least 8 characters
+                                        </p>
+                                        <p class="flex items-center gap-2">
+                                            <span class="requirement" id="req-number">
+                                                <span class="material-symbols-outlined text-sm text-gray-400">
+                                                    radio_button_unchecked
+                                                </span>
+                                            </span>
+                                            At least one number
+                                        </p>
+                                        <p class="flex items-center gap-2">
+                                            <span class="requirement" id="req-lowercase">
+                                                <span class="material-symbols-outlined text-sm text-gray-400">
+                                                    radio_button_unchecked
+                                                </span>
+                                            </span>
+                                            At least one lowercase letter
+                                        </p>
+                                        <p class="flex items-center gap-2">
+                                            <span class="requirement" id="req-uppercase">
+                                                <span class="material-symbols-outlined text-sm text-gray-400">
+                                                    radio_button_unchecked
+                                                </span>
+                                            </span>
+                                            At least one uppercase letter
+                                        </p>
+                                    </div>
+                                    {% if password_error %}
+                                    <p class="text-red-500 text-xs mt-2">{{ password_error }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">Confirm Password</label>
+                                    <div class="relative flex items-center">
+                                        <input name="password2" id="id_password2" type="password" required
+                                            class="w-full text-sm border {% if password_error %}border-red-500{% else %}border-gray-200 dark:border-gray-600{% endif %} bg-white dark:bg-background-dark text-gray-900 dark:text-white px-4 py-3 pr-12 rounded-lg outline-primary transition-colors duration-200"
+                                            placeholder="Confirm password" />
+                                        <button type="button" onclick="togglePassword('id_password2', this)"
+                                            class="absolute right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+                                            aria-label="Toggle password visibility">
+                                            <span class="material-symbols-outlined text-lg">
+                                                visibility
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <p class="mt-2 text-xs text-red-600 hidden" id="password-match-error">Passwords do not match</p>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="pt-4">
+                                    <button type="submit" id="signupBtn"
+                                        class="w-full flex items-center justify-center py-3 px-4 text-sm font-bold tracking-wide rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer">
+                                        <span id="btnText">Create Account</span>
+                                        <span id="btnSpinner" class="hidden ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    </button>
+                                </div>
+
+                                <!-- Sign In Link -->
+                                <div class="text-center pt-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        Already have an account?
+                                        <a href="{% url 'login_view' %}" class="text-primary font-semibold hover:text-primary/80 transition-colors duration-200 ml-1">
+                                            Sign in here
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
-        {% if employee_id_error %}
-        <p class="text-red-500 text-xs mt-1">{{ employee_id_error }}</p>
-        {% endif %}
-      </div>
-
-      <!-- First Name & Last Name -->
-      <div class="flex gap-4">
-        <div class="flex-1">
-          <label class="text-slate-900 text-sm font-medium mb-2 block">First Name</label>
-          <div class="relative flex items-center">
-            <input name="first_name" id="id_first_name" type="text" required
-              class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-              placeholder="First Name" value="{{ request.POST.first_name|default:'' }}" />
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
-          </div>
-        </div>
-        <div class="flex-1">
-          <label class="text-slate-900 text-sm font-medium mb-2 block">Last Name</label>
-          <div class="relative flex items-center">
-            <input name="last_name" id="id_last_name" type="text" required
-              class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 rounded-md outline-blue-600"
-              placeholder="Last Name" value="{{ request.POST.last_name|default:'' }}" />
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016 16h12a4 4 0 01.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Email -->
-      <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">Email</label>
-        <div class="relative flex items-center">
-          <input name="email" id="id_email" type="email" required
-            class="w-full text-slate-900 text-sm border {% if email_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 rounded-md outline-blue-600"
-            placeholder="mail@example.com" value="{{ request.POST.email|default:'' }}" />
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        </div>
-        {% if email_error %}
-        <p class="text-red-500 text-xs mt-1">{{ email_error }}</p>
-        {% endif %}
-      </div>
-
-      <!-- Password -->
-      <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">Password</label>
-        <div class="relative flex items-center">
-          <input name="password1" id="id_password1" type="password" required
-            class="w-full text-slate-900 text-sm border {% if password_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 pr-10 rounded-md outline-blue-600"
-            placeholder="Enter password"
-            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
-          <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password1', this)" aria-label="Toggle password visibility">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-            </svg>
-          </button>
-        </div>
-        <div class="mt-2 text-xs text-gray-600 space-y-1" id="password-requirements">
-          <p class="flex items-center gap-2">
-            <span class="requirement" id="req-length">
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-              </svg>
-            </span>
-            At least 8 characters
-          </p>
-          <p class="flex items-center gap-2">
-            <span class="requirement" id="req-number">
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-              </svg>
-            </span>
-            At least one number
-          </p>
-          <p class="flex items-center gap-2">
-            <span class="requirement" id="req-lowercase">
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-              </svg>
-            </span>
-            At least one lowercase letter
-          </p>
-          <p class="flex items-center gap-2">
-            <span class="requirement" id="req-uppercase">
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-              </svg>
-            </span>
-            At least one uppercase letter
-          </p>
-        </div>
-        {% if password_error %}
-        <p class="text-red-500 text-xs mt-1">{{ password_error }}</p>
-        {% endif %}
-      </div>
-
-      <!-- Confirm Password -->
-      <div>
-        <label class="text-slate-900 text-sm font-medium mb-2 block">Confirm password</label>
-        <div class="relative flex items-center">
-          <input name="password2" id="id_password2" type="password" required
-            class="w-full text-slate-900 text-sm border {% if password_error %}border-red-500{% else %}border-slate-300{% endif %} px-4 py-3 pr-10 rounded-md outline-blue-600"
-            placeholder="Confirm password" />
-          <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600" onclick="togglePassword('id_password2', this)" aria-label="Toggle password visibility">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-            </svg>
-          </button>
-        </div>
-        <p class="mt-2 text-xs text-red-600 hidden" id="password-match-error">Passwords do not match</p>
-      </div>
-
-      <div class="!mt-12">
-        <button type="submit" id="signupBtn"
-          class="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-          <span id="btnText">Sign up</span>
-          <span id="btnSpinner" class="hidden ml-2 inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-        </button>
-      </div>
-
-      <p class="text-slate-900 text-sm !mt-6 text-center">
-        Already have an account?
-        <a href="{% url 'login_view' %}" class="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold">
-          Sign in here
-        </a>
-      </p>
-    </form>
-  </div>
+    </div>
 </div>
 
 <script>
-// SweetAlert only for success
-document.addEventListener("DOMContentLoaded", () => {
-  {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'success' %}
-        Swal.fire({
-          icon: 'success',
-          title: "{{ message|escapejs }}",
-          showConfirmButton: false,
-          timer: 2000,
-          toast: true,
-          position: 'top-end',
-          timerProgressBar: true
-        });
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-});
-
 function togglePassword(inputId, buttonElement) {
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  const isPassword = input.type === 'password';
-  input.type = isPassword ? 'text' : 'password';
-  const svg = buttonElement.querySelector('svg');
-  if (svg) {
-    if (isPassword) {
-      svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    const icon = buttonElement.querySelector('.material-symbols-outlined');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
     } else {
-      svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />`;
+        input.type = 'password';
+        icon.textContent = 'visibility';
     }
-  }
-  input.focus();
+    input.focus();
 }
 
 // Password validation
@@ -197,61 +224,80 @@ const password2 = document.getElementById('id_password2');
 const matchError = document.getElementById('password-match-error');
 
 function updateRequirement(id, isValid) {
-  const req = document.getElementById(id);
-  if (!req) return;
-  const svg = req.querySelector('svg');
-  if (isValid) {
-    svg.classList.remove('text-gray-400');
-    svg.classList.add('text-green-500');
-    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />`;
-  } else {
-    svg.classList.remove('text-green-500');
-    svg.classList.add('text-gray-400');
-    svg.innerHTML = `<circle cx="12" cy="12" r="10" stroke-width="2"/>`;
-  }
+    const req = document.getElementById(id);
+    if (!req) return;
+    const icon = req.querySelector('.material-symbols-outlined');
+    if (isValid) {
+        icon.classList.remove('text-gray-400', 'text-red-500');
+        icon.classList.add('text-green-500');
+        icon.textContent = 'check_circle';
+    } else {
+        icon.classList.remove('text-green-500');
+        icon.classList.add('text-gray-400');
+        icon.textContent = 'radio_button_unchecked';
+    }
 }
 
 password1.addEventListener('input', function() {
-  const value = this.value;
-  updateRequirement('req-length', value.length >= 8);
-  updateRequirement('req-number', /\d/.test(value));
-  updateRequirement('req-lowercase', /[a-z]/.test(value));
-  updateRequirement('req-uppercase', /[A-Z]/.test(value));
+    const value = this.value;
+    updateRequirement('req-length', value.length >= 8);
+    updateRequirement('req-number', /\d/.test(value));
+    updateRequirement('req-lowercase', /[a-z]/.test(value));
+    updateRequirement('req-uppercase', /[A-Z]/.test(value));
 
-  if (password2.value) {
-    if (value === password2.value) {
-      password2.classList.remove('border-red-500');
-      password2.classList.add('border-green-500');
-      matchError.classList.add('hidden');
-    } else {
-      password2.classList.remove('border-green-500');
-      password2.classList.add('border-red-500');
-      matchError.classList.remove('hidden');
+    if (password2.value) {
+        if (value === password2.value) {
+            password2.classList.remove('border-red-500');
+            password2.classList.add('border-green-500');
+            matchError.classList.add('hidden');
+        } else {
+            password2.classList.remove('border-green-500');
+            password2.classList.add('border-red-500');
+            matchError.classList.remove('hidden');
+        }
     }
-  }
 });
 
 password2.addEventListener('input', function() {
-  if (password1.value === this.value) {
-    this.classList.remove('border-red-500');
-    this.classList.add('border-green-500');
-    matchError.classList.add('hidden');
-  } else {
-    this.classList.remove('border-green-500');
-    this.classList.add('border-red-500');
-    matchError.classList.remove('hidden');
-  }
+    if (password1.value === this.value) {
+        this.classList.remove('border-red-500');
+        this.classList.add('border-green-500');
+        matchError.classList.add('hidden');
+    } else {
+        this.classList.remove('border-green-500');
+        this.classList.add('border-red-500');
+        matchError.classList.remove('hidden');
+    }
 });
 
+// Form submission handler
 document.getElementById('signupForm').addEventListener('submit', function() {
-  const btn = document.getElementById('signupBtn');
-  const btnText = document.getElementById('btnText');
-  const btnSpinner = document.getElementById('btnSpinner');
+    const btn = document.getElementById('signupBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
 
-  btn.disabled = true;
-  btnText.classList.add('hidden');
-  btnSpinner.classList.remove('hidden');
+    btn.disabled = true;
+    btnText.classList.add('hidden');
+    btnSpinner.classList.remove('hidden');
+});
+
+// SweetAlert only for success messages
+document.addEventListener("DOMContentLoaded", () => {
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                Swal.fire({
+                    icon: 'success',
+                    title: "{{ message|escapejs }}",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                    position: 'top-end',
+                    timerProgressBar: true
+                });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 });
 </script>
-
 {% endblock %}
