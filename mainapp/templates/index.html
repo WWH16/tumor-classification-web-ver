@@ -19,6 +19,10 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- AOS Library for Scroll Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -38,6 +42,14 @@
                         "xl": "0.75rem",
                         "full": "9999px"
                     },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'fade-in-down': 'fadeInDown 0.6s ease-out',
+                        'fade-in-left': 'fadeInLeft 0.6s ease-out',
+                        'fade-in-right': 'fadeInRight 0.6s ease-out',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                    }
                 },
             },
         }
@@ -46,100 +58,243 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Loading animation */
+        .loading-bar {
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
     </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200">
-    <div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 overflow-x-hidden">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-white dark:bg-background-dark z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="size-10 text-primary animate-pulse">
+                <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">MRI Tumor Classification</h2>
+        </div>
+        <div class="w-64 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-full bg-primary loading-bar rounded-full"></div>
+        </div>
+    </div>
+
+    <div class="relative flex min-h-screen w-full flex-col group/design-root">
         <div class="layout-container flex h-full grow flex-col">
             <div class="flex flex-1 justify-center">
                 <div class="layout-content-container flex flex-col w-full max-w-6xl">
 
                     <!-- TopNavBar -->
-                    <header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-gray-700 px-10 py-4 font-display">
-                        <div class="flex items-center gap-4 text-gray-900 dark:text-white">
-                            <div class="size-6 text-primary">
+                    <header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-10 py-3 sm:py-4 font-display sticky top-0 bg-background-light dark:bg-background-dark z-40 transition-all duration-300"
+                            data-aos="fade-down" data-aos-duration="500">
+                        <div class="flex items-center gap-3 sm:gap-4 text-gray-900 dark:text-white">
+                            <div class="size-5 sm:size-6 text-primary animate-pulse-slow">
                                 <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
                             </div>
-                            <h2 class="text-xl font-bold">MRI Tumor Classification</h2>
+                            <h2 class="text-lg sm:text-xl font-bold">MRI Tumor Classification</h2>
                         </div>
-                        <div class="flex flex-1 justify-end gap-8">
-                            <div class="hidden md:flex items-center gap-9">
-                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#features">Features</a>
-                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#testimonials">Testimonials</a>
-                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" href="#about">About</a>
+                        <div class="flex flex-1 justify-end gap-4 sm:gap-6 lg:gap-8">
+                            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-9">
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-all duration-300 hover:scale-105" href="#features">Features</a>
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-all duration-300 hover:scale-105" href="#testimonials">Testimonials</a>
+                                <a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-all duration-300 hover:scale-105" href="#about">About</a>
                             </div>
 
+                            <!-- Mobile Menu Button -->
+                            <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onclick="toggleMobileMenu()">
+                                <span class="material-symbols-outlined">menu</span>
+                            </button>
+
                             {% if user.is_authenticated %}
-                                <a href="{% url 'dashboard' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+                                <a href="{% url 'dashboard' %}" class="hidden md:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                                     <span class="truncate">Dashboard</span>
                                 </a>
                             {% else %}
-                                <a href="{% url 'signup_view' %}" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+                                <a href="{% url 'signup_view' %}" class="hidden md:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 sm:h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                                     <span class="truncate">Sign Up</span>
                                 </a>
                             {% endif %}
                         </div>
                     </header>
 
+                    <!-- Mobile Menu -->
+                    <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-700 px-4 py-4 transition-all duration-300" data-aos="fade-down">
+                        <div class="flex flex-col space-y-4">
+                            <a class="text-sm font-medium hover:text-primary dark:hover:text-primary py-2 transition-all duration-300" href="#features" onclick="toggleMobileMenu()">Features</a>
+                            <a class="text-sm font-medium hover:text-primary dark:hover:text-primary py-2 transition-all duration-300" href="#testimonials" onclick="toggleMobileMenu()">Testimonials</a>
+                            <a class="text-sm font-medium hover:text-primary dark:hover:text-primary py-2 transition-all duration-300" href="#about" onclick="toggleMobileMenu()">About</a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'dashboard' %}" class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 mt-2" onclick="toggleMobileMenu()">
+                                    <span>Dashboard</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'signup_view' %}" class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 mt-2" onclick="toggleMobileMenu()">
+                                    <span>Sign Up</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <!-- HeroSection -->
                     <main class="w-full">
-                        <div class="py-20 px-10">
+                        <div class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-10">
                             <div class="container mx-auto">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                                    <div class="flex flex-col gap-6 text-left">
-                                        <div class="flex flex-col gap-4">
-                                            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-white">AI-Powered MRI Tumor Classification</h1>
-                                            <p class="text-base md:text-lg text-gray-600 dark:text-gray-300">Harness the power of artificial intelligence for fast, accurate, and reliable tumor classification from MRI scans, empowering medical professionals with critical insights.</p>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                                    <div class="flex flex-col gap-4 sm:gap-6 text-left order-2 lg:order-1"
+                                         data-aos="fade-right" data-aos-duration="800" data-aos-delay="200">
+                                        <div class="flex flex-col gap-3 sm:gap-4">
+                                            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-gray-900 dark:text-white leading-tight">
+                                                AI-Powered MRI Tumor Classification
+                                            </h1>
+                                            <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                Harness the power of artificial intelligence for fast, accurate, and reliable tumor classification from MRI scans, empowering medical professionals with critical insights.
+                                            </p>
                                         </div>
                                         {% if user.is_authenticated %}
-                                            <a href="{% url 'app' %}" class="flex w-fit min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors">
+                                            <a href="{% url 'app' %}" class="flex w-fit min-w-[140px] max-w-xs cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                               data-aos="zoom-in" data-aos-delay="400">
                                                 <span class="truncate">Start Classification</span>
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'signup_view' %}" class="flex w-fit min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-colors">
+                                            <a href="{% url 'signup_view' %}" class="flex w-fit min-w-[140px] max-w-xs cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold tracking-wide hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                               data-aos="zoom-in" data-aos-delay="400">
                                                 <span class="truncate">Get Started</span>
                                             </a>
                                         {% endif %}
                                     </div>
-                                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl" data-alt="Abstract 3D rendering of a human brain scan with neural network connections overlaid" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1fKK7rEO5YC-SiorUaxWrw1syZmH-quxSa01Zd9cRf2guiMeTHy3mAJX_1byQTVg5osJeRTxiTdB5P-IQMF4X8ts4CXd1KcVKvpyLz3K8RYYK3P78uGH0udIpWgz_J0ODzF7kK3zbWuL-zf9FUpgkQTSAvUkESZoD6uAb_6hgfhsYHRS9kffNqihlu5RXmEw-EWpA0_1ISSmlvpk1y1dHesJORErineONhYDRd8jhLAAHZqDio_-cZHHGdSIltjsujuny6IDNGJE");'></div>
+                                    <div class="w-full order-1 lg:order-2 mb-8 lg:mb-0"
+                                         data-aos="fade-left" data-aos-duration="800" data-aos-delay="300">
+                                        <div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl animate-float shadow-2xl"
+                                             data-alt="Abstract 3D rendering of a human brain scan with neural network connections overlaid"
+                                             style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1fKK7rEO5YC-SiorUaxWrw1syZmH-quxSa01Zd9cRf2guiMeTHy3mAJX_1byQTVg5osJeRTxiTdB5P-IQMF4X8ts4CXd1KcVKvpyLz3K8RYYK3P78uGH0udIpWgz_J0ODzF7kK3zbWuL-zf9FUpgkQTSAvUkESZoD6uAb_6hgfhsYHRS9kffNqihlu5RXmEw-EWpA0_1ISSmlvpk1y1dHesJORErineONhYDRd8jhLAAHZqDio_-cZHHGdSIltjsujuny6IDNGJE");'></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- SectionHeader - Features -->
-                        <div class="pt-16" id="features">
-                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase">Key Features</h4>
+                        <div class="pt-12 sm:pt-16 px-4 sm:px-6 lg:px-10" id="features">
+                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase"
+                                data-aos="fade-up" data-aos-duration="600">
+                                Key Features
+                            </h4>
                         </div>
 
                         <!-- FeatureSection -->
-                        <div class="flex flex-col gap-10 px-10 py-10">
-                            <div class="flex flex-col items-center gap-4 text-center">
-                                <h1 class="text-3xl md:text-4xl font-bold tracking-tight max-w-2xl text-gray-900 dark:text-white">Advanced Technology for Better Diagnostics</h1>
-                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl">Our platform is built with cutting-edge technology to provide you with the most accurate and efficient analysis.</p>
+                        <div class="flex flex-col gap-8 sm:gap-10 px-4 sm:px-6 lg:px-10 py-10 sm:py-12">
+                            <div class="flex flex-col items-center gap-4 text-center max-w-4xl mx-auto">
+                                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 dark:text-white px-4"
+                                    data-aos="fade-up" data-aos-duration="600">
+                                    Advanced Technology for Better Diagnostics
+                                </h1>
+                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl px-4"
+                                   data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+                                    Our platform is built with cutting-edge technology to provide you with the most accurate and efficient analysis.
+                                </p>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto w-full">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
                                     <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">verified</span></div>
                                     <div class="flex flex-col gap-1">
                                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">High Accuracy</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Leverage a state-of-the-art AI model with proven high precision in tumor classification.</p>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
                                     <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">speed</span></div>
                                     <div class="flex flex-col gap-1">
                                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Rapid Analysis</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Receive comprehensive analysis in minutes, significantly reducing turnaround time.</p>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
                                     <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">mouse</span></div>
                                     <div class="flex flex-col gap-1">
                                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Intuitive Interface</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">A simple, user-friendly process for uploading scans and viewing results.</p>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="500">
                                     <div class="text-primary"><span class="material-symbols-outlined" style="font-size: 32px;">lock</span></div>
                                     <div class="flex flex-col gap-1">
                                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Secure &amp; Private</h2>
@@ -150,41 +305,53 @@
                         </div>
 
                         <!-- SectionHeader - Testimonials -->
-                        <div class="pt-16" id="testimonials">
-                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase">Trusted by Medical Professionals</h4>
+                        <div class="pt-12 sm:pt-16 px-4 sm:px-6 lg:px-10" id="testimonials">
+                            <h4 class="text-sm font-bold tracking-wider text-primary text-center uppercase"
+                                data-aos="fade-up" data-aos-duration="600">
+                                Trusted by Medical Professionals
+                            </h4>
                         </div>
 
                         <!-- Testimonials Section -->
-                        <div class="flex flex-col gap-10 px-10 py-10">
-                            <div class="flex flex-col items-center gap-4 text-center">
-                                <h1 class="text-3xl md:text-4xl font-bold tracking-tight max-w-2xl text-gray-900 dark:text-white">What Our Users Say</h1>
-                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl">Real stories from clinicians who are leveraging our AI to improve patient outcomes.</p>
+                        <div class="flex flex-col gap-8 sm:gap-10 px-4 sm:px-6 lg:px-10 py-10 sm:py-12">
+                            <div class="flex flex-col items-center gap-4 text-center max-w-4xl mx-auto">
+                                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 dark:text-white px-4"
+                                    data-aos="fade-up" data-aos-duration="600">
+                                    What Our Users Say
+                                </h1>
+                                <p class="text-base text-gray-600 dark:text-gray-300 max-w-3xl px-4"
+                                   data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+                                    Real stories from clinicians who are leveraging our AI to improve patient outcomes.
+                                </p>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto w-full">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
                                     <p class="text-gray-600 dark:text-gray-300">"This tool has revolutionized how we approach preliminary MRI analysis. The speed and accuracy are unparalleled, allowing us to focus more on patient care."</p>
                                     <div class="flex items-center gap-4 mt-2">
-                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. Jane Doe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKHr7E09GiSJvsDeVUi0d7DTa8dQXGb4EuIny5j2iSmLzdukmr7dw22BdoZ174KDVgrn3InDz8JxvtZkPvkAlp06uz3iURNrmdsvwGGQ7Z-QzxJSeJVXkgmFS21dIiAiYqgO4SXEjatkEFxi0OMKOpm1gAgeGReCvd9faNHEmuzUHpGSTSeA_01tjXxREA-6kF7eR1XKUjEHSxOrN9yvJHy9fKI_e95VwQt7BTCuWTPFdWP77XTQCVBMeUq49Peo9_OHeTtn_gzmQ"/>
+                                        <img class="size-10 sm:size-12 rounded-full object-cover" data-alt="Portrait of Dr. Jane Doe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKHr7E09GiSJvsDeVUi0d7DTa8dQXGb4EuIny5j2iSmLzdukmr7dw22BdoZ174KDVgrn3InDz8JxvtZkPvkAlp06uz3iURNrmdsvwGGQ7Z-QzxJSeJVXkgmFS21dIiAiYqgO4SXEjatkEFxi0OMKOpm1gAgeGReCvd9faNHEmuzUHpGSTSeA_01tjXxREA-6kF7eR1XKUjEHSxOrN9yvJHy9fKI_e95VwQt7BTCuWTPFdWP77XTQCVBMeUq49Peo9_OHeTtn_gzmQ"/>
                                         <div>
                                             <p class="font-bold text-gray-900 dark:text-white">Dr. Jane Doe</p>
                                             <p class="text-sm text-gray-500 dark:text-gray-400">Oncologist</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
                                     <p class="text-gray-600 dark:text-gray-300">"The intuitive interface made integration into our workflow seamless. We were up and running in hours, not weeks. Highly recommended."</p>
                                     <div class="flex items-center gap-4 mt-2">
-                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. John Smith" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2qm53QfRnVXr2KG2p-3KCQqHaWICwgyyNuYpKrQrZvWD5TpkjdqEY82pII-6QM8GvfJPHQkkbw6K2ju7Tjs_JiAol2lneTYYligURok5vM4TCPCDZgUyy2Lrg8T8l74ICtV03uEalfnl2HJQgMrQh2kfzEW5rxFCAlyWB1uyMoMpw6lHAehmlk-1lOZEqZw6a-61wh6wwdN7OhXKF_zlTPMChKCB7LaQP_niPzRAbPfEzcTTVkazBvXFwePxHIjm_WJJIqxGHiIc"/>
+                                        <img class="size-10 sm:size-12 rounded-full object-cover" data-alt="Portrait of Dr. John Smith" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2qm53QfRnVXr2KG2p-3KCQqHaWICwgyyNuYpKrQrZvWD5TpkjdqEY82pII-6QM8GvfJPHQkkbw6K2ju7Tjs_JiAol2lneTYYligURok5vM4TCPCDZgUyy2Lrg8T8l74ICtV03uEalfnl2HJQgMrQh2kfzEW5rxFCAlyWB1uyMoMpw6lHAehmlk-1lOZEqZw6a-61wh6wwdN7OhXKF_zlTPMChKCB7LaQP_niPzRAbPfEzcTTVkazBvXFwePxHIjm_WJJIqxGHiIc"/>
                                         <div>
                                             <p class="font-bold text-gray-900 dark:text-white">Dr. John Smith</p>
                                             <p class="text-sm text-gray-500 dark:text-gray-400">Radiologist</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-6">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4 sm:p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                                     data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
                                     <p class="text-gray-600 dark:text-gray-300">"Data security is our top priority. The platform's commitment to HIPAA compliance gives us the peace of mind we need to use this technology confidently."</p>
                                     <div class="flex items-center gap-4 mt-2">
-                                        <img class="size-12 rounded-full object-cover" data-alt="Portrait of Dr. Emily White" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Fr2zQICkZgzbNY3Nj5SU6gV3TJe4QhpwZlr353uVyJ-ghPZCp_mFvuguPEfYvP5q-QdDIA02GaVvu5wq4GLtXDj8opEr3M8g_o9DzS7Y9Lf63Gh7m10vHVrYpqskrQsEDpOjmtKGob6LFYtZsOII3tILZeu_OGhbq7LhMk7RfUjBvh5EWz34YQWB3ESkaGrA563kwsIU60Cf6h0gQM8z9eYXbW7E-7lTF_mavP55IsnrfMFJHQYnXaz18nApeJ4pO0Xuurhm4aY"/>
+                                        <img class="size-10 sm:size-12 rounded-full object-cover" data-alt="Portrait of Dr. Emily White" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Fr2zQICkZgzbNY3Nj5SU6gV3TJe4QhpwZlr353uVyJ-ghPZCp_mFvuguPEfYvP5q-QdDIA02GaVvu5wq4GLtXDj8opEr3M8g_o9DzS7Y9Lf63Gh7m10vHVrYpqskrQsEDpOjmtKGob6LFYtZsOII3tILZeu_OGhbq7LhMk7RfUjBvh5EWz34YQWB3ESkaGrA563kwsIU60Cf6h0gQM8z9eYXbW7E-7lTF_mavP55IsnrfMFJHQYnXaz18nApeJ4pO0Xuurhm4aY"/>
                                         <div>
                                             <p class="font-bold text-gray-900 dark:text-white">Dr. Emily White</p>
                                             <p class="text-sm text-gray-500 dark:text-gray-400">Neurosurgeon</p>
@@ -196,41 +363,54 @@
                     </main>
 
                     <!-- Footer -->
-                    <footer class="bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-700 mt-20">
-                        <div class="max-w-6xl mx-auto px-10 py-12">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                                <div class="col-span-1 md:col-span-2">
+                    <footer class="bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-700 mt-12 sm:mt-16 lg:mt-20">
+                        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-10 lg:py-12">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                                <div class="col-span-1 lg:col-span-2" data-aos="fade-up" data-aos-duration="600">
                                     <div class="flex items-center gap-3 text-gray-900 dark:text-white">
-                                        <div class="size-6 text-primary">
+                                        <div class="size-5 sm:size-6 text-primary">
                                             <img src="{% static 'user/images/mri.png' %}" alt="MRI Logo" class="w-full h-full">
                                         </div>
-                                        <h2 class="text-xl font-bold">MRI Tumor Classification</h2>
+                                        <h2 class="text-lg sm:text-xl font-bold">MRI Tumor Classification</h2>
                                     </div>
-                                    <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 max-w-sm">Empowering healthcare with AI for faster, more accurate diagnostics.</p>
+                                    <p class="mt-3 sm:mt-4 text-sm text-gray-500 dark:text-gray-400 max-w-sm">Empowering healthcare with AI for faster, more accurate diagnostics.</p>
                                 </div>
-                                <div>
+                                <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
                                     <h3 class="font-bold text-gray-900 dark:text-white">Navigation</h3>
-                                    <ul class="mt-4 space-y-2 text-sm">
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#features">Features</a></li>
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#testimonials">Testimonials</a></li>
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#about">About</a></li>
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#contact">Contact</a></li>
+                                    <ul class="mt-3 sm:mt-4 space-y-2 text-sm">
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#features">Features</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#testimonials">Testimonials</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#about">About</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#contact">Contact</a></li>
                                     </ul>
                                 </div>
-                                <div>
+                                <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
                                     <h3 class="font-bold text-gray-900 dark:text-white">Legal</h3>
-                                    <ul class="mt-4 space-y-2 text-sm">
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#">Privacy Policy</a></li>
-                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary" href="#">Terms of Service</a></li>
+                                    <ul class="mt-3 sm:mt-4 space-y-2 text-sm">
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#">Privacy Policy</a></li>
+                                        <li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors duration-300" href="#">Terms of Service</a></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="mt-12 border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                                <p>© {% now "Y" %} MRI Tumor Classification. All rights reserved.</p>
-                                <div class="flex space-x-4 mt-4 md:mt-0">
-                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg></a>
-                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg></a>
-                                    <a class="hover:text-primary" href="#"><svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.019c0 4.438 2.865 8.229 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.019C22 6.477 17.523 2 12 2z" fill-rule="evenodd"></path></svg></a>
+                            <div class="mt-8 sm:mt-10 lg:mt-12 border-t border-gray-200 dark:border-gray-700 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-400"
+                                 data-aos="fade-up" data-aos-duration="600">
+                                <p class="text-center sm:text-left">© {% now "Y" %} MRI Tumor Classification. All rights reserved.</p>
+                                <div class="flex space-x-4">
+                                    <a class="hover:text-primary transition-all duration-300 transform hover:scale-110" href="#">
+                                        <svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24">
+                                            <path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path>
+                                        </svg>
+                                    </a>
+                                    <a class="hover:text-primary transition-all duration-300 transform hover:scale-110" href="#">
+                                        <svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24">
+                                            <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                                        </svg>
+                                    </a>
+                                    <a class="hover:text-primary transition-all duration-300 transform hover:scale-110" href="#">
+                                        <svg aria-hidden="true" class="size-5" fill="currentColor" viewbox="0 0 24 24">
+                                            <path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.019c0 4.438 2.865 8.229 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.019C22 6.477 17.523 2 12 2z" fill-rule="evenodd"></path>
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -239,6 +419,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 size-12 bg-primary text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 opacity-0 invisible flex items-center justify-center z-30"
+            onclick="scrollToTop()">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
 
     <!-- SweetAlert2 Messages -->
     <script>
@@ -256,6 +442,68 @@
                     });
                 {% endfor %}
             {% endif %}
+
+            // Initialize AOS (Animate On Scroll)
+            AOS.init({
+                duration: 800,
+                once: true,
+                easing: 'ease-out-cubic',
+                offset: 100
+            });
+
+            // Hide loading screen
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1500);
+
+            // Back to top button
+            const backToTopButton = document.getElementById('back-to-top');
+
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.style.opacity = '1';
+                    backToTopButton.style.visibility = 'visible';
+                } else {
+                    backToTopButton.style.opacity = '0';
+                    backToTopButton.style.visibility = 'hidden';
+                }
+            });
+        });
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Fast scroll detection for additional animations
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('header');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down fast
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up
+                navbar.style.transform = 'translateY(0)';
+            }
+
+            lastScrollTop = scrollTop;
         });
     </script>
 </body>
