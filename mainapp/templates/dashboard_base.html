@@ -9,16 +9,21 @@
 
   <!-- DaisyUI v5 -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts - Space Grotesk (same as landing page) -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
+    /* Apply Space Grotesk font to entire body */
+    body {
+      font-family: "Space Grotesk", sans-serif;
+    }
+
     /* Sidebar transition and behavior */
     .sidebar {
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -66,6 +71,11 @@
     /* Prevent content shift when drawer opens */
     html {
       overflow-y: scroll;
+    }
+
+    /* Ensure all text elements use Space Grotesk */
+    .navbar, .menu, .btn, .text-xl, .menu-title, .drawer-content {
+      font-family: "Space Grotesk", sans-serif;
     }
   </style>
 
