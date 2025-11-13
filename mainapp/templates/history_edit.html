@@ -8,54 +8,61 @@
 
   <!-- Back Button -->
   <div class="flex items-center gap-4">
-    <a href="{% url 'history'%}" class="btn btn-ghost btn-sm gap-2 shadow-md hover:shadow-lg rounded-md">
-      <i class="material-icons">arrow_back</i>
-      Back to Details
+    <a href="{% url 'history' %}" class="btn btn-ghost btn-sm gap-2 shadow-md hover:shadow-lg transition-all duration-300 rounded-lg">
+      <i class="material-icons text-lg">arrow_back</i>
+      Back to History
     </a>
   </div>
 
   <!-- Edit Form Card -->
-  <div class="card shadow-lg rounded-xl bg-base-100">
-    <div class="card-body space-y-8">
+  <div class="card shadow-xl rounded-xl bg-base-100 border border-base-300">
+    <div class="card-body space-y-8 p-6">
 
       <!-- Title -->
-      <div class="flex items-center gap-2">
-        <i class="material-icons text-blue-600 text-3xl">edit</i>
-        <h2 class="text-2xl font-bold">Edit Classification Record</h2>
+      <div class="flex items-center gap-3 mb-2">
+        <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
+          <i class="material-icons text-blue-600 text-2xl">edit</i>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Edit Classification Record</h2>
+          <p class="text-gray-500 text-sm mt-1">Update patient information and clinical notes</p>
+        </div>
       </div>
 
       <form method="POST" class="space-y-8">
         {% csrf_token %}
 
         <!-- Patient Information -->
-        <section class="space-y-4">
-          <div class="flex items-center gap-2">
-            <i class="material-icons text-blue-600 text-xl">person</i>
-            <h3 class="text-lg font-semibold">Patient Information</h3>
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
+              <i class="material-icons text-blue-600 text-lg">person</i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800">Patient Information</h3>
           </div>
 
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Full Name <span class="text-error">*</span></span>
+              <span class="label-text font-medium">Full Name <span class="text-error">*</span></span>
             </label>
             <input type="text" name="full_name" value="{{ classification.full_name }}" placeholder="Enter patient's full name"
-                   class="input input-bordered w-full" required>
+                   class="input input-bordered w-full focus:input-primary" required>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="form-control w-full">
               <label class="label">
-                <span class="label-text">Age <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Age <span class="text-error">*</span></span>
               </label>
               <input type="number" name="age" value="{{ classification.age }}" placeholder="Enter age"
-                     class="input input-bordered w-full" min="0" max="150" required>
+                     class="input input-bordered w-full focus:input-primary" min="0" max="150" required>
             </div>
 
             <div class="form-control w-full">
               <label class="label">
-                <span class="label-text">Sex <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Sex <span class="text-error">*</span></span>
               </label>
-              <select name="sex" class="select select-bordered w-full" required>
+              <select name="sex" class="select select-bordered w-full focus:select-primary" required>
                 <option value="Male" {% if classification.sex == "Male" %}selected{% endif %}>Male</option>
                 <option value="Female" {% if classification.sex == "Female" %}selected{% endif %}>Female</option>
               </select>
@@ -64,77 +71,96 @@
 
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Medical History</span>
+              <span class="label-text font-medium">Medical History</span>
             </label>
-            <textarea name="history" placeholder="Enter patient's medical history..." class="textarea textarea-bordered h-32 w-full">{{ classification.history }}</textarea>
-            <span class="text-sm text-gray-500 mt-1">Include relevant medical conditions, medications, allergies, etc.</span>
+            <textarea name="history" placeholder="Enter patient's medical history..."
+                      class="textarea textarea-bordered h-32 w-full focus:textarea-primary resize-none">{{ classification.history }}</textarea>
+            <label class="label">
+              <span class="label-text-alt text-gray-500">Include relevant medical conditions, medications, allergies, etc.</span>
+            </label>
           </div>
         </section>
 
-        <div class="divider"></div>
+        <div class="divider my-2"></div>
 
         <!-- Clinical Notes -->
-        <section class="space-y-4">
-          <div class="flex items-center gap-2">
-            <i class="material-icons text-blue-600 text-xl">note</i>
-            <h3 class="text-lg font-semibold">Clinical Notes</h3>
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
+              <i class="material-icons text-blue-600 text-lg">note</i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800">Clinical Notes</h3>
           </div>
 
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Additional Notes</span>
+              <span class="label-text font-medium">Additional Notes</span>
             </label>
-            <textarea name="notes" placeholder="Add clinical observations, recommendations, or additional notes..." class="textarea textarea-bordered h-32 w-full">{{ classification.notes }}</textarea>
+            <textarea name="notes" placeholder="Add clinical observations, recommendations, or additional notes..."
+                      class="textarea textarea-bordered h-32 w-full focus:textarea-primary resize-none">{{ classification.notes }}</textarea>
+            <label class="label">
+              <span class="label-text-alt text-gray-500">Optional notes for future reference</span>
+            </label>
           </div>
         </section>
 
-        <div class="divider"></div>
+        <div class="divider my-2"></div>
 
         <!-- Classification Results -->
-        <section class="space-y-4">
-          <div class="flex items-center gap-2">
-            <i class="material-icons text-orange-500 text-xl">info</i>
-            <h3 class="text-lg font-semibold">Classification Results</h3>
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-8 h-8 bg-orange-50 rounded-lg">
+              <i class="material-icons text-orange-500 text-lg">info</i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800">Classification Results</h3>
           </div>
 
-          <div class="alert alert-info shadow-lg flex items-center gap-2">
-            <i class="material-icons">info</i>
-            <span>Classification results cannot be modified. Only patient information and notes can be updated.</span>
+          <div class="alert alert-info bg-blue-50 border-blue-200 shadow-sm">
+            <div class="flex items-start gap-3">
+              <i class="material-icons text-blue-500 text-lg mt-0.5">info</i>
+              <div>
+                <span class="font-medium text-blue-800">Read-only Information</span>
+                <p class="text-blue-700 text-sm mt-1">Classification results cannot be modified. Only patient information and notes can be updated.</p>
+              </div>
+            </div>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-4 mt-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Predicted Diagnosis -->
-            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
-              <span class="text-sm text-gray-500">Predicted Diagnosis</span>
-              <span class="text-lg font-medium mt-1">{{ classification.predicted_class }}</span>
+            <div class="p-4 bg-base-100 border border-base-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+              <span class="text-sm text-gray-500 font-medium">Predicted Diagnosis</span>
+              <span class="text-lg font-semibold text-gray-800 mt-1 block">{{ classification.predicted_class }}</span>
             </div>
 
             <!-- Confidence -->
-            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
-              <span class="text-sm text-gray-500">Confidence</span>
-              <span class="text-lg font-medium mt-1">{{ confidence_percent|default:classification.confidence|default_if_none:0.0|floatformat:2 }}%</span>
+            <div class="p-4 bg-base-100 border border-base-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+              <span class="text-sm text-gray-500 font-medium">Confidence</span>
+              <span class="text-lg font-semibold text-gray-800 mt-1 block">
+                {{ confidence_percent|default:classification.confidence|default_if_none:0.0|floatformat:2 }}%
+              </span>
             </div>
 
             <!-- Date Processed -->
-            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
-              <span class="text-sm text-gray-500">Date Processed</span>
-              <span class="text-lg font-medium mt-1">{{ classification.date_uploaded|date:"M d, Y" }}</span>
+            <div class="p-4 bg-base-100 border border-base-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+              <span class="text-sm text-gray-500 font-medium">Date Processed</span>
+              <span class="text-lg font-semibold text-gray-800 mt-1 block">{{ classification.date_uploaded|date:"M d, Y" }}</span>
             </div>
 
             <!-- Processed By -->
-            <div class="p-4 bg-base-200 rounded-lg flex flex-col justify-center">
-              <span class="text-sm text-gray-500">Processed By</span>
-              <span class="text-lg font-medium mt-1">{{ classification.process_by.get_full_name }}</span>
+            <div class="p-4 bg-base-100 border border-base-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+              <span class="text-sm text-gray-500 font-medium">Processed By</span>
+              <span class="text-lg font-semibold text-gray-800 mt-1 block">{{ classification.process_by.get_full_name }}</span>
             </div>
           </div>
         </section>
 
         <!-- Form Actions -->
-        <div class="flex justify-end gap-4 pt-4">
-          <a href="{% url 'history' %}" class="btn btn-ghost flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-base-300">
+          <a href="{% url 'history' %}" class="btn btn-ghost flex items-center gap-2 order-2 sm:order-1">
+            <i class="material-icons">close</i>
             Cancel
           </a>
-          <button type="submit" class="btn flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+          <button type="submit" class="btn btn-primary flex items-center gap-2 order-1 sm:order-2">
             <i class="material-icons">save</i>
             Save Changes
           </button>
@@ -144,17 +170,19 @@
     </div>
   </div>
 </div>
+
 {% if success %}
 <script>
-  Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Your changes have been saved!",
-    showConfirmButton: false,
-    timer: 1500
+  document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Your changes have been saved!",
+      showConfirmButton: false,
+      timer: 1500
+    });
   });
 </script>
 {% endif %}
-
 
 {% endblock %}
