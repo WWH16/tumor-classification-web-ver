@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MRI Classification Report - {{ classification.full_name }}</title>
+  <!-- Load Space Grotesk font -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <style>
     @media print {
       .no-print { display: none; }
@@ -11,7 +13,7 @@
     }
 
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       line-height: 1.6;
       color: #333;
       max-width: 900px;
@@ -21,34 +23,45 @@
 
     .header {
       text-align: center;
-      border-bottom: 3px solid #2563eb;
+      border-bottom: 3px solid #137fec;
       padding-bottom: 20px;
       margin-bottom: 30px;
     }
 
     .header h1 {
-      color: #2563eb;
+      color: #137fec;
       margin: 0;
-      font-size: 28px;
+      font-size: 32px;
+      font-weight: 700;
     }
 
     .header p {
       color: #666;
       margin: 5px 0;
+      font-weight: 400;
     }
 
     .section {
       margin-bottom: 30px;
       page-break-inside: avoid;
+      background: white;
+      border-radius: 8px;
+      padding: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
     }
 
     .section-title {
-      background: #2563eb;
+      background: #137fec;
       color: white;
-      padding: 10px 15px;
-      margin-bottom: 15px;
+      padding: 12px 20px;
+      margin-bottom: 0;
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 600;
+    }
+
+    .section-content {
+      padding: 20px;
     }
 
     .info-grid {
@@ -58,7 +71,7 @@
     }
 
     .info-item {
-      border-left: 3px solid #2563eb;
+      border-left: 3px solid #137fec;
       padding-left: 15px;
     }
 
@@ -67,33 +80,36 @@
       font-size: 12px;
       text-transform: uppercase;
       margin-bottom: 5px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
 
     .info-value {
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       color: #333;
     }
 
     .diagnosis-box {
       background: #dbeafe;
-      border: 2px solid #2563eb;
-      padding: 20px;
+      border: 2px solid #137fec;
+      padding: 25px;
       text-align: center;
       margin: 20px 0;
+      border-radius: 8px;
     }
 
     .diagnosis-box .diagnosis {
-      font-size: 24px;
-      font-weight: bold;
-      color: #2563eb;
+      font-size: 26px;
+      font-weight: 700;
+      color: #137fec;
       margin-bottom: 10px;
     }
 
     .diagnosis-box .confidence {
-      font-size: 36px;
-      font-weight: bold;
-      color: #2563eb;
+      font-size: 38px;
+      font-weight: 700;
+      color: #137fec;
     }
 
     .mri-image {
@@ -113,6 +129,7 @@
       padding: 15px;
       border-radius: 5px;
       white-space: pre-line;
+      font-weight: 400;
     }
 
     .footer {
@@ -122,24 +139,27 @@
       text-align: center;
       color: #666;
       font-size: 12px;
+      font-weight: 400;
     }
 
     .print-button {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #2563eb;
+      background: #137fec;
       color: white;
       padding: 12px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     .print-button:hover {
-      background: #1d4ed8;
+      background: #0f6fd8;
     }
   </style>
 </head>
@@ -157,30 +177,32 @@
   <!-- Patient Information -->
   <div class="section">
     <div class="section-title">Patient Information</div>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="info-label">Full Name</div>
-        <div class="info-value">{{ classification.full_name }}</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Date of Scan</div>
-        <div class="info-value">{{ classification.date_uploaded|date:"F d, Y" }}</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Age</div>
-        <div class="info-value">{{ classification.age }} y/o</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Sex</div>
-        <div class="info-value">{{ classification.sex }}</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Processed By</div>
-        <div class="info-value">{{ classification.process_by.get_full_name }}</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Report ID</div>
-        <div class="info-value">#{{ classification.id|stringformat:"05d" }}</div>
+    <div class="section-content">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Full Name</div>
+          <div class="info-value">{{ classification.full_name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Date of Scan</div>
+          <div class="info-value">{{ classification.date_uploaded|date:"F d, Y" }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Age</div>
+          <div class="info-value">{{ classification.age }} y/o</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Sex</div>
+          <div class="info-value">{{ classification.sex }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Processed By</div>
+          <div class="info-value">{{ classification.process_by.get_full_name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Report ID</div>
+          <div class="info-value">#{{ classification.id|stringformat:"05d" }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -189,28 +211,33 @@
   {% if classification.history %}
   <div class="section">
     <div class="section-title">Medical History</div>
-    <div class="notes-box">{{ classification.history }}</div>
+    <div class="section-content">
+      <div class="notes-box">{{ classification.history }}</div>
+    </div>
   </div>
   {% endif %}
 
-<!-- Classification Results -->
-<div class="section">
-  <div class="section-title">Classification Results</div>
-  <div class="diagnosis-box">
-    <div class="diagnosis">{{ classification.predicted_class }}</div>
-    <div class="info-label">Confidence Score</div>
-    <div class="confidence">
-      {{ classification.confidence_percentage|floatformat:2 }}%
+  <!-- Classification Results -->
+  <div class="section">
+    <div class="section-title">Classification Results</div>
+    <div class="section-content">
+      <div class="diagnosis-box">
+        <div class="diagnosis">{{ classification.predicted_class }}</div>
+        <div class="info-label">Confidence Score</div>
+        <div class="confidence">
+          {{ classification.confidence_percentage|floatformat:2 }}%
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
 
   <!-- MRI Image -->
   <div class="section">
     <div class="section-title">MRI Scan Image</div>
-    <div class="mri-image">
-      <img src="{{ classification.image.url }}" alt="MRI Scan">
+    <div class="section-content">
+      <div class="mri-image">
+        <img src="{{ classification.image.url }}" alt="MRI Scan">
+      </div>
     </div>
   </div>
 
@@ -218,17 +245,21 @@
   {% if classification.notes %}
   <div class="section">
     <div class="section-title">Clinical Notes</div>
-    <div class="notes-box">{{ classification.notes }}</div>
+    <div class="section-content">
+      <div class="notes-box">{{ classification.notes }}</div>
+    </div>
   </div>
   {% endif %}
 
   <!-- Disclaimer -->
   <div class="section">
     <div class="section-title">Important Notice</div>
-    <div class="notes-box">
-      <strong>Disclaimer:</strong> This report is generated by an automated AI-based MRI classification system.
-      The results should be reviewed and validated by a qualified medical professional. This report is not intended
-      to be used as the sole basis for medical diagnosis or treatment decisions.
+    <div class="section-content">
+      <div class="notes-box">
+        <strong>Disclaimer:</strong> This report is generated by an automated AI-based MRI classification system.
+        The results should be reviewed and validated by a qualified medical professional. This report is not intended
+        to be used as the sole basis for medical diagnosis or treatment decisions.
+      </div>
     </div>
   </div>
 
