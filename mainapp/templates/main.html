@@ -171,11 +171,8 @@
       <button type="button" id="closeModalBtn" class="btn btn-outline flex-1 flex items-center gap-2">
         <span class="material-icons">close</span> Close
       </button>
-      <button type="button" id="downloadBtn" class="btn btn-success flex-1 flex items-center gap-2">
-        <span class="material-icons">picture_as_pdf</span> Download PDF
-      </button>
       <button type="button" id="printBtn" class="btn btn-info flex-1 flex items-center gap-2">
-        <span class="material-icons">print</span> Print
+        <span class="material-icons">print</span> Print Report
       </button>
     </div>
 
@@ -209,7 +206,6 @@
   const form = document.getElementById("patientForm");
   const resultModal = document.getElementById("resultModal");
   const btnClose = document.getElementById("closeModalBtn");
-  const btnDownload = document.getElementById("downloadBtn");
   const btnPrint = document.getElementById("printBtn");
 
   // === Image Preview ===
@@ -319,14 +315,13 @@
 
   // === Modal Buttons ===
   btnClose.addEventListener("click", () => resultModal.close());
-  btnDownload.addEventListener("click", () => {
-    const recordId = window.currentClassificationId;
-    if (!recordId) return alert("Record not found. Cannot download PDF.");
-    const pdfUrl = `{% url 'history_print' 0 %}`.replace('0', recordId);
-    window.open(pdfUrl + '?download=1', '_blank');
-  });
   btnPrint.addEventListener("click", () => {
-    const recordId = window.currentClassificationId || 1;
+    const recordId = window.currentClassificationId;
+    if (!recordId) {
+      alert("Record not found. Please complete a classification first.");
+      return;
+    }
+
     const printUrl = `{% url 'history_print' 0 %}`.replace('0', recordId);
     window.open(printUrl, "_blank");
   });
