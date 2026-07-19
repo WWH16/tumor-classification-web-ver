@@ -37,13 +37,6 @@ The **Tumor Classification System** is a full-stack web application designed to 
 <img src="assets/printingofresult_1.png" alt="Printing Result 1" width="800"/>
 <img src="assets/printingofresult_2.png" alt="Printing Result 2" width="800"/>
 
-## <img src="https://icongr.am/feather/users.svg?size=24" align="absmiddle" /> Testing Credentials
-
-If you are running the project locally or reviewing the application flow, you can use the following credentials to access the Dashboard:
-
-* <img src="https://icongr.am/feather/key.svg?size=16" align="absmiddle" /> `2210243`
-* <img src="https://icongr.am/feather/key.svg?size=16" align="absmiddle" /> `Estevesjancen0616`
-
 ## <img src="https://icongr.am/feather/tool.svg?size=24" align="absmiddle" /> Setup & Installation
 
 1. <img src="https://icongr.am/feather/download.svg?size=16" align="absmiddle" /> Clone the repository.
